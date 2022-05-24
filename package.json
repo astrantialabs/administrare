@@ -1,7 +1,7 @@
 {
     "name": "administrare",
     "version": "1.0.0",
-    "license": "",
+    "license": "LGPL-3.0",
     "scripts": {
         "prebuild": "rimraf dist",
         "build": "yarn build:next && yarn build:nest",
