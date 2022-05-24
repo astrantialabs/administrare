@@ -36,7 +36,7 @@ class SaldoAkhir {
     harga_satuan: number;
 }
 
-export class ReqCreateItemDto {
+export class ParCreateItemDto {
     tahun: number;
     kategori: string;
     nama: string;

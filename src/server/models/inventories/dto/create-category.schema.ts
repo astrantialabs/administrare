@@ -16,7 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { PartialType } from "@nestjs/mapped-types";
-import { CreateInventoryDto } from "./create-inventory.schema";
+import { Barang } from "../schema/inventory.schema";
 
-export class UpdateInventoryDto extends PartialType(CreateInventoryDto) {}
+export class ParCreateCategoryDto {
+    tahun: number;
+    kategori: string;
+}
+
+export class ResCreateCategoryDto {
+    id: number;
+    kategori: string;
+    barang: Barang[];
+}

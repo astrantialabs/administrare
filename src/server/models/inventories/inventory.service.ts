@@ -24,6 +24,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { ResCreateCategoryDto } from "./dto/create-category.schema";
 import { ResCreateItemDto } from "./dto/create-item.schema";
 
 import { InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
@@ -70,11 +71,44 @@ export class InventoryService {
 
         inventory_data.inventory.filter((inventory_dict) => {
             if (inventory_dict.kategori == category) {
-                item_length = inventory_dict.barang.length + 1;
+                item_length = inventory_dict.barang.length;
             }
         });
 
         return item_length;
+    }
+
+    /**
+     * @description Find category length based on year
+     * @param {Number} year - The year
+     * @returns {Number} The category length data
+     */
+    public async findCategoryLengthByYear(year: number): Promise<number> {
+        let inventory_data = await this.findOne(year);
+        let category_length: number = inventory_data.inventory.length;
+
+        return category_length;
+    }
+
+    /**
+     * @description Create a new category then add based on year
+     * @param {Number} year - The year
+     * @param {String} category - The category
+     * @returns {ResCreateItemDto} The new item data
+     */
+    public async createKategori(year: number, category: string): Promise<ResCreateCategoryDto> {
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let new_category: ResCreateCategoryDto = {
+            id: (await this.findCategoryLengthByYear(year)) + 1,
+            kategori: category,
+            barang: [],
+        };
+
+        inventory_data.inventory.push(new_category);
+
+        this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
+
+        return new_category;
     }
 
     /**
@@ -85,7 +119,7 @@ export class InventoryService {
      * @returns {ResCreateItemDto} The new item data
      */
     public async createBarang(year: number, category: string, item_data: ResCreateItemDto): Promise<ResCreateItemDto> {
-        let inventory_data = await this.findOne(year);
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
         let new_item: ResCreateItemDto;
 
         inventory_data.inventory.filter((inventory_dict) => {
@@ -109,20 +143,5 @@ export class InventoryService {
         this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
 
         return new_item;
-    }
-
-    public async createKategori(data: any): Promise<any> {
-        let inventory_data = await this.findOne(data.tahun);
-        let new_category = {
-            id: inventory_data.inventory.length + 1,
-            kategori: data.kategori,
-            barang: data.barang,
-        };
-
-        inventory_data.inventory.push(new_category);
-
-        this.inventoryDataModel.replaceOne({ tahun: data.tahun }, inventory_data, { upsert: true }).exec();
-
-        return new_category;
     }
 }

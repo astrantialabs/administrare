@@ -28,7 +28,8 @@ import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-paylo
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
 import { Inventory, InventoryDataDocument } from "./schema/inventory.schema";
-import { ReqCreateItemDto, ResCreateItemDto } from "./dto/create-item.schema";
+import { ParCreateItemDto, ResCreateItemDto } from "./dto/create-item.schema";
+import { ParCreateCategoryDto, ResCreateCategoryDto } from "./dto/create-category.schema";
 
 /**
  * @class DataController
@@ -171,15 +172,31 @@ export class InventoryController {
     // @todo:When at form, add option to select which year to add data to
 
     /**
+     * @description Create a new category then add based on year
+     * @param {ParCreateCategoryDto} body - The data required
+     * @returns {ResCreateCategoryDto} The new category data
+     */
+    @Post("create/kategori")
+    public async createKategori(@Body() body: ParCreateCategoryDto): Promise<ResCreateCategoryDto> {
+        try {
+            return await this.inventoryService.createKategori(body.tahun, body.kategori);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    // @todo:When at form, add option to select which year to add data to
+
+    /**
      * @description Create a new item then add based on year and category
-     * @param {ReqCreateItemDto} body - The data required
+     * @param {ParCreateItemDto} body - The data required
      * @returns {ResCreateItemDto} The new item data
      */
     @Post("create/barang")
-    public async createBarang(@Body() body: ReqCreateItemDto): Promise<ResCreateItemDto> {
+    public async createBarang(@Body() body: ParCreateItemDto): Promise<ResCreateItemDto> {
         try {
             const barang: ResCreateItemDto = {
-                id: await this.inventoryService.findItemLengthByYearAndCategory(body.tahun, body.kategori),
+                id: (await this.inventoryService.findItemLengthByYearAndCategory(body.tahun, body.kategori)) + 1,
                 nama: body.nama,
                 satuan: body.satuan,
                 saldo: body.saldo,
@@ -189,16 +206,6 @@ export class InventoryController {
             };
 
             return await this.inventoryService.createBarang(body.tahun, body.kategori, barang);
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
-
-    @Post("create/kategori")
-    public async createKategori(@Body() body: any): Promise<any> {
-        try {
-            const data = await this.inventoryService.createKategori(body);
-            return data;
         } catch (error) {
             this.logger.error(error);
         }
