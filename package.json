@@ -9,6 +9,7 @@
         "build:nest": "nest build --path ./tsconfig.server.json",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "node dist/server/main.js",
+        "start:dev": "nest start --path ./tsconfig.server.json --watch",
         "start:next": "next dev",
         "start:debug": "nest start --path ./tsconfig.server.json --debug --watch",
         "start:prod": "node dist/main",
