@@ -63,20 +63,20 @@ export class InventoryService {
      * @param {Number} year - The year.
      * @returns {Promise<InventoryDataDocument>}
      */
-    public async createBarang(year: number, data: any): Promise<any> {
+    public async createBarang(year: number, category: string, item_data: any): Promise<any> {
         let inventory_data = await this.findOne(year);
         let new_item;
 
         inventory_data.inventory.filter((inventory_dict) => {
-            if (inventory_dict.kategori == data.kategori) {
+            if (inventory_dict.kategori == category) {
                 new_item = {
                     id: inventory_dict.barang.length + 1,
-                    nama: data.nama,
-                    satuan: data.satuan,
-                    saldo: data.saldo,
-                    mutasi_barang_masuk: data.mutasi_barang_masuk,
-                    mutasi_barang_keluar: data.mutasi_barang_keluar,
-                    saldo_akhir: data.saldo_akhir,
+                    nama: item_data.nama,
+                    satuan: item_data.satuan,
+                    saldo: item_data.saldo,
+                    mutasi_barang_masuk: item_data.mutasi_barang_masuk,
+                    mutasi_barang_keluar: item_data.mutasi_barang_keluar,
+                    saldo_akhir: item_data.saldo_akhir,
                 };
 
                 inventory_dict.barang.push(new_item);

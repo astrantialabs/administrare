@@ -167,11 +167,20 @@ export class InventoryController {
         return from(categories_roman).pipe(toArray());
     }
 
+    // when at form, add option to select which year to add data to
     @Post("create/barang")
     public async createBarang(@Body() body: any): Promise<any> {
         try {
-            const data = await this.inventoryService.createBarang(2022, body);
-            return data;
+            const barang = {
+                nama: body.nama,
+                satuan: body.satuan,
+                saldo: body.saldo,
+                mutasi_barang_masuk: body.mutasi_barang_masuk,
+                mutasi_barang_keluar: body.mutasi_barang_keluar,
+                saldo_akhir: body.saldo_akhir,
+            };
+
+            return await this.inventoryService.createBarang(body.tahun, body.kategori, barang);
         } catch (error) {
             this.logger.error(error);
         }
