@@ -176,4 +176,14 @@ export class InventoryController {
             this.logger.error(error);
         }
     }
+
+    @Post("create/kategori")
+    public async createKategori(@Body() body: any): Promise<any> {
+        try {
+            const data = await this.inventoryService.createKategori(body);
+            return data;
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
 }
