@@ -167,10 +167,10 @@ export class InventoryController {
         return from(categories_roman).pipe(toArray());
     }
 
-    @Post("create")
-    public async create(@Body() body: any): Promise<any> {
+    @Post("create/barang")
+    public async createBarang(@Body() body: any): Promise<any> {
         try {
-            const data = await this.inventoryService.update(2022, body);
+            const data = await this.inventoryService.createBarang(2022, body);
             return data;
         } catch (error) {
             this.logger.error(error);

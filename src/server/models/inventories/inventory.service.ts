@@ -21,7 +21,7 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UpdateInventoryDto } from "./dto/update-inventory.schema";
@@ -63,7 +63,26 @@ export class InventoryService {
      * @param {Number} year - The year.
      * @returns {Promise<InventoryDataDocument>}
      */
-    public async update(year: number, data: UpdateInventoryDto): Promise<any> {
-        // @todo: update data
+    public async createBarang(year: number, data: any): Promise<any> {
+        let inventory_data = await this.findOne(year);
+        inventory_data.inventory = inventory_data.inventory.filter((inventory_dict) => {
+            if (inventory_dict.kategori == data.kategori) {
+                let new_item = {
+                    id: inventory_dict.barang.length + 1,
+                    nama: data.nama,
+                    satuan: data.satuan,
+                    saldo: data.saldo,
+                    mutasi_barang_masuk: data.mutasi_barang_masuk,
+                    mutasi_barang_keluar: data.mutasi_barang_keluar,
+                    saldo_akhir: data.saldo_akhir,
+                };
+
+                inventory_dict.barang.push(new_item);
+            }
+
+            return inventory_dict;
+        });
+
+        this.inventoryDataModel.replaceOne({ tahun: 2022 }, inventory_data, { upsert: true }).exec();
     }
 }
