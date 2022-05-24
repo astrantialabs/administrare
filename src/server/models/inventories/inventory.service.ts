@@ -21,10 +21,10 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { UpdateInventoryDto } from "./dto/update-inventory.schema";
+import { ResCreateItemDto } from "./dto/create-item.schema";
 
 import { InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
 
@@ -59,18 +59,39 @@ export class InventoryService {
     }
 
     /**
-     * @description Create a new inventory data.
-     * @param {Number} year - The year.
-     * @returns {Promise<InventoryDataDocument>}
+     * @description Find item length based on year and category
+     * @param {Number} year - The year
+     * @param {Category} category - The category
+     * @returns {Number} The item length data
      */
-    public async createBarang(year: number, category: string, item_data: any): Promise<any> {
+    public async findItemLengthByYearAndCategory(year: number, category: string): Promise<number> {
         let inventory_data = await this.findOne(year);
-        let new_item;
+        let item_length: number;
+
+        inventory_data.inventory.filter((inventory_dict) => {
+            if (inventory_dict.kategori == category) {
+                item_length = inventory_dict.barang.length + 1;
+            }
+        });
+
+        return item_length;
+    }
+
+    /**
+     * @description Create a new item then add based on year and category
+     * @param {Number} year - The year
+     * @param {String} category -The category
+     * @param {ResCreateItemDto} item_data - The data required
+     * @returns {ResCreateItemDto} The new item data
+     */
+    public async createBarang(year: number, category: string, item_data: ResCreateItemDto): Promise<ResCreateItemDto> {
+        let inventory_data = await this.findOne(year);
+        let new_item: ResCreateItemDto;
 
         inventory_data.inventory.filter((inventory_dict) => {
             if (inventory_dict.kategori == category) {
                 new_item = {
-                    id: inventory_dict.barang.length + 1,
+                    id: item_data.id,
                     nama: item_data.nama,
                     satuan: item_data.satuan,
                     saldo: item_data.saldo,

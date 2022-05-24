@@ -28,6 +28,7 @@ import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-paylo
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
 import { Inventory, InventoryDataDocument } from "./schema/inventory.schema";
+import { ReqCreateItemDto, ResCreateItemDto } from "./dto/create-item.schema";
 
 /**
  * @class DataController
@@ -167,11 +168,18 @@ export class InventoryController {
         return from(categories_roman).pipe(toArray());
     }
 
-    // when at form, add option to select which year to add data to
+    // @todo:When at form, add option to select which year to add data to
+
+    /**
+     * @description Create a new item then add based on year and category
+     * @param {ReqCreateItemDto} body - The data required
+     * @returns {ResCreateItemDto} The new item data
+     */
     @Post("create/barang")
-    public async createBarang(@Body() body: any): Promise<any> {
+    public async createBarang(@Body() body: ReqCreateItemDto): Promise<ResCreateItemDto> {
         try {
-            const barang = {
+            const barang: ResCreateItemDto = {
+                id: await this.inventoryService.findItemLengthByYearAndCategory(body.tahun, body.kategori),
                 nama: body.nama,
                 satuan: body.satuan,
                 saldo: body.saldo,
