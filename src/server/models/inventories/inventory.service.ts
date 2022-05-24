@@ -65,9 +65,10 @@ export class InventoryService {
      */
     public async createBarang(year: number, data: any): Promise<any> {
         let inventory_data = await this.findOne(year);
+        let new_item;
         inventory_data.inventory = inventory_data.inventory.filter((inventory_dict) => {
             if (inventory_dict.kategori == data.kategori) {
-                let new_item = {
+                new_item = {
                     id: inventory_dict.barang.length + 1,
                     nama: data.nama,
                     satuan: data.satuan,
@@ -84,5 +85,7 @@ export class InventoryService {
         });
 
         this.inventoryDataModel.replaceOne({ tahun: 2022 }, inventory_data, { upsert: true }).exec();
+
+        return new_item;
     }
 }
