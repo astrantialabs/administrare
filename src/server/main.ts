@@ -21,8 +21,10 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
+import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { Environment } from "@shared/typings/enumerations/environment.enum";
 import { RenderService } from "nest-next";
 import { AppModule } from "./app.module";
 import { middleware } from "./common/middlewares/app.middleware";
@@ -41,6 +43,7 @@ async function boostrap() {
     await app.listen(configService.port);
 
     renderService.setErrorHandler(async (error, request, response) => {
+        if (configService.env === Environment.DEVELOPMENT) Logger.debug(error);
         response.send(error.response);
     });
 

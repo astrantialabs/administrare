@@ -21,7 +21,7 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Controller, Get, Logger } from "@nestjs/common";
+import { Body, Controller, Get, Logger, Post } from "@nestjs/common";
 import { from, Observable, toArray } from "rxjs";
 
 import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-payload.interface";
@@ -165,5 +165,15 @@ export class InventoryController {
         });
 
         return from(categories_roman).pipe(toArray());
+    }
+
+    @Post("create")
+    public async create(@Body() body: any): Promise<any> {
+        try {
+            const data = await this.inventoryService.update(2022, body);
+            return data;
+        } catch (error) {
+            this.logger.error(error);
+        }
     }
 }

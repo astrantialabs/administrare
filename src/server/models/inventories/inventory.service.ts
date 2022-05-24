@@ -24,6 +24,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { UpdateInventoryDto } from "./dto/update-inventory.schema";
 
 import { InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
 
@@ -41,7 +42,7 @@ export class InventoryService {
     constructor(@InjectModel(InventoryData.name) private readonly inventoryDataModel: Model<InventoryDataDocument>) {}
 
     /**
-     * @description Finds all data.
+     * @description Finds all inventory data.
      * @returns {Promise<InventoryDataDocument[]>} The data.
      */
     public async findAll(): Promise<InventoryDataDocument[]> {
@@ -49,11 +50,20 @@ export class InventoryService {
     }
 
     /**
-     * @description Finds a data by its year.
+     * @description Finds a inventory data by its year.
      * @param {Number} year - The year.
      * @returns {Promise<InventoryDataDocument>}
      */
     public async findOne(year: number): Promise<InventoryDataDocument> {
         return this.inventoryDataModel.findOne({ year }).exec();
+    }
+
+    /**
+     * @description Create a new inventory data.
+     * @param {Number} year - The year.
+     * @returns {Promise<InventoryDataDocument>}
+     */
+    public async update(year: number, data: UpdateInventoryDto): Promise<any> {
+        // @todo: update data
     }
 }

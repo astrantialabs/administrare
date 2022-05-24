@@ -68,7 +68,7 @@ export function middleware(app: NestExpressApplication): INestApplication {
             },
         })
     );
-    app.use(csurf());
+    // app.use(csurf());
     app.use(initialize());
     app.use(passport.session());
 
