@@ -65,9 +65,9 @@ export class InventoryController {
             let table_data: InventoryDataPayload[] = [];
 
             data.forEach((data_item) => {
-                data_item.inventory.forEach((inventory_item, inventory_index) => {
+                data_item.inventory.forEach(async (inventory_item, inventory_index) => {
                     table_data.push({
-                        no: this.utilsService.romanizeNumber(inventory_index + 1),
+                        no: await this.utilsService.romanizeNumber(inventory_index + 1),
                         uraian_barang: inventory_item.kategori,
                         satuan: "",
                         saldo_jumlah_satuan: "",
@@ -151,5 +151,19 @@ export class InventoryController {
         });
 
         return from(categories).pipe(toArray());
+    }
+
+    @Get("categories/roman")
+    public async findAllCategoriesRomanNumeral(): Promise<Observable<string[]>> {
+        const data = await this.inventoryService.findAll();
+        let categories_roman: string[] = [];
+
+        data.forEach(async (inventoryItem: InventoryDataDocument) => {
+            inventoryItem.inventory.forEach(async (item: Inventory, index) => {
+                categories_roman.push(await this.utilsService.romanizeNumber(index + 1));
+            });
+        });
+
+        return from(categories_roman).pipe(toArray());
     }
 }

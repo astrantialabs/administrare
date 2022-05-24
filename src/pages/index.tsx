@@ -18,10 +18,6 @@
 
 import { NextPage } from "next";
 
-type PageProps = {
-    test: string;
-};
-
 const Home: NextPage = () => {
     return (
         <div>

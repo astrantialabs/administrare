@@ -31,9 +31,14 @@ export class AppController {
     @Get("")
     @Render("index")
     @UseInterceptors(ParamsInterceptor)
-    home() {
-        return {
-            test: "Hello, world",
-        };
+    public index() {
+        return {};
+    }
+
+    @Get("inventory")
+    @Render("inventory/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventory_index() {
+        return {};
     }
 }
