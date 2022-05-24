@@ -16,25 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-class Saldo {
-    jumlah_satuan: number;
-    harga_satuan: number;
-}
-
-class MutasiBarangMasuk {
-    jumlah_satuan: number;
-    harga_satuan: number;
-}
-
-class MutasiBarangKeluar {
-    jumlah_satuan: number;
-    harga_satuan: number;
-}
-
-class SaldoAkhir {
-    jumlah_satuan: number;
-    harga_satuan: number;
-}
+import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../schema/inventory.schema";
 
 export class ParCreateItemDto {
     tahun: number;
