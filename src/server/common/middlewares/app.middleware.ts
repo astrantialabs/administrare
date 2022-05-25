@@ -24,17 +24,17 @@
 import { INestApplication } from "@nestjs/common";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { default as connectMongoDBSession } from "connect-mongodb-session";
+import { initialize } from "passport";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import passport from "passport";
 import helmet from "helmet";
 import csurf from "csurf";
 
-import { Environment } from "@shared/typings/enumerations/environment.enum";
-import { ConfigService } from "../../config/config.service";
+import { Environment } from "@/shared/typings/enumerations/environment.enum";
 
-import { initialize } from "passport";
-import passport from "passport";
+import { ConfigService } from "../../config/config.service";
 
 const MongoDBStore = connectMongoDBSession(session);
 

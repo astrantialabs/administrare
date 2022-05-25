@@ -17,9 +17,11 @@
  */
 
 import { ParsedUrlQuery } from "querystring";
-import { AppData } from "src/shared/typings/types/app-data";
-import { Config } from "src/shared/typings/types/config";
-import { GetServerSideProps, GetServerSidePropsContext } from "src/shared/typings/types/next";
+
+import { AppData } from "@/shared/typings/types/app-data";
+import { Config } from "@/shared/typings/types/config";
+import { GetServerSideProps, GetServerSidePropsContext } from "@/shared/typings/types/next";
+
 import { extractAppData } from "./extractAppData";
 
 type StaticProps = {

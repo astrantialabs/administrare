@@ -16,15 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { ChakraProvider } from "@chakra-ui/react";
 import NextApp, { AppProps } from "next/app";
 import Head from "next/head";
-import { ChakraProvider } from "@chakra-ui/react";
 
-import { AppDataContext } from "../client/ssr/appData";
-import { AppData } from "../shared/typings/types/app-data";
-import { initializeFetch } from "../shared/utils/fetch";
-
-// import "../styles/index.scss";
+import { AppDataContext } from "@/client/ssr/appData";
+import { AppData } from "@/shared/typings/types/app-data";
+import { initializeFetch } from "@/shared/utils/fetch";
 
 class _app extends NextApp<AppProps> {
     public appData: AppData;

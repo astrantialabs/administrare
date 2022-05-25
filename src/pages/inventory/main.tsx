@@ -16,13 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Table } from "@components/Table";
-import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-payload.interface";
-import { fetch } from "@shared/utils/fetch";
 import { NextPage } from "next";
 import React from "react";
 import { Column, useTable } from "react-table";
-import { buildServerSideProps } from "src/client/ssr/buildServerSideProps";
+
+import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
+import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
+import { Table } from "@/components/Table";
+import { fetch } from "@/shared/utils/fetch";
 
 type PageProps = {
     tableData: any;

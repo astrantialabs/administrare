@@ -19,7 +19,8 @@
 import { Injectable, CanActivate, ExecutionContext, Inject } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
-import { PermissionLevel } from "@shared/typings/enumerations/permission-level.enum";
+import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.enum";
+
 import { UserService } from "../../models/users/user.service";
 
 @Injectable()

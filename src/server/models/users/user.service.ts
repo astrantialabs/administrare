@@ -17,8 +17,10 @@
  */
 
 import { InjectModel } from "@nestjs/mongoose";
-import { PermissionLevel } from "@shared/typings/enumerations/permission-level.enum";
 import { Model } from "mongoose";
+
+import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.enum";
+
 import { User, UserDocument } from "./schema/user.schema";
 
 /**

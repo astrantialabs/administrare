@@ -24,11 +24,12 @@
 import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import { Environment } from "@shared/typings/enumerations/environment.enum";
 import { RenderService } from "nest-next";
+
+import { Environment } from "@/shared/typings/enumerations/environment.enum";
+
 import { AppModule } from "./app.module";
 import { middleware } from "./common/middlewares/app.middleware";
-
 import { ConfigService } from "./config/config.service";
 
 declare const module: any;

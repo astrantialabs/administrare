@@ -23,8 +23,10 @@
 
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
+
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { Request as ExpressRequest } from "express";
+
 import { ConfigService } from "../config/config.service";
 
 @Injectable()

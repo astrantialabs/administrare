@@ -16,8 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { GetServerSidePropsContext } from "src/shared/typings/types/next";
-import { AppData } from "src/shared/typings/types/app-data";
+import { GetServerSidePropsContext } from "@/shared/typings/types/next";
+import { AppData } from "@/shared/typings/types/app-data";
+
 import { filterUnserializable } from "./filterUnserializable";
 import { StaticQuery } from "./buildServerSideProps";
 

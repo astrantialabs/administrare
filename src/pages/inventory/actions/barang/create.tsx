@@ -17,13 +17,13 @@
  */
 
 import { NextPage } from "next";
-
 import { useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
-import { FormikCreateBarangModel } from "@server/models/inventories/dto/create-item.schema";
-import { buildServerSideProps } from "@client/ssr/buildServerSideProps";
-import { fetch } from "@shared/utils/fetch";
+
+import { FormikCreateBarangModel } from "@/server/models/inventories/dto/item/create-item.schema";
+import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
+import { fetch } from "@/shared/utils/fetch";
 
 type PageProps = {
     categories: string[];

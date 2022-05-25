@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsNotEmpty, IsString, IsEmpty, IsOptional, IsNumber, FormikValidatorBase } from "formik-class-validator";
+import { IsNotEmpty, IsString, IsOptional, IsNumber, FormikValidatorBase } from "formik-class-validator";
 import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../../schema/inventory.schema";
 
 export class ParameterCreateItemDto {
@@ -86,4 +86,6 @@ export class FormikCreateBarangModel extends FormikValidatorBase {
 
     @IsNumber()
     kategori_id: number;
+
+    kategori: string;
 }

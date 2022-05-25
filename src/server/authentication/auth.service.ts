@@ -26,7 +26,8 @@ import { Response as ExpressResponse, Request as ExpressRequest } from "express"
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
-import { LoginPayload } from "@shared/typings/interfaces/login-payload.interface";
+import { LoginPayload } from "@/shared/typings/interfaces/login-payload.interface";
+
 import { UserService } from "../models/users/user.service";
 import { UserDocument } from "../models/users/schema/user.schema";
 

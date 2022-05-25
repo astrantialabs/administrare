@@ -24,7 +24,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 
-import { PermissionLevel } from "@shared/typings/enumerations/permission-level.enum";
+import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.enum";
 
 export type UserDocument = User & Document;
 

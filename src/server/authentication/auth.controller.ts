@@ -22,7 +22,7 @@
  */
 
 import { Body, Controller, Get, Post, Req, Res } from "@nestjs/common";
-import { LoginPayload } from "@shared/typings/interfaces/login-payload.interface";
+import { LoginPayload } from "@/shared/typings/interfaces/login-payload.interface";
 import { Response as ExpressResponse, Request as ExpressRequest } from "express";
 import { AuthService } from "./auth.service";
 

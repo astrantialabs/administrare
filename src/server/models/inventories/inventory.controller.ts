@@ -24,7 +24,8 @@
 import { Body, Controller, Delete, Get, Logger, Post } from "@nestjs/common";
 import { from, Observable, toArray } from "rxjs";
 
-import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-payload.interface";
+import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
+
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
 import { Inventory, InventoryDataDocument } from "./schema/inventory.schema";

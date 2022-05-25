@@ -21,16 +21,12 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
-import { FormikCreateBarangModel } from "@server/models/inventories/dto/create-item.schema";
-import { buildServerSideProps } from "@client/ssr/buildServerSideProps";
-import { fetch } from "@shared/utils/fetch";
-import { FormikCreateKategoriModel } from "@server/models/inventories/dto/create-category.schema";
 
-type PageProps = {
-    categories: string[];
-};
+import { FormikCreateKategoriModel } from "@/server/models/inventories/dto/category/create-category.schema";
 
-const ActionsCreateKategori: NextPage<PageProps> = ({ categories }) => {
+type PageProps = {};
+
+const ActionsCreateKategori: NextPage<PageProps> = () => {
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
 

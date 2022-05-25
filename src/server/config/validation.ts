@@ -22,9 +22,9 @@
  */
 
 import { plainToClass } from "class-transformer";
-import { IsEnum, IsNumber, isString, IsString, validateSync } from "class-validator";
+import { IsEnum, IsNumber, IsString, validateSync } from "class-validator";
 
-import { Environment } from "@shared/typings/enumerations/environment.enum";
+import { Environment } from "@/shared/typings/enumerations/environment.enum";
 
 class EnvironmentVariables {
     @IsEnum(Environment)

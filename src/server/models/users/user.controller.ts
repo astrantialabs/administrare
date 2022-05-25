@@ -22,7 +22,8 @@
  */
 
 import { Controller, Get, Logger, Param, UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "src/server/authentication/guards/jwt-auth.guard";
+
+import { JwtAuthGuard } from "../../authentication/guards/jwt-auth.guard";
 import { UserService } from "./user.service";
 
 /**

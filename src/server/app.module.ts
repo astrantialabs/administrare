@@ -25,8 +25,8 @@ import { DynamicModule, Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { RenderModule } from "nest-next";
 import Next from "next";
-import { AppController } from "./app.controller";
 
+import { AppController } from "./app.controller";
 import { AuthModule } from "./authentication/auth.module";
 import { ConfigModule } from "./config/config.module";
 import { InventoryModule } from "./models/inventories/inventory.module";

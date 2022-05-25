@@ -17,7 +17,7 @@
  */
 
 import { Barang } from "../../schema/inventory.schema";
-import { IsNotEmpty, IsString, IsEmpty, IsOptional, IsNumber, FormikValidatorBase } from "formik-class-validator";
+import { IsString, IsNumber, FormikValidatorBase } from "formik-class-validator";
 
 export class ParameterCreateCategoryDto {
     tahun: number;
