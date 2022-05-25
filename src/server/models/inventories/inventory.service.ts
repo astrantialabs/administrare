@@ -29,7 +29,7 @@ import { ResponseCreateCategoryDto } from "./dto/category/create-category.schema
 import { ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
-import { InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
+import { Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
 
 /**
  * @class InventoryService
@@ -74,6 +74,25 @@ export class InventoryService {
     }
 
     /**
+     * @description Get a new category Id that hasn't been used yet by other inventory objects
+     * @param {Number} year - The year
+     * @returns {Number} The new category id
+     */
+    public async getNewCategoryId(year: number): Promise<number> {
+        let category_length: number = await this.findCategoryLengthByYear(year);
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let new_category_id: number = category_length + 1;
+
+        for (let i = 0; i < category_length; i++) {
+            if (inventory_data.inventory[i].id != i + 1) {
+                new_category_id = i + 1;
+            }
+        }
+
+        return new_category_id;
+    }
+
+    /**
      * @description Find item length based on year and category id
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
@@ -101,12 +120,13 @@ export class InventoryService {
     public async createKategori(year: number, category: string): Promise<ResponseCreateCategoryDto> {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let new_category: ResponseCreateCategoryDto = {
-            id: (await this.findCategoryLengthByYear(year)) + 1,
+            id: await this.getNewCategoryId(year),
             kategori: category,
             barang: [],
         };
 
         inventory_data.inventory.push(new_category);
+        inventory_data.inventory.sort((a: Inventory, b: Inventory) => a.id - b.id);
 
         this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
 
