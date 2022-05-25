@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Table as ChakraTable, Thead, Tbody, Tr, Th, Td, chakra } from "@chakra-ui/react";
 import React from "react";
 import { UseTableInstanceProps } from "react-table";
 
@@ -29,31 +30,28 @@ export function Table<T extends object>(props: TableNewProps<T>) {
     const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } = props;
 
     return (
-        <div className="table-container">
-            <table className="table is-bordered is-fullwidth" {...getTableProps()} style={{ border: "solid 1px blue" }}>
-                <thead>
-                    {headerGroups.map((headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
-                                // <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {rows.map((row) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) => {
-                                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                                })}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-        </div>
+        <ChakraTable {...getTableProps()} variant={`simple`} colorScheme={`cyan`}>
+            <Thead>
+                {headerGroups.map((headerGroup) => (
+                    <Tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                            <Th {...column.getHeaderProps()}>{column.render("Header") as any}</Th>
+                        ))}
+                    </Tr>
+                ))}
+            </Thead>
+            <Tbody {...getTableBodyProps()}>
+                {rows.map((row) => {
+                    prepareRow(row);
+                    return (
+                        <Tr {...row.getRowProps()}>
+                            {row.cells.map((cell) => {
+                                return <Td {...cell.getCellProps()}>{cell.render("Cell") as any}</Td>;
+                            })}
+                        </Tr>
+                    );
+                })}
+            </Tbody>
+        </ChakraTable>
     );
 }
