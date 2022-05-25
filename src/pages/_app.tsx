@@ -18,6 +18,7 @@
 
 import NextApp, { AppProps } from "next/app";
 import Head from "next/head";
+import { ChakraProvider } from "@chakra-ui/react";
 
 import { AppDataContext } from "../client/ssr/appData";
 import { AppData } from "../shared/typings/types/app-data";
@@ -48,7 +49,9 @@ class _app extends NextApp<AppProps> {
                     <title>administrare</title>
                 </Head>
                 <AppDataContext.Provider value={this.appData}>
-                    <Component {...pageProps} />
+                    <ChakraProvider>
+                        <Component {...pageProps} />
+                    </ChakraProvider>
                 </AppDataContext.Provider>
             </>
         );

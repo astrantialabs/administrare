@@ -16,6 +16,9 @@
         "lint": "eslint \"{src,apps,libs,test}/**/*.tsx?\" --fix"
     },
     "dependencies": {
+        "@chakra-ui/react": "^2.1.2",
+        "@emotion/react": "^11",
+        "@emotion/styled": "^11",
         "@nestjs/common": "^8.0.0",
         "@nestjs/config": "^2.0.1",
         "@nestjs/core": "^8.0.0",
@@ -35,6 +38,7 @@
         "express-session": "^1.17.3",
         "formik": "^2.2.9",
         "formik-class-validator": "^0.0.1",
+        "framer-motion": "^6",
         "helmet": "^5.1.0",
         "mongoose": "^6.3.3",
         "nest-next": "https://github.com/yakovlev-alexey/nest-next/tarball/base-path-dist",
