@@ -31,9 +31,6 @@ export class ResponseCreateCategoryDto {
 }
 
 export class FormikCreateKategoriModel extends FormikValidatorBase {
-    @IsNumber()
-    tahun: number;
-
     @IsString()
     kategori: string = "";
 }
