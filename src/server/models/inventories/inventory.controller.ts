@@ -28,8 +28,14 @@ import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-paylo
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
 import { Inventory, InventoryDataDocument } from "./schema/inventory.schema";
-import { FormikCreateBarangModel, ParCreateItemDto, ResCreateItemDto } from "./dto/create-item.schema";
-import { FormikCreateKategoriModel, ParCreateCategoryDto, ResCreateCategoryDto } from "./dto/create-category.schema";
+
+import { FormikCreateBarangModel, ParCreateItemDto, ResCreateItemDto } from "./dto/item/create-item.schema";
+import {
+    FormikCreateKategoriModel,
+    ParCreateCategoryDto,
+    ResCreateCategoryDto,
+} from "./dto/category/create-category.schema";
+import { ParDeleteCategoryDto, ResDeleteCategoryDto } from "./dto/category/delete-category.schema";
 
 /**
  * @class DataController
@@ -248,6 +254,20 @@ export class InventoryController {
             };
 
             return await this.inventoryService.createBarang(payload.tahun, payload.kategori, barang);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    /**
+     * @description Delete category data based on year and id
+     * @param {ParDeleteCategoryDto} body - The data required
+     * @returns {ResDeleteCategoryDto} The deleted category data
+     */
+    @Post("delete/kategori")
+    public async deleteKategori(@Body() body: ParDeleteCategoryDto): Promise<ResDeleteCategoryDto> {
+        try {
+            return await this.inventoryService.deleteKategori(body.tahun, body.id);
         } catch (error) {
             this.logger.error(error);
         }

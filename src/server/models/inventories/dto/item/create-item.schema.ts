@@ -17,7 +17,7 @@
  */
 
 import { IsNotEmpty, IsString, IsEmpty, IsOptional, IsNumber, FormikValidatorBase } from "formik-class-validator";
-import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../schema/inventory.schema";
+import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../../schema/inventory.schema";
 
 export class ParCreateItemDto {
     tahun: number;

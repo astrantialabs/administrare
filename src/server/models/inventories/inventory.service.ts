@@ -24,8 +24,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { ResCreateCategoryDto } from "./dto/create-category.schema";
-import { ResCreateItemDto } from "./dto/create-item.schema";
+import { ResCreateCategoryDto } from "./dto/category/create-category.schema";
+import { ResDeleteCategoryDto } from "./dto/category/delete-category.schema";
+import { ResCreateItemDto } from "./dto/item/create-item.schema";
 
 import { InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
 
@@ -122,8 +123,8 @@ export class InventoryService {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let new_item: ResCreateItemDto;
 
-        inventory_data.inventory.filter((inventory_dict) => {
-            if (inventory_dict.kategori == category) {
+        inventory_data.inventory.forEach((category_object) => {
+            if (category_object.kategori == category) {
                 new_item = {
                     id: item_data.id,
                     nama: item_data.nama,
@@ -134,14 +135,34 @@ export class InventoryService {
                     saldo_akhir: item_data.saldo_akhir,
                 };
 
-                inventory_dict.barang.push(new_item);
+                category_object.barang.push(new_item);
             }
-
-            return inventory_dict;
         });
 
         this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
 
         return new_item;
+    }
+
+    /**
+     * @description Delete category data based on year and id
+     * @param {Number} year - The year
+     * @param {Number} id - The category id
+     * @returns {ResDeleteCategoryDto} The deleted category data
+     */
+    public async deleteKategori(year: number, id: number): Promise<ResDeleteCategoryDto> {
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let deleted_category: ResDeleteCategoryDto;
+
+        inventory_data.inventory.forEach((category_object, index) => {
+            if (category_object.id == id) {
+                deleted_category = category_object;
+                inventory_data.inventory.splice(index, 1);
+            }
+        });
+
+        this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
+
+        return deleted_category;
     }
 }
