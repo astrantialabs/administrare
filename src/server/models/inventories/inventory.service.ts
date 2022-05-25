@@ -27,6 +27,7 @@ import { Model } from "mongoose";
 import { ResponseCreateCategoryDto } from "./dto/category/create-category.schema";
 import { ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
+import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 
 import { InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
 
@@ -168,5 +169,32 @@ export class InventoryService {
         this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
 
         return deleted_category;
+    }
+
+    /**
+     *
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @returns {ResponseDeleteItemDto} The deleted item data
+     */
+    public async deleteBarang(year: number, category_id: number, item_id: number): Promise<ResponseDeleteItemDto> {
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let deleted_item: ResponseDeleteItemDto;
+
+        inventory_data.inventory.forEach((category_dict) => {
+            if (category_dict.id == category_id) {
+                category_dict.barang.forEach((item_dict, index) => {
+                    if (item_dict.id == item_id) {
+                        deleted_item = item_dict;
+                        category_dict.barang.splice(index, 1);
+                    }
+                });
+            }
+        });
+
+        this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
+
+        return deleted_item;
     }
 }

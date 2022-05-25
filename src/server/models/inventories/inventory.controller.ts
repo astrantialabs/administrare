@@ -21,7 +21,7 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Body, Controller, Get, Logger, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Post } from "@nestjs/common";
 import { from, Observable, toArray } from "rxjs";
 
 import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-payload.interface";
@@ -35,6 +35,7 @@ import {
     ResponseCreateCategoryDto,
 } from "./dto/category/create-category.schema";
 import { ParameterDeleteCategoryDto, ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
+import { ParameterDeleteItemDto, ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 
 /**
  * @class DataController
@@ -263,10 +264,24 @@ export class InventoryController {
      * @param {ParameterDeleteCategoryDto} body - The data required
      * @returns {ResponseDeleteCategoryDto} The deleted category data
      */
-    @Post("delete/kategori")
+    @Delete("delete/kategori")
     public async deleteKategori(@Body() body: ParameterDeleteCategoryDto): Promise<ResponseDeleteCategoryDto> {
         try {
             return await this.inventoryService.deleteKategori(body.tahun, body.id);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    /**
+     * @description Delete item data based on year, category id and item id
+     * @param {ParameterDeleteItemDto} body - The data required
+     * @returns
+     */
+    @Delete("delete/barang")
+    public async deleteBarang(@Body() body: ParameterDeleteItemDto): Promise<ResponseDeleteItemDto> {
+        try {
+            return await this.inventoryService.deleteBarang(body.tahun, body.kategori_id, body.barang_id);
         } catch (error) {
             this.logger.error(error);
         }
