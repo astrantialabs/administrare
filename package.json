@@ -34,6 +34,7 @@
         "csurf": "^1.11.0",
         "express-session": "^1.17.3",
         "formik": "^2.2.9",
+        "formik-class-validator": "^0.0.1",
         "helmet": "^5.1.0",
         "mongoose": "^6.3.3",
         "nest-next": "https://github.com/yakovlev-alexey/nest-next/tarball/base-path-dist",

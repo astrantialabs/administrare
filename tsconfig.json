@@ -27,7 +27,9 @@
             "@shared/*": ["src/shared/*"],
             "@pages/*": ["src/pages/*"],
             "@components/*": ["src/components/*"],
-            "@styles/*": ["src/styles/*"]
+            "@styles/*": ["src/styles/*"],
+            "@client/*": ["src/client/*"],
+            "@server/*": ["src/server/*"]
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

@@ -28,8 +28,8 @@ import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-paylo
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
 import { Inventory, InventoryDataDocument } from "./schema/inventory.schema";
-import { ParCreateItemDto, ResCreateItemDto } from "./dto/create-item.schema";
-import { ParCreateCategoryDto, ResCreateCategoryDto } from "./dto/create-category.schema";
+import { FormikCreateBarangModel, ParCreateItemDto, ResCreateItemDto } from "./dto/create-item.schema";
+import { FormikCreateKategoriModel, ParCreateCategoryDto, ResCreateCategoryDto } from "./dto/create-category.schema";
 
 /**
  * @class DataController
@@ -169,6 +169,21 @@ export class InventoryController {
         return from(categories_roman).pipe(toArray());
     }
 
+    /**
+     * @description Create a new category then add based on year
+     * @param {ParCreateCategoryDto} body - The data required
+     * @returns {ResCreateCategoryDto} The new category data
+     */
+    @Post("test")
+    public async test(@Body() body: any): Promise<any> {
+        try {
+            this.logger.debug(body);
+            return;
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
     // @todo:When at form, add option to select which year to add data to
 
     /**
@@ -177,9 +192,13 @@ export class InventoryController {
      * @returns {ResCreateCategoryDto} The new category data
      */
     @Post("create/kategori")
-    public async createKategori(@Body() body: ParCreateCategoryDto): Promise<ResCreateCategoryDto> {
+    public async createKategori(@Body() body: FormikCreateKategoriModel): Promise<ResCreateCategoryDto> {
         try {
-            return await this.inventoryService.createKategori(body.tahun, body.kategori);
+            const payload: ParCreateCategoryDto = {
+                tahun: 2022,
+                kategori: body.kategori.toUpperCase(),
+            };
+            return await this.inventoryService.createKategori(payload.tahun, payload.kategori);
         } catch (error) {
             this.logger.error(error);
         }
@@ -193,19 +212,42 @@ export class InventoryController {
      * @returns {ResCreateItemDto} The new item data
      */
     @Post("create/barang")
-    public async createBarang(@Body() body: ParCreateItemDto): Promise<ResCreateItemDto> {
+    public async createBarang(@Body() body: FormikCreateBarangModel): Promise<ResCreateItemDto> {
         try {
-            const barang: ResCreateItemDto = {
-                id: (await this.inventoryService.findItemLengthByYearAndCategory(body.tahun, body.kategori)) + 1,
+            const payload: ParCreateItemDto = {
+                tahun: 2022,
+                kategori: body.kategori,
                 nama: body.nama,
                 satuan: body.satuan,
-                saldo: body.saldo,
-                mutasi_barang_masuk: body.mutasi_barang_masuk,
-                mutasi_barang_keluar: body.mutasi_barang_keluar,
-                saldo_akhir: body.saldo_akhir,
+                saldo: {
+                    jumlah_satuan: parseInt(body.saldo_jumlah_satuan),
+                    harga_satuan: parseInt(body.saldo_harga_satuan),
+                },
+                mutasi_barang_masuk: {
+                    jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan),
+                    harga_satuan: parseInt(body.mutasi_barang_masuk_harga_satuan),
+                },
+                mutasi_barang_keluar: {
+                    jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan),
+                    harga_satuan: parseInt(body.mutasi_barang_keluar_harga_satuan),
+                },
+                saldo_akhir: {
+                    jumlah_satuan: parseInt(body.saldo_akhir_jumlah_satuan),
+                    harga_satuan: parseInt(body.saldo_akhir_harga_satuan),
+                },
             };
 
-            return await this.inventoryService.createBarang(body.tahun, body.kategori, barang);
+            const barang: ResCreateItemDto = {
+                id: (await this.inventoryService.findItemLengthByYearAndCategory(payload.tahun, payload.kategori)) + 1,
+                nama: payload.nama,
+                satuan: payload.satuan,
+                saldo: payload.saldo,
+                mutasi_barang_masuk: payload.mutasi_barang_masuk,
+                mutasi_barang_keluar: payload.mutasi_barang_keluar,
+                saldo_akhir: payload.saldo_akhir,
+            };
+
+            return await this.inventoryService.createBarang(payload.tahun, payload.kategori, barang);
         } catch (error) {
             this.logger.error(error);
         }

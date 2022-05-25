@@ -20,31 +20,33 @@ import { NextPage } from "next";
 
 import { useState } from "react";
 import { useFormik } from "formik";
-import { FormikValidatorBase, IsNotEmpty, IsString, IsEmail } from "formik-class-validator";
 import axios from "axios";
+import { FormikCreateBarangModel } from "@server/models/inventories/dto/create-item.schema";
+import { buildServerSideProps } from "@client/ssr/buildServerSideProps";
+import { fetch } from "@shared/utils/fetch";
+import { FormikCreateKategoriModel } from "@server/models/inventories/dto/create-category.schema";
 
-export class FormikFormModel extends FormikValidatorBase {
-    @IsNotEmpty()
-    @IsString({ message: "Field ini diperluhkan!" })
-    kategori: string = "";
-}
+type PageProps = {
+    categories: string[];
+};
 
-const ActionsCreateKategori: NextPage = () => {
+const ActionsCreateKategori: NextPage<PageProps> = ({ categories }) => {
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
     const formik = useFormik({
-        initialValues: new FormikFormModel(),
-        onSubmit: (kategori) => {
-            const body = {
-                kategori: kategori.kategori,
-            };
+        initialValues: new FormikCreateKategoriModel(),
+        onSubmit: (form) => {
             setMessage("tunggu..");
+
+            const payload = {
+                kategori: form.kategori,
+            };
 
             setSubmitted(true);
 
             axios
-                .post("/api/data/inventory/test", body)
+                .post("/api/data/inventory/create/kategori", payload)
                 .then((response) => {
                     setMessage("sukses");
                 })
@@ -52,7 +54,7 @@ const ActionsCreateKategori: NextPage = () => {
                     setMessage("not sukses");
                 });
         },
-        validate: FormikFormModel.createValidator(),
+        validate: FormikCreateKategoriModel.createValidator(),
     });
     return (
         <div className="section container">
@@ -70,7 +72,6 @@ const ActionsCreateKategori: NextPage = () => {
                             <input
                                 className="input"
                                 type="text"
-                                name="kategori"
                                 id="kategori"
                                 placeholder="e.g Alex Smith"
                                 value={formik.values.kategori}
@@ -83,7 +84,7 @@ const ActionsCreateKategori: NextPage = () => {
 
                     <div className="field is-grouped">
                         <div className="control">
-                            <button className="button is-link" type="submit" disabled={submitted}>
+                            <button className="button" type="submit" disabled={submitted}>
                                 Submit
                             </button>
                         </div>

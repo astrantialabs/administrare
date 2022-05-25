@@ -41,4 +41,18 @@ export class AppController {
     public inventory_index() {
         return {};
     }
+
+    @Get("inventory/actions/barang/create")
+    @Render("inventory/actions/barang/create")
+    @UseInterceptors(ParamsInterceptor)
+    public inventory_actions_barang_create(): {} {
+        return {};
+    }
+
+    @Get("inventory/actions/kategori/create")
+    @Render("inventory/actions/kategori/create")
+    @UseInterceptors(ParamsInterceptor)
+    public inventory_actions_kategori_create(): {} {
+        return {};
+    }
 }
