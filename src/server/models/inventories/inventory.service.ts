@@ -29,7 +29,7 @@ import { ResponseCreateCategoryDto } from "./dto/category/create-category.schema
 import { ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
-import { Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
+import { Barang, Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
 
 /**
  * @class InventoryService
@@ -74,7 +74,7 @@ export class InventoryService {
     }
 
     /**
-     * @description Get a new category Id that hasn't been used yet by other inventory objects
+     * @description Get a new category id that hasn't been used yet by other inventory objects
      * @param {Number} year - The year
      * @returns {Number} The new category id
      */
@@ -110,6 +110,34 @@ export class InventoryService {
         });
 
         return item_length;
+    }
+
+    /**
+     * @description Get a new item id that hasn't been used yet by other item objects
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Number} The new item id
+     */
+    public async getNewItemId(year: number, category_id: number): Promise<number> {
+        let category_length: number = await this.findCategoryLengthByYear(year);
+        let item_length: number = await this.findItemLengthByYearAndCategoryId(year, category_id);
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let new_item_id: number = item_length + 1;
+
+        for (let i = 0; i < category_length; i++) {
+            if (inventory_data.inventory[i].id == category_id) {
+                for (let j = 0; j < item_length; j++) {
+                    if (inventory_data.inventory[i].barang[j].id != j + 1) {
+                        new_item_id = j + 1;
+                        break;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        return new_item_id;
     }
 
     /**
@@ -162,6 +190,7 @@ export class InventoryService {
                 };
 
                 category_object.barang.push(new_item);
+                category_object.barang.sort((a: Barang, b: Barang) => a.id - b.id);
             }
         });
 

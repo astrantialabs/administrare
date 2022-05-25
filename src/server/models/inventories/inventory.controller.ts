@@ -245,11 +245,7 @@ export class InventoryController {
             };
 
             const barang: ResponseCreateItemDto = {
-                id:
-                    (await this.inventoryService.findItemLengthByYearAndCategoryId(
-                        payload.tahun,
-                        payload.kategori_id
-                    )) + 1,
+                id: await this.inventoryService.getNewItemId(payload.tahun, payload.kategori_id),
                 nama: payload.nama,
                 satuan: payload.satuan,
                 saldo: payload.saldo,
