@@ -28,14 +28,13 @@ import { InventoryDataPayload } from "@shared/typings/interfaces/inventory-paylo
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
 import { Inventory, InventoryDataDocument } from "./schema/inventory.schema";
-
-import { FormikCreateBarangModel, ParCreateItemDto, ResCreateItemDto } from "./dto/item/create-item.schema";
+import { FormikCreateBarangModel, ParameterCreateItemDto, ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import {
     FormikCreateKategoriModel,
-    ParCreateCategoryDto,
-    ResCreateCategoryDto,
+    ParameterCreateCategoryDto,
+    ResponseCreateCategoryDto,
 } from "./dto/category/create-category.schema";
-import { ParDeleteCategoryDto, ResDeleteCategoryDto } from "./dto/category/delete-category.schema";
+import { ParameterDeleteCategoryDto, ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 
 /**
  * @class DataController
@@ -194,13 +193,13 @@ export class InventoryController {
 
     /**
      * @description Create a new category then add based on year
-     * @param {ParCreateCategoryDto} body - The data required
-     * @returns {ResCreateCategoryDto} The new category data
+     * @param {ParameterCreateCategoryDto} body - The data required
+     * @returns {ResponseCreateCategoryDto} The new category data
      */
     @Post("create/kategori")
-    public async createKategori(@Body() body: FormikCreateKategoriModel): Promise<ResCreateCategoryDto> {
+    public async createKategori(@Body() body: FormikCreateKategoriModel): Promise<ResponseCreateCategoryDto> {
         try {
-            const payload: ParCreateCategoryDto = {
+            const payload: ParameterCreateCategoryDto = {
                 tahun: 2022,
                 kategori: body.kategori.toUpperCase(),
             };
@@ -214,14 +213,14 @@ export class InventoryController {
 
     /**
      * @description Create a new item then add based on year and category
-     * @param {ParCreateItemDto} body - The data required
-     * @returns {ResCreateItemDto} The new item data
+     * @param {ParameterCreateItemDto} body - The data required
+     * @returns {ResponseCreateItemDto} The new item data
      */
     @Post("create/barang")
-    public async createBarang(@Body() body: FormikCreateBarangModel): Promise<ResCreateItemDto> {
+    public async createBarang(@Body() body: FormikCreateBarangModel): Promise<ResponseCreateItemDto> {
         try {
-            const payload: ParCreateItemDto = {
-                tahun: 2022,
+            const payload: ParameterCreateItemDto = {
+                tahun: body.tahun,
                 kategori: body.kategori,
                 nama: body.nama,
                 satuan: body.satuan,
@@ -243,7 +242,7 @@ export class InventoryController {
                 },
             };
 
-            const barang: ResCreateItemDto = {
+            const barang: ResponseCreateItemDto = {
                 id: (await this.inventoryService.findItemLengthByYearAndCategory(payload.tahun, payload.kategori)) + 1,
                 nama: payload.nama,
                 satuan: payload.satuan,
@@ -261,11 +260,11 @@ export class InventoryController {
 
     /**
      * @description Delete category data based on year and id
-     * @param {ParDeleteCategoryDto} body - The data required
-     * @returns {ResDeleteCategoryDto} The deleted category data
+     * @param {ParameterDeleteCategoryDto} body - The data required
+     * @returns {ResponseDeleteCategoryDto} The deleted category data
      */
     @Post("delete/kategori")
-    public async deleteKategori(@Body() body: ParDeleteCategoryDto): Promise<ResDeleteCategoryDto> {
+    public async deleteKategori(@Body() body: ParameterDeleteCategoryDto): Promise<ResponseDeleteCategoryDto> {
         try {
             return await this.inventoryService.deleteKategori(body.tahun, body.id);
         } catch (error) {

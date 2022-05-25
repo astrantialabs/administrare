@@ -19,12 +19,12 @@
 import { Barang } from "../../schema/inventory.schema";
 import { IsNotEmpty, IsString, IsEmpty, IsOptional, IsNumber, FormikValidatorBase } from "formik-class-validator";
 
-export class ParCreateCategoryDto {
+export class ParameterCreateCategoryDto {
     tahun: number;
     kategori: string;
 }
 
-export class ResCreateCategoryDto {
+export class ResponseCreateCategoryDto {
     id: number;
     kategori: string;
     barang: Barang[];

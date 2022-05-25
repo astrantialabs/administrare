@@ -19,7 +19,7 @@
 import { IsNotEmpty, IsString, IsEmpty, IsOptional, IsNumber, FormikValidatorBase } from "formik-class-validator";
 import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../../schema/inventory.schema";
 
-export class ParCreateItemDto {
+export class ParameterCreateItemDto {
     tahun: number;
     kategori: string;
     nama: string;
@@ -30,8 +30,8 @@ export class ParCreateItemDto {
     saldo_akhir: SaldoAkhir;
 }
 
-export class ResCreateItemDto {
-    id?: number;
+export class ResponseCreateItemDto {
+    id: number;
     nama: string;
     satuan: string;
     saldo: Saldo;
@@ -81,6 +81,9 @@ export class FormikCreateBarangModel extends FormikValidatorBase {
     @IsString()
     mutasi_barang_keluar_harga_satuan?: string | null = null;
 
+    @IsNumber()
+    tahun: number;
+
     @IsString()
-    kategori: string = "";
+    kategori: string;
 }

@@ -18,12 +18,12 @@
 
 import { Barang } from "../../schema/inventory.schema";
 
-export class ParDeleteCategoryDto {
+export class ParameterDeleteCategoryDto {
     tahun: number;
     id: number;
 }
 
-export class ResDeleteCategoryDto {
+export class ResponseDeleteCategoryDto {
     id: number;
     kategori: string;
     barang: Barang[];
