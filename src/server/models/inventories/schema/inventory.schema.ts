@@ -58,8 +58,8 @@ export class SaldoAkhir {
 }
 
 export class Barang {
-    @Prop({ type: MongooseSchema.Types.Number, required: false })
-    id?: number;
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    id: number;
 
     @Prop({ type: MongooseSchema.Types.String, required: true, default: "-" })
     nama: string;

@@ -201,7 +201,7 @@ export class InventoryController {
     public async createKategori(@Body() body: FormikCreateKategoriModel): Promise<ResponseCreateCategoryDto> {
         try {
             const payload: ParameterCreateCategoryDto = {
-                tahun: 2022,
+                tahun: body.tahun,
                 kategori: body.kategori.toUpperCase(),
             };
             return await this.inventoryService.createKategori(payload.tahun, payload.kategori);
@@ -222,8 +222,7 @@ export class InventoryController {
         try {
             const payload: ParameterCreateItemDto = {
                 tahun: body.tahun,
-                kategori_id:
-                    (await this.inventoryService.findItemLengthByYearAndCategoryId(body.tahun, body.kategori_id)) + 1,
+                kategori_id: body.kategori_id,
                 nama: body.nama,
                 satuan: body.satuan,
                 saldo: {
