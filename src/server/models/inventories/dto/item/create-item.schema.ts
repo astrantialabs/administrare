@@ -21,7 +21,7 @@ import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../../
 
 export class ParameterCreateItemDto {
     tahun: number;
-    kategori: string;
+    kategori_id: number;
     nama: string;
     satuan: string;
     saldo: Saldo;
@@ -84,6 +84,6 @@ export class FormikCreateBarangModel extends FormikValidatorBase {
     @IsNumber()
     tahun: number;
 
-    @IsString()
-    kategori: string;
+    @IsNumber()
+    kategori_id: number;
 }

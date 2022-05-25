@@ -213,7 +213,7 @@ export class InventoryController {
     // @todo:When at form, add option to select which year to add data to
 
     /**
-     * @description Create a new item then add based on year and category
+     * @description Create a new item then add based on year and category id
      * @param {ParameterCreateItemDto} body - The data required
      * @returns {ResponseCreateItemDto} The new item data
      */
@@ -222,7 +222,8 @@ export class InventoryController {
         try {
             const payload: ParameterCreateItemDto = {
                 tahun: body.tahun,
-                kategori: body.kategori,
+                kategori_id:
+                    (await this.inventoryService.findItemLengthByYearAndCategoryId(body.tahun, body.kategori_id)) + 1,
                 nama: body.nama,
                 satuan: body.satuan,
                 saldo: {
@@ -244,7 +245,11 @@ export class InventoryController {
             };
 
             const barang: ResponseCreateItemDto = {
-                id: (await this.inventoryService.findItemLengthByYearAndCategory(payload.tahun, payload.kategori)) + 1,
+                id:
+                    (await this.inventoryService.findItemLengthByYearAndCategoryId(
+                        payload.tahun,
+                        payload.kategori_id
+                    )) + 1,
                 nama: payload.nama,
                 satuan: payload.satuan,
                 saldo: payload.saldo,
@@ -253,21 +258,21 @@ export class InventoryController {
                 saldo_akhir: payload.saldo_akhir,
             };
 
-            return await this.inventoryService.createBarang(payload.tahun, payload.kategori, barang);
+            return await this.inventoryService.createBarang(payload.tahun, payload.kategori_id, barang);
         } catch (error) {
             this.logger.error(error);
         }
     }
 
     /**
-     * @description Delete category data based on year and id
+     * @description Delete category data based on year and category id
      * @param {ParameterDeleteCategoryDto} body - The data required
      * @returns {ResponseDeleteCategoryDto} The deleted category data
      */
     @Delete("delete/kategori")
     public async deleteKategori(@Body() body: ParameterDeleteCategoryDto): Promise<ResponseDeleteCategoryDto> {
         try {
-            return await this.inventoryService.deleteKategori(body.tahun, body.id);
+            return await this.inventoryService.deleteKategori(body.tahun, body.kategori_id);
         } catch (error) {
             this.logger.error(error);
         }

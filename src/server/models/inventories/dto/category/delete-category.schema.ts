@@ -20,7 +20,7 @@ import { Barang } from "../../schema/inventory.schema";
 
 export class ParameterDeleteCategoryDto {
     tahun: number;
-    id: number;
+    kategori_id: number;
 }
 
 export class ResponseDeleteCategoryDto {

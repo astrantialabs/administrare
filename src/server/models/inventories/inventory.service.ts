@@ -62,25 +62,6 @@ export class InventoryService {
     }
 
     /**
-     * @description Find item length based on year and category
-     * @param {Number} year - The year
-     * @param {Category} category - The category
-     * @returns {Number} The item length data
-     */
-    public async findItemLengthByYearAndCategory(year: number, category: string): Promise<number> {
-        let inventory_data = await this.findOne(year);
-        let item_length: number;
-
-        inventory_data.inventory.filter((inventory_dict) => {
-            if (inventory_dict.kategori == category) {
-                item_length = inventory_dict.barang.length;
-            }
-        });
-
-        return item_length;
-    }
-
-    /**
      * @description Find category length based on year
      * @param {Number} year - The year
      * @returns {Number} The category length data
@@ -90,6 +71,25 @@ export class InventoryService {
         let category_length: number = inventory_data.inventory.length;
 
         return category_length;
+    }
+
+    /**
+     * @description Find item length based on year and category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Number} The item length data
+     */
+    public async findItemLengthByYearAndCategoryId(year: number, category_id: number): Promise<number> {
+        let inventory_data = await this.findOne(year);
+        let item_length: number;
+
+        inventory_data.inventory.filter((category_object) => {
+            if (category_object.id == category_id) {
+                item_length = category_object.barang.length;
+            }
+        });
+
+        return item_length;
     }
 
     /**
@@ -114,22 +114,22 @@ export class InventoryService {
     }
 
     /**
-     * @description Create a new item then add based on year and category
+     * @description Create a new item then add based on year and category id
      * @param {Number} year - The year
-     * @param {String} category -The category
+     * @param {Number} category_id -The category id
      * @param {ResponseCreateItemDto} item_data - The data required
      * @returns {ResponseCreateItemDto} The new item data
      */
     public async createBarang(
         year: number,
-        category: string,
+        category_id: number,
         item_data: ResponseCreateItemDto
     ): Promise<ResponseCreateItemDto> {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let new_item: ResponseCreateItemDto;
 
         inventory_data.inventory.forEach((category_object) => {
-            if (category_object.kategori == category) {
+            if (category_object.id == category_id) {
                 new_item = {
                     id: item_data.id,
                     nama: item_data.nama,
@@ -150,17 +150,17 @@ export class InventoryService {
     }
 
     /**
-     * @description Delete category data based on year and id
+     * @description Delete category data based on year and category id
      * @param {Number} year - The year
-     * @param {Number} id - The category id
+     * @param {Number} category_id - The category id
      * @returns {ResponseDeleteCategoryDto} The deleted category data
      */
-    public async deleteKategori(year: number, id: number): Promise<ResponseDeleteCategoryDto> {
+    public async deleteKategori(year: number, category_id: number): Promise<ResponseDeleteCategoryDto> {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let deleted_category: ResponseDeleteCategoryDto;
 
         inventory_data.inventory.forEach((category_object, index) => {
-            if (category_object.id == id) {
+            if (category_object.id == category_id) {
                 deleted_category = category_object;
                 inventory_data.inventory.splice(index, 1);
             }
@@ -182,12 +182,12 @@ export class InventoryService {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let deleted_item: ResponseDeleteItemDto;
 
-        inventory_data.inventory.forEach((category_dict) => {
-            if (category_dict.id == category_id) {
-                category_dict.barang.forEach((item_dict, index) => {
-                    if (item_dict.id == item_id) {
-                        deleted_item = item_dict;
-                        category_dict.barang.splice(index, 1);
+        inventory_data.inventory.forEach((category_object) => {
+            if (category_object.id == category_id) {
+                category_object.barang.forEach((item_object, index) => {
+                    if (item_object.id == item_id) {
+                        deleted_item = item_object;
+                        category_object.barang.splice(index, 1);
                     }
                 });
             }
