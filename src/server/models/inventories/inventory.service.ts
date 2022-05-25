@@ -86,6 +86,7 @@ export class InventoryService {
         for (let i = 0; i < category_length; i++) {
             if (inventory_data.inventory[i].id != i + 1) {
                 new_category_id = i + 1;
+                break;
             }
         }
 
