@@ -255,15 +255,22 @@ export class InventoryService {
     }
 
     /**
+     * @description Find demand data based on year
+     * @param {Number} year - The year
+     * @returns {DemandInventoryDataDocument} The demand data
+     */
+    public async demandFindOne(year: number): Promise<DemandInventoryDataDocument> {
+        return await this.demandInventoryDataModel.findOne({ tahun: year }).exec();
+    }
+
+    /**
      * @description Create a new category demand then add based on year
      * @param {Number} year - The year
      * @param {String} category - The new category name
      * @returns {ResponseDemandCategoryDto} The new demanded category data
      */
-    public async demandKategori(year: number, category: string): Promise<ResponseDemandCategoryDto> {
-        let demand_data: DemandInventoryDataDocument = await this.demandInventoryDataModel
-            .findOne({ tahun: year })
-            .exec();
+    public async demandCreateKategori(year: number, category: string): Promise<ResponseDemandCategoryDto> {
+        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
         let new_category_demand: ResponseDemandCategoryDto = {
             id: demand_data.kategori.length + 1,

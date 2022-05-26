@@ -298,9 +298,9 @@ export class InventoryController {
      * @returns {ResponseDemandCategoryDto} The new demanded category data
      */
     @Post("demand/create/kategori")
-    public async demandKategori(@Body() body: ParameterDemandCategoryDto): Promise<ResponseDemandCategoryDto> {
+    public async demandCreateKategori(@Body() body: ParameterDemandCategoryDto): Promise<ResponseDemandCategoryDto> {
         try {
-            return await this.inventoryService.demandKategori(body.tahun, body.kategori);
+            return await this.inventoryService.demandCreateKategori(body.tahun, body.kategori);
         } catch (error) {
             this.logger.error(error);
         }
