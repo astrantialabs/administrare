@@ -17,12 +17,14 @@
  */
 
 import { ChakraProvider } from "@chakra-ui/react";
+import { Provider as ReduxProvider } from "react-redux";
 import NextApp, { AppProps } from "next/app";
 import Head from "next/head";
 
 import { AppDataContext } from "@/client/ssr/appData";
 import { AppData } from "@/shared/typings/types/app-data";
 import { initializeFetch } from "@/shared/utils/fetch";
+import { store } from "@/client/redux/store";
 
 class _app extends NextApp<AppProps> {
     public appData: AppData;
@@ -48,7 +50,9 @@ class _app extends NextApp<AppProps> {
                 </Head>
                 <AppDataContext.Provider value={this.appData}>
                     <ChakraProvider>
-                        <Component {...pageProps} />
+                        <ReduxProvider store={store}>
+                            <Component {...pageProps} />
+                        </ReduxProvider>
                     </ChakraProvider>
                 </AppDataContext.Provider>
             </>
