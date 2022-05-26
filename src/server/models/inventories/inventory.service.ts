@@ -30,7 +30,7 @@ import { ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema
 import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { Barang, Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
-import { DemandInventoryData, DemandInventoryDataDocument } from "./schema/demand-inventory";
+import { DemandInventoryData, DemandInventoryDataDocument, Kategori } from "./schema/demand-inventory";
 import { ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
 
 /**
@@ -261,6 +261,24 @@ export class InventoryService {
      */
     public async demandFindOne(year: number): Promise<DemandInventoryDataDocument> {
         return await this.demandInventoryDataModel.findOne({ tahun: year }).exec();
+    }
+
+    /**
+     * @description Filter category demand data based on status
+     * @param {Number} year - The year
+     * @param {Number} status - The status
+     * @returns {Kategori[]} The filtered category demand data
+     */
+    public async demandKategoriByStatus(year: number, status: number): Promise<Kategori[]> {
+        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+
+        let filtered_category_demand_data: Kategori[] = demand_data.kategori.filter((category_object) => {
+            if (category_object.status == status) {
+                return category_object;
+            }
+        });
+
+        return filtered_category_demand_data;
     }
 
     /**

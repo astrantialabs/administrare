@@ -21,7 +21,7 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Body, Controller, Delete, Get, Logger, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post } from "@nestjs/common";
 import { from, Observable, toArray } from "rxjs";
 
 import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
@@ -38,6 +38,7 @@ import {
 import { ParameterDeleteCategoryDto, ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ParameterDeleteItemDto, ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { ParameterDemandCategoryDto, ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
+import { Kategori } from "./schema/demand-inventory";
 
 /**
  * @class DataController
@@ -290,6 +291,16 @@ export class InventoryController {
         } catch (error) {
             this.logger.error(error);
         }
+    }
+
+    /**
+     * @description Filter category demand data based on status
+     * @param {Number} status - The status
+     * @returns {Kategori[]} The filtered category demand data
+     */
+    @Get("demand/kategori/:status")
+    public async demandKategoriByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<Kategori[]> {
+        return await this.inventoryService.demandKategoriByStatus(2022, status);
     }
 
     /**
