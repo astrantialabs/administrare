@@ -297,7 +297,7 @@ export class InventoryController {
      * @param {ParameterDemandCategoryDto} body - The data required
      * @returns {ResponseDemandCategoryDto} The new demanded category data
      */
-    @Post("demand/kategori")
+    @Post("demand/create/kategori")
     public async demandKategori(@Body() body: ParameterDemandCategoryDto): Promise<ResponseDemandCategoryDto> {
         try {
             return await this.inventoryService.demandKategori(body.tahun, body.kategori);
