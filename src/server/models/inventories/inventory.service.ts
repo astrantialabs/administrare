@@ -339,15 +339,15 @@ export class InventoryService {
     }
 
     /**
-     * @description Deleter item data based on year, category id and item id
+     * @description Delete item data based on year, category id and item id
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
      * @param {Number} item_id - The item id
-     * @returns {ResponseDeleteItemDto} The deleted item data
+     * @returns {Barang} The deleted item data
      */
-    public async deleteBarang(year: number, category_id: number, item_id: number): Promise<ResponseDeleteItemDto> {
+    public async deleteBarang(year: number, category_id: number, item_id: number): Promise<Barang> {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
-        let deleted_item: ResponseDeleteItemDto;
+        let deleted_item: Barang;
 
         inventory_data.inventory.forEach((category_object) => {
             if (category_object.id == category_id) {
