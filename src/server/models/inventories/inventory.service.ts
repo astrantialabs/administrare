@@ -163,7 +163,7 @@ export class InventoryService {
     //#region crud
 
     /**
-     * @description Get category data based on category id
+     * @description Get category data based on year and category id
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
      * @returns {Inventory} The category data
@@ -179,6 +179,30 @@ export class InventoryService {
         });
 
         return category_data;
+    }
+
+    /**
+     * @description Get item data based on year, category id and item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @returns {Barang} The item data
+     */
+    public async getItem(year: number, category_id: number, item_id: number): Promise<Barang> {
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let item_data: Barang;
+
+        inventory_data.inventory.filter((category_object) => {
+            if (category_object.id == category_id) {
+                category_object.barang.filter((item_object) => {
+                    if (item_object.id == item_id) {
+                        item_data = item_object;
+                    }
+                });
+            }
+        });
+
+        return item_data;
     }
 
     /**

@@ -28,7 +28,7 @@ import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payl
 
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
-import { Inventory, InventoryDataDocument } from "./schema/inventory.schema";
+import { Barang, Inventory, InventoryDataDocument } from "./schema/inventory.schema";
 import { FormikCreateBarangModel, ParameterCreateItemDto, ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import {
     FormikCreateKategoriModel,
@@ -208,13 +208,27 @@ export class InventoryController {
     //#region crud
 
     /**
-     * @description Get category data based on category id
+     * @description Get category data based on year and category id
      * @param {Number} category_id - The category id
      * @returns {Inventory} The category data
      */
     @Get("get/:category_id")
     public async getKategori(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<Inventory> {
         return await this.inventoryService.getKategori(2022, category_id);
+    }
+
+    /**
+     * @description Get item data based on year, category id and item id
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @returns {Barang} The item data
+     */
+    @Get("get/:category_id/:item_id")
+    public async getItem(
+        @Param("category_id", new ParseIntPipe()) category_id: number,
+        @Param("item_id", new ParseIntPipe()) item_id: number
+    ): Promise<Barang> {
+        return await this.inventoryService.getItem(2022, category_id, item_id);
     }
 
     /**
