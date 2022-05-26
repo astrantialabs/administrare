@@ -151,11 +151,14 @@ export class InventoryController {
     @Get("categories")
     public async findAllCategories(): Promise<Observable<string[]>> {
         const data = await this.inventoryService.findAll();
-        let categories: string[] = [];
+        let categories: any[] = [];
 
         data.forEach(async (inventoryItem: InventoryDataDocument) => {
             inventoryItem.inventory.forEach(async (item: Inventory) => {
-                categories.push(item.kategori);
+                categories.push({
+                    kategori: item.kategori,
+                    id: item.id,
+                });
             });
         });
 
@@ -219,7 +222,7 @@ export class InventoryController {
      * @returns {ResponseCreateItemDto} The new item data
      */
     @Post("create/barang")
-    public async createBarang(@Body() body: FormikCreateBarangModel): Promise<ResponseCreateItemDto> {
+    public async createBarang(@Body() body: any): Promise<ResponseCreateItemDto> {
         try {
             const payload: ParameterCreateItemDto = {
                 tahun: body.tahun,
@@ -244,6 +247,8 @@ export class InventoryController {
                 },
             };
 
+            this.logger.debug("payload", payload);
+
             const barang: ResponseCreateItemDto = {
                 id: await this.inventoryService.getNewItemId(payload.tahun, payload.kategori_id),
                 nama: payload.nama,
@@ -253,6 +258,8 @@ export class InventoryController {
                 mutasi_barang_keluar: payload.mutasi_barang_keluar,
                 saldo_akhir: payload.saldo_akhir,
             };
+
+            this.logger.debug("barang", barang);
 
             return await this.inventoryService.createBarang(payload.tahun, payload.kategori_id, barang);
         } catch (error) {

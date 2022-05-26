@@ -27,7 +27,7 @@ import { fetch } from "@/shared/utils/fetch";
 
 type PageProps = {
     tableData: any;
-    categories: string[];
+    categories: any[];
     categories_roman: string[];
 };
 
@@ -76,7 +76,7 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                 Header: "Uraian Barang",
                 accessor: "uraian_barang",
                 Cell: ({ value }) => {
-                    if (categories.includes(value)) {
+                    if (categories.some((item: any) => item.kategori === value)) {
                         return <strong>{value}</strong>;
                     }
                     return value;

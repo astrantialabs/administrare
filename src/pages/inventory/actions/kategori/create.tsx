@@ -16,10 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {
+    Container,
+    Heading,
+    FormControl,
+    FormLabel,
+    Input,
+    FormErrorMessage,
+    Button,
+    useToast,
+} from "@chakra-ui/react";
+import { Formik, Form, Field, FieldInputProps, FormikProps } from "formik";
 import { NextPage } from "next";
-
-import { useState } from "react";
-import { useFormik } from "formik";
 import axios from "axios";
 
 import { FormikCreateKategoriModel } from "@/server/models/inventories/dto/category/create-category.schema";
@@ -27,67 +35,76 @@ import { FormikCreateKategoriModel } from "@/server/models/inventories/dto/categ
 type PageProps = {};
 
 const ActionsCreateKategori: NextPage<PageProps> = () => {
-    const [message, setMessage] = useState("");
-    const [submitted, setSubmitted] = useState(false);
+    const toast = useToast();
 
-    const formik = useFormik({
-        initialValues: new FormikCreateKategoriModel(),
-        onSubmit: (form) => {
-            setMessage("tunggu..");
-
-            const payload = {
-                kategori: form.kategori,
-            };
-
-            setSubmitted(true);
-
-            axios
-                .post("/api/data/inventory/create/kategori", payload)
-                .then((response) => {
-                    setMessage("sukses");
-                })
-                .catch((error) => {
-                    setMessage("not sukses");
-                });
-        },
-        validate: FormikCreateKategoriModel.createValidator(),
-    });
     return (
-        <div className="section container">
-            <div className="block">
-                <h1 className="title">Bikin kategori baru.</h1>
-            </div>
-            <div className="block">
-                <div className="notification" hidden={!submitted}>
-                    {message}
-                </div>
-                <form className="form" onSubmit={formik.handleSubmit}>
-                    <div className="field">
-                        <label className="label">Kategori</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                id="kategori"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.kategori}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.kategori && <span className="tag is-warning">{formik.errors.kategori}</span>}
-                        </div>
-                    </div>
+        <Container maxW={`container.xl`} marginTop={`24px`} marginBottom={`24px`}>
+            <Heading as={`h1`} size={`xl`} paddingBottom={`24px`} color={`blackAlpha.800`}>
+                Bikin sebuah kategori baru.
+            </Heading>
+            <Formik
+                initialValues={new FormikCreateKategoriModel()}
+                validate={FormikCreateKategoriModel.createValidator()}
+                onSubmit={(values, action) => {
+                    const payload = {
+                        kategori: values.kategori,
+                    };
 
-                    <div className="field is-grouped">
-                        <div className="control">
-                            <button className="button" type="submit" disabled={submitted}>
-                                Submit
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+                    action.setSubmitting(true);
+
+                    setTimeout(() => {
+                        axios.post("/api/data/inventory/create/kategori", payload).then(() => {
+                            toast({
+                                position: "top-right",
+                                title: "Category created.",
+                                description: `Kategori bernama ${values.kategori.toUpperCase()}  berhasil dibuat.`,
+                                status: "success",
+                                duration: 9000,
+                                isClosable: true,
+                            });
+                            action.setSubmitting(false);
+                        });
+                    }, 800);
+                }}
+            >
+                {(props) => (
+                    <Form>
+                        <Field name="kategori">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ kategori: string }>;
+                            }): JSX.Element => (
+                                <FormControl isInvalid={form.errors.kategori && form.touched.kategori}>
+                                    <FormLabel htmlFor="kategori" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Kategori
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        maxWidth={{ xl: `1200px` }}
+                                        disabled={props.isSubmitting}
+                                        id="kategori"
+                                        placeholder="Nama kategori disini.."
+                                    />
+                                    <FormErrorMessage>{form.errors.kategori}</FormErrorMessage>
+                                </FormControl>
+                            )}
+                        </Field>
+                        <Button
+                            mt={8}
+                            colorScheme="teal"
+                            isLoading={props.isSubmitting}
+                            type="submit"
+                            disabled={props.isSubmitting}
+                        >
+                            Submit
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
+        </Container>
     );
 };
 

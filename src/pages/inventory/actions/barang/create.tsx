@@ -16,303 +16,396 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {
+    Container,
+    Heading,
+    FormControl,
+    FormLabel,
+    Input,
+    Select,
+    FormErrorMessage,
+    Button,
+    Text,
+    useToast,
+} from "@chakra-ui/react";
+import { Formik, Form, Field, FieldInputProps, FormikProps } from "formik";
 import { NextPage } from "next";
-import { useState } from "react";
-import { useFormik } from "formik";
 import axios from "axios";
-
 import { FormikCreateBarangModel } from "@/server/models/inventories/dto/item/create-item.schema";
-import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 import { fetch } from "@/shared/utils/fetch";
+import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 
 type PageProps = {
-    categories: string[];
+    categories: any[];
 };
 
-const ActionsCreateKategori: NextPage<PageProps> = ({ categories }) => {
-    const [message, setMessage] = useState("");
-    const [submitted, setSubmitted] = useState(false);
+const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
+    const toast = useToast();
 
-    const formik = useFormik({
-        initialValues: new FormikCreateBarangModel(),
-        onSubmit: (form) => {
-            console.log(form);
-            setMessage("tunggu..");
-
-            // create payload object
-            const payload = {
-                nama: form.nama,
-                satuan: form.satuan,
-                saldo_jumlah_satuan: form.saldo_jumlah_satuan,
-                saldo_harga_satuan: form.saldo_harga_satuan,
-                saldo_akhir_jumlah_satuan: form.saldo_akhir_jumlah_satuan,
-                saldo_akhir_harga_satuan: form.saldo_akhir_harga_satuan,
-                mutasi_barang_masuk_jumlah_satuan: form.mutasi_barang_masuk_jumlah_satuan,
-                mutasi_barang_masuk_harga_satuan: form.mutasi_barang_masuk_harga_satuan,
-                mutasi_barang_keluar_jumlah_satuan: form.mutasi_barang_keluar_jumlah_satuan,
-                mutasi_barang_keluar_harga_satuan: form.mutasi_barang_keluar_harga_satuan,
-                kategori: form.kategori,
-            };
-
-            setSubmitted(true);
-
-            axios
-                .post("/api/data/inventory/create/barang", payload)
-                .then((response) => {
-                    setMessage("sukses");
-                })
-                .catch((error) => {
-                    setMessage("not sukses");
-                });
-        },
-        validate: FormikCreateBarangModel.createValidator(),
-    });
     return (
-        <div className="section container">
-            <div className="block">
-                <h1 className="title">Bikin barang baru.</h1>
-            </div>
-            <div className="block">
-                <div className="notification" hidden={!submitted}>
-                    {message}
-                </div>
-                <form className="form" onSubmit={formik.handleSubmit}>
-                    <div className="field">
-                        <label className="label">Kategori</label>
-                        <div className="control">
-                            <div className="select">
-                                <select
-                                    name="kategori"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.kategori}
+        <Container maxW={`container.xl`} marginTop={`24px`} marginBottom={`24px`}>
+            <Heading as={`h1`} size={`xl`} paddingBottom={`24px`} color={`blackAlpha.800`}>
+                Bikin sebuah barang baru.
+            </Heading>
+            <Formik
+                initialValues={new FormikCreateBarangModel()}
+                validate={FormikCreateBarangModel.createValidator()}
+                onSubmit={(values, action) => {
+                    const payload = {
+                        kategori_id: values.kategori_id,
+                        tahun: 2022,
+                        nama: values.nama,
+                        satuan: values.satuan,
+                        saldo_jumlah_satuan: values.saldo_jumlah_satuan,
+                        saldo_harga_satuan: values.saldo_harga_satuan,
+                        saldo_akhir_jumlah_satuan: values.saldo_akhir_jumlah_satuan,
+                        saldo_akhir_harga_satuan: values.saldo_akhir_harga_satuan,
+                        mutasi_barang_masuk_jumlah_satuan: values.mutasi_barang_masuk_jumlah_satuan,
+                        mutasi_barang_masuk_harga_satuan: values.mutasi_barang_masuk_harga_satuan,
+                        mutasi_barang_keluar_jumlah_satuan: values.mutasi_barang_keluar_jumlah_satuan,
+                        mutasi_barang_keluar_harga_satuan: values.mutasi_barang_keluar_harga_satuan,
+                    };
+
+                    action.setSubmitting(true);
+
+                    setTimeout(() => {
+                        axios
+                            .post("/api/data/inventory/create/barang", payload)
+                            .then(() => {
+                                toast({
+                                    position: "top-right",
+                                    title: "Item created.",
+                                    description: `Barang bernama ${values.nama}  berhasil dibuat.`,
+                                    status: "success",
+                                    duration: 9000,
+                                    isClosable: true,
+                                });
+                                action.setSubmitting(false);
+                            })
+                            .then(() => {
+                                action.resetForm();
+                            });
+                    }, 800);
+                }}
+            >
+                {(props) => (
+                    <Form>
+                        <Field name="kategori">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ kategori_id: string }>;
+                            }): JSX.Element => (
+                                <FormControl isInvalid={form.errors.kategori_id && form.touched.kategori_id}>
+                                    <FormLabel htmlFor="kategori" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Kategori
+                                    </FormLabel>
+                                    <Select {...field} id="kategori_id" disabled={props.isSubmitting}>
+                                        <option value="">Pilih kategori</option>
+                                        {categories.map((category) => (
+                                            <option key={category.kategori} value={category.id}>
+                                                {category.kategori}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                    <FormErrorMessage>{form.errors.kategori_id}</FormErrorMessage>
+                                </FormControl>
+                            )}
+                        </Field>
+                        <Field name="nama">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ nama: string }>;
+                            }): JSX.Element => (
+                                <FormControl isInvalid={form.errors.nama && form.touched.nama} mt={`24px`}>
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Uraian Barang
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="nama"
+                                        placeholder="Nama barang disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.nama}</FormErrorMessage>
+                                </FormControl>
+                            )}
+                        </Field>
+                        <Field name="satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl isInvalid={form.errors.satuan && form.touched.satuan} mt={`24px`}>
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Satuan Barang
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="nama"
+                                        placeholder="Nama satuan barang disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.satuan}</FormErrorMessage>
+                                </FormControl>
+                            )}
+                        </Field>
+
+                        <Text mt={`24px`} mb={`24px`}>
+                            Saldo
+                        </Text>
+                        <Field name="saldo_jumlah_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ saldo_jumlah_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={form.errors.saldo_jumlah_satuan && form.touched.saldo_jumlah_satuan}
+                                    mt={`24px`}
                                 >
-                                    <option value="">Pilih kategori</option>
-                                    {categories.map((category) => (
-                                        <option key={category} value={category}>
-                                            {category}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Uraian Barang</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                id="nama"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.nama}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.nama && <span className="tag is-warning">{formik.errors.nama}</span>}
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <label className="label">Satuan Barang</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                id="satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.satuan && <span className="tag is-warning">{formik.errors.satuan}</span>}
-                        </div>
-                    </div>
-
-                    <br />
-                    <p className="subtitle">Saldo</p>
-                    <br />
-
-                    <div className="field">
-                        <label className="label">Saldo: Jumlah Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="saldo_jumlah_satuan"
-                                id="saldo_jumlah_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.saldo_jumlah_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.saldo_jumlah_satuan && (
-                                <span className="tag is-warning">{formik.errors.saldo_jumlah_satuan}</span>
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Saldo: Jumlah Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="saldo_jumlah_satuan"
+                                        placeholder="Saldo jumlah satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.saldo_jumlah_satuan}</FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <label className="label">Saldo: Harga Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="saldo_harga_satuan"
-                                id="saldo_harga_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.saldo_harga_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.saldo_harga_satuan && (
-                                <span className="tag is-warning">{formik.errors.saldo_harga_satuan}</span>
+                        </Field>
+                        <Field name="saldo_harga_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ saldo_harga_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={form.errors.saldo_harga_satuan && form.touched.saldo_harga_satuan}
+                                    mt={`24px`}
+                                >
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Saldo: Harga Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="saldo_harga_satuan"
+                                        placeholder="Saldo harga satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.saldo_harga_satuan}</FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
+                        </Field>
 
-                    <br />
-                    <p className="subtitle">Saldo Akhir</p>
-                    <br />
-
-                    <div className="field">
-                        <label className="label">Saldo Akhir: Jumlah Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="saldo_akhir_jumlah_satuan"
-                                id="saldo_akhir_jumlah_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.saldo_akhir_jumlah_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.saldo_akhir_jumlah_satuan && (
-                                <span className="tag is-warning">{formik.errors.saldo_akhir_jumlah_satuan}</span>
+                        <Text mt={`24px`} mb={`24px`}>
+                            Saldo Akhir
+                        </Text>
+                        <Field name="saldo_akhir_jumlah_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ saldo_akhir_jumlah_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={
+                                        form.errors.saldo_akhir_jumlah_satuan && form.touched.saldo_akhir_jumlah_satuan
+                                    }
+                                    mt={`24px`}
+                                >
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Saldo Akhir: Jumlah Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="saldo_akhir_jumlah_satuan"
+                                        placeholder="Saldo akhir jumlah satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.saldo_akhir_jumlah_satuan}</FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <label className="label">Saldo Akhir: Harga Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="saldo_akhir_harga_satuan"
-                                id="saldo_akhir_harga_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.saldo_akhir_harga_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.saldo_akhir_harga_satuan && (
-                                <span className="tag is-warning">{formik.errors.saldo_akhir_harga_satuan}</span>
+                        </Field>
+                        <Field name="saldo_akhir_harga_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ saldo_akhir_harga_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={
+                                        form.errors.saldo_akhir_harga_satuan && form.touched.saldo_akhir_harga_satuan
+                                    }
+                                    mt={`24px`}
+                                >
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Saldo Akhir: Harga Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="saldo_akhir_harga_satuan"
+                                        placeholder="Saldo akhir harga satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.saldo_akhir_harga_satuan}</FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
+                        </Field>
 
-                    <br />
-                    <p className="subtitle">Mutasi Barang Masuk</p>
-                    <br />
-
-                    <div className="field">
-                        <label className="label">Mutasi Barang Masuk: Jumlah Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="mutasi_barang_masuk_jumlah_satuan"
-                                id="mutasi_barang_masuk_jumlah_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.mutasi_barang_masuk_jumlah_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.mutasi_barang_masuk_jumlah_satuan && (
-                                <span className="tag is-warning">
-                                    {formik.errors.mutasi_barang_masuk_jumlah_satuan}
-                                </span>
+                        <Text mt={`24px`} mb={`24px`}>
+                            Mutasi Barang Masuk
+                        </Text>
+                        <Field name="mutasi_barang_masuk_jumlah_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ mutasi_barang_masuk_jumlah_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={
+                                        form.errors.mutasi_barang_masuk_jumlah_satuan &&
+                                        form.touched.mutasi_barang_masuk_jumlah_satuan
+                                    }
+                                    mt={`24px`}
+                                >
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Mutasi Barang Masuk: Jumlah Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="mutasi_barang_masuk_jumlah_satuan"
+                                        placeholder="Mutasi barang masuk jumlah satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.mutasi_barang_masuk_jumlah_satuan}</FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <label className="label">Mutasi Barang Masuk: Harga Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="mutasi_barang_masuk_harga_satuan"
-                                id="mutasi_barang_masuk_harga_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.mutasi_barang_masuk_harga_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.mutasi_barang_masuk_harga_satuan && (
-                                <span className="tag is-warning">{formik.errors.mutasi_barang_masuk_harga_satuan}</span>
+                        </Field>
+                        <Field name="mutasi_barang_masuk_harga_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ mutasi_barang_masuk_harga_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={
+                                        form.errors.mutasi_barang_masuk_harga_satuan &&
+                                        form.touched.mutasi_barang_masuk_harga_satuan
+                                    }
+                                    mt={`24px`}
+                                >
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Saldo: Harga Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="mutasi_barang_masuk_harga_satuan"
+                                        placeholder="Mutasi barang masuk harga satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.mutasi_barang_masuk_harga_satuan}</FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
+                        </Field>
 
-                    <br />
-                    <p className="subtitle">Mutasi Barang Keluar</p>
-                    <br />
-
-                    <div className="field">
-                        <label className="label">Mutasi Barang Keluar: Jumlah Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="mutasi_barang_keluar_jumlah_satuan"
-                                id="mutasi_barang_keluar_jumlah_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.mutasi_barang_keluar_jumlah_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.mutasi_barang_keluar_jumlah_satuan && (
-                                <span className="tag is-warning">
-                                    {formik.errors.mutasi_barang_keluar_jumlah_satuan}
-                                </span>
+                        <Text mt={`24px`} mb={`24px`}>
+                            Mutasi Barang Keluar
+                        </Text>
+                        <Field name="mutasi_barang_keluar_jumlah_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ mutasi_barang_keluar_jumlah_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={
+                                        form.errors.mutasi_barang_keluar_jumlah_satuan &&
+                                        form.touched.mutasi_barang_keluar_jumlah_satuan
+                                    }
+                                    mt={`24px`}
+                                >
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Mutasi Barang Keluar: Jumlah Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="mutasi_barang_keluar_jumlah_satuan"
+                                        placeholder="Saldo jumlah satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>
+                                        {form.errors.mutasi_barang_keluar_jumlah_satuan}
+                                    </FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <label className="label">Mutasi Barang Keluar: Harga Satuan</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="mutasi_barang_keluar_harga_satuan"
-                                id="mutasi_barang_keluar_harga_satuan"
-                                placeholder="e.g Alex Smith"
-                                value={formik.values.mutasi_barang_keluar_harga_satuan}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.mutasi_barang_keluar_harga_satuan && (
-                                <span className="tag is-warning">
-                                    {formik.errors.mutasi_barang_keluar_harga_satuan}
-                                </span>
+                        </Field>
+                        <Field name="mutasi_barang_keluar_harga_satuan">
+                            {({
+                                field,
+                                form,
+                            }: {
+                                field: FieldInputProps<string>;
+                                form: FormikProps<{ mutasi_barang_keluar_harga_satuan: string }>;
+                            }): JSX.Element => (
+                                <FormControl
+                                    isInvalid={
+                                        form.errors.mutasi_barang_keluar_harga_satuan &&
+                                        form.touched.mutasi_barang_keluar_harga_satuan
+                                    }
+                                    mt={`24px`}
+                                >
+                                    <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                        Mutasi Barang Keluar: Harga Satuan
+                                    </FormLabel>
+                                    <Input
+                                        {...field}
+                                        id="mutasi_barang_keluar_harga_satuan"
+                                        placeholder="Mutasi barang keluar harga satuan disini.."
+                                        disabled={props.isSubmitting}
+                                    />
+                                    <FormErrorMessage>{form.errors.mutasi_barang_keluar_harga_satuan}</FormErrorMessage>
+                                </FormControl>
                             )}
-                        </div>
-                    </div>
+                        </Field>
 
-                    <div className="field is-grouped">
-                        <div className="control">
-                            <button className="button" type="submit" disabled={submitted}>
-                                Submit
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+                        <Button
+                            mt={8}
+                            colorScheme="teal"
+                            isLoading={props.isSubmitting}
+                            type="submit"
+                            disabled={props.isSubmitting}
+                        >
+                            Submit
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
+        </Container>
     );
 };
 
@@ -322,4 +415,4 @@ export const getServerSideProps = buildServerSideProps<PageProps>(async () => {
     return { categories };
 });
 
-export default ActionsCreateKategori;
+export default ActionsCreateBarang;

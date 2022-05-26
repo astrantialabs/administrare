@@ -16,7 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsNotEmpty, IsString, IsOptional, IsNumber, FormikValidatorBase } from "formik-class-validator";
+import { Transform, TransformFnParams } from "class-transformer";
+import { IsNotEmpty, IsString, IsOptional, IsEmpty, FormikValidatorBase } from "formik-class-validator";
 import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../../schema/inventory.schema";
 
 export class ParameterCreateItemDto {
@@ -41,12 +42,12 @@ export class ResponseCreateItemDto {
 }
 
 export class FormikCreateBarangModel extends FormikValidatorBase {
-    @IsNotEmpty()
-    @IsString({ message: "Field ini diperluhkan!" })
+    @IsNotEmpty({ message: "Nama barang tidak boleh kosong!" })
+    @IsString()
     nama: string = "";
 
-    @IsNotEmpty()
-    @IsString({ message: "Field ini diperluhkan!" })
+    @IsNotEmpty({ message: "Nama satuan barang tidak boleh kosong!" })
+    @IsString()
     satuan: string = "";
 
     @IsOptional()
@@ -81,11 +82,5 @@ export class FormikCreateBarangModel extends FormikValidatorBase {
     @IsString()
     mutasi_barang_keluar_harga_satuan?: string | null = null;
 
-    @IsNumber()
-    tahun: number;
-
-    @IsNumber()
-    kategori_id: number;
-
-    kategori: string;
+    kategori_id: string;
 }
