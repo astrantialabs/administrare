@@ -21,7 +21,7 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { from, Observable, toArray } from "rxjs";
 
 import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
@@ -56,6 +56,8 @@ export class InventoryController {
      * @param {UtilsService} utilsService  - The utils service.
      */
     constructor(private readonly inventoryService: InventoryService, private readonly utilsService: UtilsService) {}
+
+    //#region main
 
     /**
      * @description Find all data.
@@ -147,6 +149,10 @@ export class InventoryController {
         }
     }
 
+    //#endregion main
+
+    //#region utilities
+
     /**
      * @description Finds all data categories
      * @returns {Promise<string[]>} The data categories.
@@ -197,7 +203,9 @@ export class InventoryController {
         }
     }
 
-    // @todo:When at form, add option to select which year to add data to
+    //#endregion utilities
+
+    //#region crud
 
     /**
      * @description Create a new category then add based on year
@@ -216,8 +224,6 @@ export class InventoryController {
             this.logger.error(error);
         }
     }
-
-    // @todo:When at form, add option to select which year to add data to
 
     /**
      * @description Create a new item then add based on year and category id
@@ -294,6 +300,10 @@ export class InventoryController {
         }
     }
 
+    //#endregion crud
+
+    //#region demand
+
     /**
      * @description Filter category demand data based on status
      * @param {Number} status - The status
@@ -343,4 +353,6 @@ export class InventoryController {
             this.logger.error(error);
         }
     }
+
+    //#endregion demand
 }

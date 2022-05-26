@@ -56,6 +56,8 @@ export class InventoryService {
         private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>
     ) {}
 
+    //#region main
+
     /**
      * @description Finds all inventory data.
      * @returns {Promise<InventoryDataDocument[]>} The data.
@@ -72,6 +74,10 @@ export class InventoryService {
     public async findOne(year: number): Promise<InventoryDataDocument> {
         return this.inventoryDataModel.findOne({ year }).exec();
     }
+
+    //#endregion main
+
+    //#region utilities
 
     /**
      * @description Find category length based on year
@@ -151,6 +157,10 @@ export class InventoryService {
 
         return new_item_id;
     }
+
+    //#endregion utilities
+
+    //#region crud
 
     /**
      * @description Create a new category then add based on year
@@ -260,6 +270,10 @@ export class InventoryService {
         return deleted_item;
     }
 
+    //#endregion crud
+
+    //#region demand
+
     /**
      * @description Find demand data based on year
      * @param {Number} year - The year
@@ -350,4 +364,6 @@ export class InventoryService {
 
         return new_item_demand;
     }
+
+    //#endregion demand
 }
