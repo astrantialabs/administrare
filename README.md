@@ -11,7 +11,7 @@
 <br/>
 
 **Administrare** _`(/ad.mi.nisˈtra.re/)`_ adalah sebuah aplikasi berbasis website yang bertujuan untuk mempermudah pengelolaan data internal seperti laporan keuangan, inventaris kantor, dan arsip catatan sebuah organisasi.
-**Administrare** saat ini dikembangkan dan dibangun menggunakan tumpukan MERN. _`(MongoDB, Express, React, Node)`_
+**Administrare** saat ini dikembangkan dan dibangun menggunakan tumpukan MERN. _(MongoDB, Express, React, Node)_
 
 ## Lisensi
 
