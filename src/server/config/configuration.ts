@@ -57,5 +57,10 @@ export default () => ({
             uri: process.env.DATABASE_SESSION_URI || "mongodb://localhost:27017/session",
             connection_name: process.env.DATABASE_SESSION_CONNECTION_NAME || "session_database",
         },
+        demand: {
+            collection: process.env.DATABASE_DEMAND_INVENTORY_COLLECTION || "demands",
+            uri: process.env.DATABASE_DEMAND_INVENTORY_URI || "mongodb://localhost:27017/inventory",
+            connection_name: process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME || "demand_database",
+        },
     },
 });

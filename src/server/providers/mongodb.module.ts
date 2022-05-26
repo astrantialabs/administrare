@@ -47,6 +47,15 @@ import { ConfigService } from "../config/config.service";
             }),
             inject: [ConfigService],
         }),
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            connectionName: process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME,
+            useFactory: async (configService: ConfigService) => ({
+                uri: configService.database.demand.uri,
+                connectionName: configService.database.demand.connection_name,
+            }),
+            inject: [ConfigService],
+        }),
         ConfigModule,
     ],
     exports: [],

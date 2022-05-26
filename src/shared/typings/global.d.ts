@@ -55,6 +55,10 @@ export declare global {
             DATABASE_SESSION_COLLECTION: string;
             DATABASE_SESSION_URI: string;
             DATABASE_SESSION_CONNECTION_NAME: string;
+
+            DATABASE_DEMAND_INVENTORY_COLLECTION: string;
+            DATABASE_DEMAND_INVENTORY_URI: string;
+            DATABASE_DEMAND_INVENTORY_CONNECTION_NAME: string;
         }
     }
 }
