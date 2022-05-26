@@ -29,12 +29,8 @@ import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payl
 import { UtilsService } from "../../utils/utils.service";
 import { InventoryService } from "./inventory.service";
 import { Barang, Inventory, InventoryDataDocument } from "./schema/inventory.schema";
-import { FormikCreateBarangModel, ParameterCreateItemDto, ResponseCreateItemDto } from "./dto/item/create-item.schema";
-import {
-    FormikCreateKategoriModel,
-    ParameterCreateCategoryDto,
-    ResponseCreateCategoryDto,
-} from "./dto/category/create-category.schema";
+import { ParameterCreateItemDto } from "./dto/item/create-item.schema";
+import { FormikCreateKategoriModel, ParameterCreateCategoryDto } from "./dto/category/create-category.schema";
 import { ParameterDemandCategoryDto, ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
 import { DemandBarang, DemandKategori } from "./schema/demand-inventory";
 import { ParameterDemandItemDto, ResponseDemandItemDto } from "./dto/item/demand-item.schema";
@@ -232,10 +228,10 @@ export class InventoryController {
     /**
      * @description Create a new category then add based on year
      * @param {ParameterCreateCategoryDto} body - The data required
-     * @returns {ResponseCreateCategoryDto} The new category data
+     * @returns {Inventory} The new category data
      */
     @Post("create/kategori")
-    public async createKategori(@Body() body: FormikCreateKategoriModel): Promise<ResponseCreateCategoryDto> {
+    public async createKategori(@Body() body: FormikCreateKategoriModel): Promise<Inventory> {
         try {
             const payload: ParameterCreateCategoryDto = {
                 tahun: 2022,
@@ -250,10 +246,10 @@ export class InventoryController {
     /**
      * @description Create a new item then add based on year and category id
      * @param {ParameterCreateItemDto} body - The data required
-     * @returns {ResponseCreateItemDto} The new item data
+     * @returns {Barang} The new item data
      */
     @Post("create/barang")
-    public async createBarang(@Body() body: any): Promise<ResponseCreateItemDto> {
+    public async createBarang(@Body() body: any): Promise<Barang> {
         try {
             const payload: ParameterCreateItemDto = {
                 tahun: body.tahun,
@@ -278,7 +274,7 @@ export class InventoryController {
                 },
             };
 
-            const barang: ResponseCreateItemDto = {
+            const barang: Barang = {
                 id: await this.inventoryService.getNewItemId(payload.tahun, payload.kategori_id),
                 nama: payload.nama,
                 satuan: payload.satuan,

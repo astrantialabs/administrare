@@ -24,10 +24,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-
-import { ResponseCreateCategoryDto } from "./dto/category/create-category.schema";
-import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
-import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { Barang, Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
 import {
     DemandBarang,
@@ -171,7 +167,7 @@ export class InventoryService {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let category_data: Inventory;
 
-        inventory_data.inventory.filter((category_object) => {
+        inventory_data.inventory.forEach((category_object) => {
             if (category_object.id == category_id) {
                 category_data = category_object;
             }
@@ -191,9 +187,9 @@ export class InventoryService {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let item_data: Barang;
 
-        inventory_data.inventory.filter((category_object) => {
+        inventory_data.inventory.forEach((category_object) => {
             if (category_object.id == category_id) {
-                category_object.barang.filter((item_object) => {
+                category_object.barang.forEach((item_object) => {
                     if (item_object.id == item_id) {
                         item_data = item_object;
                     }
@@ -208,11 +204,11 @@ export class InventoryService {
      * @description Create a new category then add based on year
      * @param {Number} year - The year
      * @param {String} category - The category
-     * @returns {ResponseCreateItemDto} The new item data
+     * @returns {Inventory} The new category data
      */
-    public async createKategori(year: number, category: string): Promise<ResponseCreateCategoryDto> {
+    public async createKategori(year: number, category: string): Promise<Inventory> {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
-        let new_category: ResponseCreateCategoryDto = {
+        let new_category: Inventory = {
             id: await this.getNewCategoryId(year),
             kategori: category,
             barang: [],
@@ -230,16 +226,12 @@ export class InventoryService {
      * @description Create a new item then add based on year and category id
      * @param {Number} year - The year
      * @param {Number} category_id -The category id
-     * @param {ResponseCreateItemDto} item_data - The data required
-     * @returns {ResponseCreateItemDto} The new item data
+     * @param {Barang} item_data - The data required
+     * @returns {Barang} The new item data
      */
-    public async createBarang(
-        year: number,
-        category_id: number,
-        item_data: ResponseCreateItemDto
-    ): Promise<ResponseCreateItemDto> {
+    public async createBarang(year: number, category_id: number, item_data: Barang): Promise<Barang> {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
-        let new_item: ResponseCreateItemDto;
+        let new_item: Barang;
 
         inventory_data.inventory.forEach((category_object) => {
             if (category_object.id == category_id) {
@@ -274,7 +266,7 @@ export class InventoryService {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
         let updated_category_data: Inventory;
 
-        inventory_data.inventory.filter((category_object) => {
+        inventory_data.inventory.forEach((category_object) => {
             if (category_object.id == category_id) {
                 category_object.kategori = category_name;
 

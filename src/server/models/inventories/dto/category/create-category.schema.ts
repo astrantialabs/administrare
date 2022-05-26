@@ -16,18 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Barang } from "../../schema/inventory.schema";
 import { IsString, IsNotEmpty, FormikValidatorBase } from "formik-class-validator";
 
 export class ParameterCreateCategoryDto {
     tahun: number;
     kategori: string;
-}
-
-export class ResponseCreateCategoryDto {
-    id: number;
-    kategori: string;
-    barang: Barang[];
 }
 
 export class FormikCreateKategoriModel extends FormikValidatorBase {

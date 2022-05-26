@@ -16,23 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Transform, TransformFnParams } from "class-transformer";
-import { IsNotEmpty, IsString, IsOptional, IsEmpty, FormikValidatorBase } from "formik-class-validator";
+import { IsNotEmpty, IsString, IsOptional, FormikValidatorBase } from "formik-class-validator";
 import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../../schema/inventory.schema";
 
 export class ParameterCreateItemDto {
     tahun: number;
     kategori_id: number;
-    nama: string;
-    satuan: string;
-    saldo: Saldo;
-    mutasi_barang_masuk: MutasiBarangMasuk;
-    mutasi_barang_keluar: MutasiBarangKeluar;
-    saldo_akhir: SaldoAkhir;
-}
-
-export class ResponseCreateItemDto {
-    id: number;
     nama: string;
     satuan: string;
     saldo: Saldo;
