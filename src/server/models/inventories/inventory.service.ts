@@ -30,7 +30,12 @@ import { ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema
 import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { Barang, Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
-import { DemandInventoryData, DemandInventoryDataDocument, Kategori } from "./schema/demand-inventory";
+import {
+    DemandBarang,
+    DemandInventoryData,
+    DemandInventoryDataDocument,
+    DemandKategori,
+} from "./schema/demand-inventory";
 import { ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
 
 /**
@@ -269,10 +274,10 @@ export class InventoryService {
      * @param {Number} status - The status
      * @returns {Kategori[]} The filtered category demand data
      */
-    public async demandKategoriByStatus(year: number, status: number): Promise<Kategori[]> {
+    public async demandKategoriByStatus(year: number, status: number): Promise<DemandKategori[]> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
-        let filtered_category_demand_data: Kategori[] = demand_data.kategori.filter((category_object) => {
+        let filtered_category_demand_data: DemandKategori[] = demand_data.kategori.filter((category_object) => {
             if (category_object.status == status) {
                 return category_object;
             }
@@ -301,5 +306,23 @@ export class InventoryService {
         this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
         return new_category_demand;
+    }
+
+    /**
+     * @description Filter item demand data based on status
+     * @param {Number} year - The year
+     * @param {Number} status - The status
+     * @returns {DemandBarang[]} The filtered item demand data
+     */
+    public async demandBarangByStatus(year: number, status: number): Promise<DemandBarang[]> {
+        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+
+        let filtered_item_demand_data: DemandBarang[] = demand_data.barang.filter((item_object) => {
+            if (item_object.status == status) {
+                return item_object;
+            }
+        });
+
+        return filtered_item_demand_data;
     }
 }

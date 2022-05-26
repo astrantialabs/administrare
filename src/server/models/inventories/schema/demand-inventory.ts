@@ -25,9 +25,12 @@ import { Document, Schema as MongooseSchema } from "mongoose";
 
 export type DemandInventoryDataDocument = DemandInventoryData & Document;
 
-export class Barang {
+export class DemandBarang {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
+
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    kategori_id: number;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
     barang: string;
@@ -36,7 +39,7 @@ export class Barang {
     status: number;
 }
 
-export class Kategori {
+export class DemandKategori {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
 
@@ -56,10 +59,10 @@ export class DemandInventoryData {
     tahun: number;
 
     @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "kategori" })
-    kategori: Kategori[];
+    kategori: DemandKategori[];
 
     @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "barang" })
-    barang: Barang[];
+    barang: DemandBarang[];
 }
 
 export const DemandInventoryDataSchema = SchemaFactory.createForClass(DemandInventoryData);

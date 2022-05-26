@@ -38,7 +38,7 @@ import {
 import { ParameterDeleteCategoryDto, ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ParameterDeleteItemDto, ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { ParameterDemandCategoryDto, ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
-import { Kategori } from "./schema/demand-inventory";
+import { DemandBarang, DemandKategori } from "./schema/demand-inventory";
 
 /**
  * @class DataController
@@ -296,10 +296,12 @@ export class InventoryController {
     /**
      * @description Filter category demand data based on status
      * @param {Number} status - The status
-     * @returns {Kategori[]} The filtered category demand data
+     * @returns {DemandKategori[]} The filtered category demand data
      */
     @Get("demand/kategori/:status")
-    public async demandKategoriByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<Kategori[]> {
+    public async demandKategoriByStatus(
+        @Param("status", new ParseIntPipe()) status: number
+    ): Promise<DemandKategori[]> {
         return await this.inventoryService.demandKategoriByStatus(2022, status);
     }
 
@@ -315,5 +317,15 @@ export class InventoryController {
         } catch (error) {
             this.logger.error(error);
         }
+    }
+
+    /**
+     * @description Filter item demand data based on status
+     * @param {Number} status - The status
+     * @returns {DemandBarang[]} The filtered item demand data
+     */
+    @Get("demand/barang/:status")
+    public async demandBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandBarang[]> {
+        return await this.inventoryService.demandBarangByStatus(2022, status);
     }
 }
