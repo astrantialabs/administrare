@@ -52,8 +52,6 @@ const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
                 validate={FormikCreateBarangModel.createValidator()}
                 onSubmit={(values, action) => {
                     const payload = {
-                        kategori_id: values.kategori_id,
-                        tahun: 2022,
                         nama: values.nama,
                         satuan: values.satuan,
                         saldo_jumlah_satuan: values.saldo_jumlah_satuan,
@@ -64,6 +62,8 @@ const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
                         mutasi_barang_masuk_harga_satuan: values.mutasi_barang_masuk_harga_satuan,
                         mutasi_barang_keluar_jumlah_satuan: values.mutasi_barang_keluar_jumlah_satuan,
                         mutasi_barang_keluar_harga_satuan: values.mutasi_barang_keluar_harga_satuan,
+                        kategori_id: values.kategori_id,
+                        tahun: 2022,
                     };
 
                     action.setSubmitting(true);
@@ -90,7 +90,7 @@ const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
             >
                 {(props) => (
                     <Form>
-                        <Field name="kategori">
+                        <Field name="kategori_id">
                             {({
                                 field,
                                 form,

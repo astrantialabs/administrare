@@ -42,6 +42,9 @@ export class ResponseCreateItemDto {
 }
 
 export class FormikCreateBarangModel extends FormikValidatorBase {
+    @IsOptional()
+    kategori_id: number;
+
     @IsNotEmpty({ message: "Nama barang tidak boleh kosong!" })
     @IsString()
     nama: string = "";
@@ -81,6 +84,4 @@ export class FormikCreateBarangModel extends FormikValidatorBase {
     @IsOptional()
     @IsString()
     mutasi_barang_keluar_harga_satuan?: string | null = null;
-
-    kategori_id: string;
 }
