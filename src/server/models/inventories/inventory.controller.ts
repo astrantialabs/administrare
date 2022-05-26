@@ -247,8 +247,6 @@ export class InventoryController {
                 },
             };
 
-            this.logger.debug("payload", payload);
-
             const barang: ResponseCreateItemDto = {
                 id: await this.inventoryService.getNewItemId(payload.tahun, payload.kategori_id),
                 nama: payload.nama,
@@ -258,8 +256,6 @@ export class InventoryController {
                 mutasi_barang_keluar: payload.mutasi_barang_keluar,
                 saldo_akhir: payload.saldo_akhir,
             };
-
-            this.logger.debug("barang", barang);
 
             return await this.inventoryService.createBarang(payload.tahun, payload.kategori_id, barang);
         } catch (error) {
