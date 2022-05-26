@@ -31,8 +31,6 @@ import {
     DemandInventoryDataDocument,
     DemandKategori,
 } from "./schema/demand-inventory";
-import { ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
-import { ResponseDemandItemDto } from "./dto/item/demand-item.schema";
 
 /**
  * @class InventoryService
@@ -392,12 +390,12 @@ export class InventoryService {
      * @description Create a new category demand
      * @param {Number} year - The year
      * @param {String} category - The new category name
-     * @returns {ResponseDemandCategoryDto} The new demanded category data
+     * @returns {DemandKategori} The new demanded category data
      */
-    public async demandCreateKategori(year: number, category: string): Promise<ResponseDemandCategoryDto> {
+    public async demandCreateKategori(year: number, category: string): Promise<DemandKategori> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
-        let new_category_demand: ResponseDemandCategoryDto = {
+        let new_category_demand: DemandKategori = {
             id: demand_data.kategori.length + 1,
             kategori: category,
             status: 0,
@@ -433,12 +431,12 @@ export class InventoryService {
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
      * @param {String} item - The new item name
-     * @returns {ResponseDemandItemDto} The new demanded item data
+     * @returns {DemandBarang} The new demanded item data
      */
-    public async demandCreateBarang(year: number, category_id: number, item: string): Promise<ResponseDemandItemDto> {
+    public async demandCreateBarang(year: number, category_id: number, item: string): Promise<DemandBarang> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
-        let new_item_demand: ResponseDemandItemDto = {
+        let new_item_demand: DemandBarang = {
             id: demand_data.barang.length + 1,
             kategori_id: category_id,
             barang: item,

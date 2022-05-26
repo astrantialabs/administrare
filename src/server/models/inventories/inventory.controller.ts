@@ -31,9 +31,7 @@ import { InventoryService } from "./inventory.service";
 import { Barang, Inventory, InventoryDataDocument } from "./schema/inventory.schema";
 import { ParameterCreateItemDto } from "./dto/item/create-item.schema";
 import { FormikCreateKategoriModel, ParameterCreateCategoryDto } from "./dto/category/create-category.schema";
-import { ParameterDemandCategoryDto, ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
 import { DemandBarang, DemandKategori } from "./schema/demand-inventory";
-import { ParameterDemandItemDto, ResponseDemandItemDto } from "./dto/item/demand-item.schema";
 
 /**
  * @class DataController
@@ -380,13 +378,13 @@ export class InventoryController {
 
     /**
      * @description Create a new category demand
-     * @param {ParameterDemandCategoryDto} body - The data required
-     * @returns {ResponseDemandCategoryDto} The new demanded category data
+     * @param {String} category - The new demanded category name
+     * @returns {DemandKategori} The new demanded category data
      */
     @Post("demand/create/kategori")
-    public async demandCreateKategori(@Body() body: ParameterDemandCategoryDto): Promise<ResponseDemandCategoryDto> {
+    public async demandCreateKategori(@Body("kategori") category: string): Promise<DemandKategori> {
         try {
-            return await this.inventoryService.demandCreateKategori(body.tahun, body.kategori);
+            return await this.inventoryService.demandCreateKategori(2022, category);
         } catch (error) {
             this.logger.error(error);
         }
@@ -404,13 +402,17 @@ export class InventoryController {
 
     /**
      * @description Create a new item demand
-     * @param {ParameterDemandItemDto} body - The data required
-     * @returns {ResponseDemandCategoryDto} The new demanded item data
+     * @param {Number} category_id - The category id
+     * @param {String} barang - The new demanded item name
+     * @returns {DemandBarang} The new demanded item data
      */
     @Post("demand/create/barang")
-    public async demandCreateBarang(@Body() body: ParameterDemandItemDto): Promise<ResponseDemandItemDto> {
+    public async demandCreateBarang(
+        @Body("kategori_id", new ParseIntPipe()) category_id: number,
+        @Body("barang") barang: string
+    ): Promise<DemandBarang> {
         try {
-            return await this.inventoryService.demandCreateBarang(body.tahun, body.kategori_id, body.barang);
+            return await this.inventoryService.demandCreateBarang(2022, category_id, barang);
         } catch (error) {
             this.logger.error(error);
         }
