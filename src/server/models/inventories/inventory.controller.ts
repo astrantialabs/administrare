@@ -37,6 +37,7 @@ import {
 } from "./dto/category/create-category.schema";
 import { ParameterDeleteCategoryDto, ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ParameterDeleteItemDto, ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
+import { ParameterDemandCategoryDto, ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
 
 /**
  * @class DataController
@@ -280,12 +281,26 @@ export class InventoryController {
     /**
      * @description Delete item data based on year, category id and item id
      * @param {ParameterDeleteItemDto} body - The data required
-     * @returns
+     * @returns {ResponseDeleteItemDto} The deleted item data
      */
     @Delete("delete/barang")
     public async deleteBarang(@Body() body: ParameterDeleteItemDto): Promise<ResponseDeleteItemDto> {
         try {
             return await this.inventoryService.deleteBarang(body.tahun, body.kategori_id, body.barang_id);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    /**
+     * @description Create a new category demand then add based on year
+     * @param {ParameterDemandCategoryDto} body - The data required
+     * @returns {ResponseDemandCategoryDto} The new demanded category data
+     */
+    @Post("demand/kategori")
+    public async demandKategori(@Body() body: ParameterDemandCategoryDto): Promise<ResponseDemandCategoryDto> {
+        try {
+            return await this.inventoryService.demandKategori(body.tahun, body.kategori);
         } catch (error) {
             this.logger.error(error);
         }

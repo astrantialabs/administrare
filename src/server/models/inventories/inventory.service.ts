@@ -30,6 +30,8 @@ import { ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema
 import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { Barang, Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
+import { DemandInventoryData, DemandInventoryDataDocument } from "./schema/demand-inventory";
+import { ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
 
 /**
  * @class InventoryService
@@ -42,7 +44,11 @@ export class InventoryService {
      * @description Creates a new inventory data service.
      * @param {Model} inventoryDataModel - The data model.
      */
-    constructor(@InjectModel(InventoryData.name) private readonly inventoryDataModel: Model<InventoryDataDocument>) {}
+    constructor(
+        @InjectModel(InventoryData.name) private readonly inventoryDataModel: Model<InventoryDataDocument>,
+        @InjectModel(DemandInventoryData.name)
+        private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>
+    ) {}
 
     /**
      * @description Finds all inventory data.
@@ -222,7 +228,7 @@ export class InventoryService {
     }
 
     /**
-     *
+     * @description Deleter item data based on year, category id and item id
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
      * @param {Number} item_id - The item id
@@ -246,5 +252,29 @@ export class InventoryService {
         this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
 
         return deleted_item;
+    }
+
+    /**
+     * @description Create a new category demand then add based on year
+     * @param {Number} year - The year
+     * @param {String} category - The new category name
+     * @returns {ResponseDemandCategoryDto} The new demanded category data
+     */
+    public async demandKategori(year: number, category: string): Promise<ResponseDemandCategoryDto> {
+        let demand_data: DemandInventoryDataDocument = await this.demandInventoryDataModel
+            .findOne({ tahun: year })
+            .exec();
+
+        let new_category_demand: ResponseDemandCategoryDto = {
+            id: demand_data.kategori.length + 1,
+            kategori: category,
+            status: 0,
+        };
+
+        demand_data.kategori.push(new_category_demand);
+
+        this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+        return new_category_demand;
     }
 }

@@ -22,6 +22,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { UtilsModule } from "../../utils/utils.module";
 import { InventoryController } from "./inventory.controller";
 import { InventoryService } from "./inventory.service";
+import { DemandInventoryData, DemandInventoryDataSchema } from "./schema/demand-inventory";
 import { InventoryData, InventoryDataSchema } from "./schema/inventory.schema";
 
 @Module({
@@ -36,6 +37,16 @@ import { InventoryData, InventoryDataSchema } from "./schema/inventory.schema";
                 },
             ],
             process.env.DATABASE_INVENTORY_CONNECTION_NAME
+        ),
+        MongooseModule.forFeature(
+            [
+                {
+                    name: DemandInventoryData.name,
+                    schema: DemandInventoryDataSchema,
+                    collection: process.env.DATABASE_DEMAND_INVENTORY_COLLECTION,
+                },
+            ],
+            process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME
         ),
     ],
     exports: [InventoryService],
