@@ -35,7 +35,6 @@ import {
     ParameterCreateCategoryDto,
     ResponseCreateCategoryDto,
 } from "./dto/category/create-category.schema";
-import { ParameterDeleteCategoryDto, ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ParameterDeleteItemDto, ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { ParameterDemandCategoryDto, ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
 import { DemandBarang, DemandKategori } from "./schema/demand-inventory";
@@ -338,13 +337,13 @@ export class InventoryController {
 
     /**
      * @description Delete category data based on year and category id
-     * @param {ParameterDeleteCategoryDto} body - The data required
-     * @returns {ResponseDeleteCategoryDto} The deleted category data
+     * @param {Number} category_id - The category id
+     * @returns {Inventory} The deleted category data
      */
-    @Delete("delete/kategori")
-    public async deleteKategori(@Body() body: ParameterDeleteCategoryDto): Promise<ResponseDeleteCategoryDto> {
+    @Delete("delete/:category_id")
+    public async deleteKategori(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<Inventory> {
         try {
-            return await this.inventoryService.deleteKategori(body.tahun, body.kategori_id);
+            return await this.inventoryService.deleteKategori(2022, category_id);
         } catch (error) {
             this.logger.error(error);
         }

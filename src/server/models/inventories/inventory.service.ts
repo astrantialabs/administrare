@@ -26,7 +26,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import { ResponseCreateCategoryDto } from "./dto/category/create-category.schema";
-import { ResponseDeleteCategoryDto } from "./dto/category/delete-category.schema";
 import { ResponseCreateItemDto } from "./dto/item/create-item.schema";
 import { ResponseDeleteItemDto } from "./dto/item/delete.item.schema";
 import { Barang, Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
@@ -321,11 +320,11 @@ export class InventoryService {
      * @description Delete category data based on year and category id
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
-     * @returns {ResponseDeleteCategoryDto} The deleted category data
+     * @returns {Inventory} The deleted category data
      */
-    public async deleteKategori(year: number, category_id: number): Promise<ResponseDeleteCategoryDto> {
+    public async deleteKategori(year: number, category_id: number): Promise<Inventory> {
         let inventory_data: InventoryDataDocument = await this.findOne(year);
-        let deleted_category: ResponseDeleteCategoryDto;
+        let deleted_category: Inventory;
 
         inventory_data.inventory.forEach((category_object, index) => {
             if (category_object.id == category_id) {
