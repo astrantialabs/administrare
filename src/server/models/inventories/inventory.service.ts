@@ -289,6 +289,30 @@ export class InventoryService {
         return deleted_item;
     }
 
+    /**
+     * @description Update category data based on year and category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {String} category_name - The new category name
+     * @returns {Inventory} The updated category data
+     */
+    public async updateKategori(year: number, category_id: number, category_name: string): Promise<Inventory> {
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let updated_category_data: Inventory;
+
+        inventory_data.inventory.filter((category_object) => {
+            if (category_object.id == category_id) {
+                category_object.kategori = category_name;
+
+                updated_category_data = category_object;
+            }
+        });
+
+        this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
+
+        return updated_category_data;
+    }
+
     //#endregion crud
 
     //#region demand

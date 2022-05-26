@@ -301,6 +301,20 @@ export class InventoryController {
     }
 
     /**
+     * @description Update category data based on year and category id
+     * @param {Number} category_id - The category id
+     * @param {String} kategori - The new category name
+     * @returns {Inventory} The updated category data
+     */
+    @Put("update/:category_id")
+    public async putUpdateKategori(
+        @Param("category_id", new ParseIntPipe()) category_id: number,
+        @Body("kategori") kategori: string
+    ): Promise<Inventory> {
+        return await this.inventoryService.updateKategori(2022, category_id, kategori);
+    }
+
+    /**
      * @description Get request for update/:category_id, return category data that is going to appear in the page for easier editing
      * @param {Number} category_id - The category id
      * @returns {Inventory} The category data
