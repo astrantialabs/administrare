@@ -37,6 +37,7 @@ import {
     DemandKategori,
 } from "./schema/demand-inventory";
 import { ResponseDemandCategoryDto } from "./dto/category/demand-category.schema";
+import { ResponseDemandItemDto } from "./dto/item/demand-item.schema";
 
 /**
  * @class InventoryService
@@ -287,7 +288,7 @@ export class InventoryService {
     }
 
     /**
-     * @description Create a new category demand then add based on year
+     * @description Create a new category demand
      * @param {Number} year - The year
      * @param {String} category - The new category name
      * @returns {ResponseDemandCategoryDto} The new demanded category data
@@ -324,5 +325,29 @@ export class InventoryService {
         });
 
         return filtered_item_demand_data;
+    }
+
+    /**
+     * @description Create a new item demand
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {String} item - The new item name
+     * @returns {ResponseDemandItemDto} The new demanded item data
+     */
+    public async demandCreateBarang(year: number, category_id: number, item: string): Promise<ResponseDemandItemDto> {
+        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+
+        let new_item_demand: ResponseDemandItemDto = {
+            id: demand_data.barang.length + 1,
+            kategori_id: category_id,
+            barang: item,
+            status: 0,
+        };
+
+        demand_data.barang.push(new_item_demand);
+
+        this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+        return new_item_demand;
     }
 }
