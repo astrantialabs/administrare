@@ -300,6 +300,16 @@ export class InventoryController {
         }
     }
 
+    /**
+     * @description Get request for update/:category_id, return category data that is going to appear in the page for easier editing
+     * @param {Number} category_id - The category id
+     * @returns {Inventory} The category data
+     */
+    @Get("update/:category_id")
+    public async getUpdateKategori(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<Inventory> {
+        return await this.inventoryService.getKategoriById(2022, category_id);
+    }
+
     //#endregion crud
 
     //#region demand

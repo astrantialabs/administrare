@@ -158,6 +158,25 @@ export class InventoryService {
         return new_item_id;
     }
 
+    /**
+     * @description Get category data based on category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Inventory} The category data
+     */
+    public async getKategoriById(year: number, category_id: number): Promise<Inventory> {
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let category_data: Inventory;
+
+        inventory_data.inventory.filter((category_object) => {
+            if (category_object.id == category_id) {
+                category_data = category_object;
+            }
+        });
+
+        return category_data;
+    }
+
     //#endregion utilities
 
     //#region crud
