@@ -303,11 +303,37 @@ export class InventoryController {
      * @returns {Inventory} The updated category data
      */
     @Put("update/:category_id")
-    public async UpdateKategori(
+    public async updateKategori(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Body("kategori") kategori: string
     ): Promise<Inventory> {
         return await this.inventoryService.updateKategori(2022, category_id, kategori);
+    }
+
+    /**
+     * @description update item data based on year, category id and item id
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @param {Any} body - the new item data
+     * @returns {Barang} The updated item data
+     */
+    @Put("update/:category_id/:item_id")
+    public async updateItem(
+        @Param("category_id", new ParseIntPipe()) category_id: number,
+        @Param("item_id", new ParseIntPipe()) item_id: number,
+        @Body() body: any
+    ): Promise<Barang> {
+        let barang: Barang = {
+            id: item_id,
+            nama: body.nama,
+            satuan: body.satuan,
+            saldo: body.saldo,
+            mutasi_barang_masuk: body.mutasi_barang_masuk,
+            mutasi_barang_keluar: body.mutasi_barang_keluar,
+            saldo_akhir: body.saldo_akhir,
+        };
+
+        return await this.inventoryService.updateItem(2022, category_id, item_id, barang);
     }
 
     /**

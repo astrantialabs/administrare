@@ -289,6 +289,35 @@ export class InventoryService {
     }
 
     /**
+     * @description Update item data based on year, category id and item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @param {Barang} item_data - The new item data
+     * @returns {Barang} The Updated item data
+     */
+    public async updateItem(year: number, category_id: number, item_id: number, item_data: Barang): Promise<Barang> {
+        let inventory_data: InventoryDataDocument = await this.findOne(year);
+        let updated_item_data: Barang;
+
+        inventory_data.inventory.forEach((category_object) => {
+            if (category_object.id == category_id) {
+                category_object.barang.forEach((item_object, index) => {
+                    if (item_object.id == item_id) {
+                        category_object.barang[index] = item_data;
+
+                        updated_item_data = category_object.barang[index];
+                    }
+                });
+            }
+        });
+
+        this.inventoryDataModel.replaceOne({ tahun: year }, inventory_data, { upsert: true }).exec();
+
+        return updated_item_data;
+    }
+
+    /**
      * @description Delete category data based on year and category id
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
