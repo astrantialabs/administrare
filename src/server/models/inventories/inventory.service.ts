@@ -389,14 +389,16 @@ export class InventoryService {
     /**
      * @description Create a new category demand
      * @param {Number} year - The year
+     * @param {String} username - The user who demands the new category
      * @param {String} category - The new category name
      * @returns {DemandKategori} The new demanded category data
      */
-    public async demandCreateKategori(year: number, category: string): Promise<DemandKategori> {
+    public async demandCreateKategori(year: number, username: string, category: string): Promise<DemandKategori> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
         let new_category_demand: DemandKategori = {
             id: demand_data.kategori.length + 1,
+            username: username,
             kategori: category,
             status: 0,
         };
@@ -430,15 +432,22 @@ export class InventoryService {
      * @description Create a new item demand
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
+     * @param {string} username - The user who demands the new item
      * @param {String} item - The new item name
      * @returns {DemandBarang} The new demanded item data
      */
-    public async demandCreateBarang(year: number, category_id: number, item: string): Promise<DemandBarang> {
+    public async demandCreateBarang(
+        year: number,
+        category_id: number,
+        username: string,
+        item: string
+    ): Promise<DemandBarang> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
         let new_item_demand: DemandBarang = {
             id: demand_data.barang.length + 1,
             kategori_id: category_id,
+            username: username,
             barang: item,
             status: 0,
         };

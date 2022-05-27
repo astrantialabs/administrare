@@ -378,13 +378,17 @@ export class InventoryController {
 
     /**
      * @description Create a new category demand
+     * @param {string} username - The user who demands the new category
      * @param {String} category - The new demanded category name
      * @returns {DemandKategori} The new demanded category data
      */
     @Post("demand/create/kategori")
-    public async demandCreateKategori(@Body("kategori") category: string): Promise<DemandKategori> {
+    public async demandCreateKategori(
+        @Body("username") username: string,
+        @Body("kategori") category: string
+    ): Promise<DemandKategori> {
         try {
-            return await this.inventoryService.demandCreateKategori(2022, category);
+            return await this.inventoryService.demandCreateKategori(2022, username, category);
         } catch (error) {
             this.logger.error(error);
         }
@@ -403,16 +407,18 @@ export class InventoryController {
     /**
      * @description Create a new item demand
      * @param {Number} category_id - The category id
+     * @param {String} username - The user who demands the new item
      * @param {String} barang - The new demanded item name
      * @returns {DemandBarang} The new demanded item data
      */
     @Post("demand/create/barang")
     public async demandCreateBarang(
         @Body("kategori_id", new ParseIntPipe()) category_id: number,
+        @Body("username") username: string,
         @Body("barang") barang: string
     ): Promise<DemandBarang> {
         try {
-            return await this.inventoryService.demandCreateBarang(2022, category_id, barang);
+            return await this.inventoryService.demandCreateBarang(2022, category_id, username, barang);
         } catch (error) {
             this.logger.error(error);
         }
