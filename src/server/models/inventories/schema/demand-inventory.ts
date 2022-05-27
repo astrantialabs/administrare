@@ -33,6 +33,9 @@ export class DemandBarang {
     kategori_id: number;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
+    username: string;
+
+    @Prop({ type: MongooseSchema.Types.String, required: true })
     barang: string;
 
     @Prop({ type: MongooseSchema.Types.Number, required: true })
@@ -42,6 +45,9 @@ export class DemandBarang {
 export class DemandKategori {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
+
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    username: string;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
     kategori: string;
