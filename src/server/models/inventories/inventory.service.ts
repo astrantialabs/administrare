@@ -369,6 +369,15 @@ export class InventoryService {
     }
 
     /**
+     * @description Get every category demand data based on year
+     * @param {Number} year - The year data
+     * @returns {DemandKategori[]} - The category demand data
+     */
+    public async demandKategoriAll(year: number): Promise<DemandKategori[]> {
+        return (await this.demandFindOne(year)).kategori;
+    }
+
+    /**
      * @description Filter category demand data based on status
      * @param {Number} year - The year
      * @param {Number} status - The status

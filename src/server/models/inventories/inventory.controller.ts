@@ -365,6 +365,15 @@ export class InventoryController {
     //#region demand
 
     /**
+     * @description Get every category demand data based on year
+     * @returns {DemandKategori[]} The category demand data
+     */
+    @Get("demand/kategori/all")
+    public async demandKategoriAll(): Promise<DemandKategori[]> {
+        return await this.inventoryService.demandKategoriAll(2022);
+    }
+
+    /**
      * @description Filter category demand data based on status
      * @param {Number} status - The status
      * @returns {DemandKategori[]} The filtered category demand data
