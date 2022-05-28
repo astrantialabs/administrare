@@ -56,4 +56,11 @@ export class AppController {
     public inventory_actions_kategori_create(): {} {
         return {};
     }
+
+    @Get("inventory/actions/barang/update/:kategori_id/:barang_id")
+    @Render("inventory/actions/barang/update/id")
+    @UseInterceptors(ParamsInterceptor)
+    public inventory_actions_barang_update(): {} {
+        return {};
+    }
 }

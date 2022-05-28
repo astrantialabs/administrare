@@ -43,34 +43,45 @@ export class FormikCreateBarangModel extends FormikValidatorBase {
     satuan: string = "";
 
     @IsOptional()
-    @IsString()
     saldo_jumlah_satuan?: string | null = null;
 
     @IsOptional()
-    @IsString()
     saldo_harga_satuan?: string | null = null;
 
     @IsOptional()
-    @IsString()
     saldo_akhir_jumlah_satuan?: string | null = null;
 
     @IsOptional()
-    @IsString()
     saldo_akhir_harga_satuan?: string | null = null;
 
     @IsOptional()
-    @IsString()
     mutasi_barang_masuk_jumlah_satuan?: string | null = null;
 
     @IsOptional()
-    @IsString()
     mutasi_barang_masuk_harga_satuan?: string | null = null;
 
     @IsOptional()
-    @IsString()
     mutasi_barang_keluar_jumlah_satuan?: string | null = null;
 
     @IsOptional()
-    @IsString()
     mutasi_barang_keluar_harga_satuan?: string | null = null;
+
+    constructor(isUpdate: boolean = false, data?: any) {
+        super();
+
+        if (isUpdate) {
+            data.map((item: any) => {
+                this.nama = item.uraian_barang;
+                this.satuan = item.satuan;
+                this.saldo_jumlah_satuan = item.saldo_jumlah_satuan;
+                this.saldo_harga_satuan = item.saldo_harga_satuan;
+                this.saldo_akhir_jumlah_satuan = item.saldo_akhir_jumlah_satuan;
+                this.saldo_akhir_harga_satuan = item.saldo_akhir_harga_satuan;
+                this.mutasi_barang_masuk_jumlah_satuan = item.mutasi_barang_masuk_jumlah_satuan;
+                this.mutasi_barang_masuk_harga_satuan = item.mutasi_barang_masuk_harga_satuan;
+                this.mutasi_barang_keluar_jumlah_satuan = item.mutasi_barang_keluar_jumlah_satuan;
+                this.mutasi_barang_keluar_harga_satuan = item.mutasi_barang_keluar_harga_satuan;
+            });
+        }
+    }
 }

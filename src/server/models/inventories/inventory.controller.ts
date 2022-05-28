@@ -60,6 +60,41 @@ export class InventoryController {
         return this.inventoryService.findAll();
     }
 
+    @Get("/actions/update/:kategori_id/:barang_id")
+    public async update(
+        @Param("kategori_id") kategori_id: number,
+        @Param("barang_id") barang_id: number
+    ): Promise<any> {
+        const original_data = await this.inventoryService.findAll();
+
+        let payload: any[] = [];
+
+        original_data.forEach(async (inventoryItem: InventoryDataDocument) => {
+            inventoryItem.inventory.forEach(async (item: Inventory) => {
+                if (item.id == kategori_id) {
+                    item.barang.forEach(async (barang: Barang) => {
+                        if (barang.id == barang_id) {
+                            payload.push({
+                                uraian_barang: barang.nama,
+                                satuan: barang.satuan,
+                                saldo_jumlah_satuan: barang.saldo.jumlah_satuan,
+                                saldo_harga_satuan: barang.saldo.harga_satuan,
+                                mutasi_barang_masuk_jumlah_satuan: barang.mutasi_barang_masuk.jumlah_satuan,
+                                mutasi_barang_masuk_harga_satuan: barang.mutasi_barang_masuk.harga_satuan,
+                                mutasi_barang_keluar_jumlah_satuan: barang.mutasi_barang_keluar.jumlah_satuan,
+                                mutasi_barang_keluar_harga_satuan: barang.mutasi_barang_keluar.harga_satuan,
+                                saldo_akhir_jumlah_satuan: barang.saldo_akhir.jumlah_satuan,
+                                saldo_akhir_harga_satuan: barang.saldo_akhir.harga_satuan,
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        return from(payload).pipe(toArray());
+    }
+
     /**
      * @description Finds all data and format it for table display.
      * @return {Promise<Observable<InventoryDataPayload[]>>} The data.
@@ -319,10 +354,22 @@ export class InventoryController {
             id: item_id,
             nama: body.nama,
             satuan: body.satuan,
-            saldo: body.saldo,
-            mutasi_barang_masuk: body.mutasi_barang_masuk,
-            mutasi_barang_keluar: body.mutasi_barang_keluar,
-            saldo_akhir: body.saldo_akhir,
+            saldo: {
+                jumlah_satuan: parseInt(body.saldo_jumlah_satuan),
+                harga_satuan: parseInt(body.saldo_harga_satuan),
+            },
+            mutasi_barang_masuk: {
+                jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan),
+                harga_satuan: parseInt(body.mutasi_barang_masuk_harga_satuan),
+            },
+            mutasi_barang_keluar: {
+                jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan),
+                harga_satuan: parseInt(body.mutasi_barang_keluar_harga_satuan),
+            },
+            saldo_akhir: {
+                jumlah_satuan: parseInt(body.saldo_akhir_jumlah_satuan),
+                harga_satuan: parseInt(body.saldo_akhir_harga_satuan),
+            },
         };
 
         return await this.inventoryService.updateItem(2022, category_id, item_id, barang);

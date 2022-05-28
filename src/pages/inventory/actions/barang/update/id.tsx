@@ -36,22 +36,30 @@ import { fetch } from "@/shared/utils/fetch";
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 
 type PageProps = {
-    categories: any[];
+    payload: any[];
+    kategoriId: string;
+    barangId: string;
 };
 
-const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
+type PageQuery = {
+    kategori_id: string;
+    barang_id: string;
+};
+
+const ActionsUpdateBarang: NextPage<PageProps> = ({ payload, kategoriId, barangId }) => {
     const toast = useToast();
 
     return (
         <Container maxW={`container.xl`} marginTop={`24px`} marginBottom={`24px`}>
             <Heading as={`h1`} size={`xl`} paddingBottom={`24px`} color={`blackAlpha.800`}>
-                Bikin sebuah barang baru.
+                Update sebuah barang baru.
             </Heading>
             <Formik
-                initialValues={new FormikCreateBarangModel(false)}
+                initialValues={new FormikCreateBarangModel(true, payload)}
                 validate={FormikCreateBarangModel.createValidator()}
                 onSubmit={(values, action) => {
                     const payload = {
+                        id: barangId,
                         nama: values.nama,
                         satuan: values.satuan,
                         saldo_jumlah_satuan: values.saldo_jumlah_satuan,
@@ -62,20 +70,20 @@ const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
                         mutasi_barang_masuk_harga_satuan: values.mutasi_barang_masuk_harga_satuan,
                         mutasi_barang_keluar_jumlah_satuan: values.mutasi_barang_keluar_jumlah_satuan,
                         mutasi_barang_keluar_harga_satuan: values.mutasi_barang_keluar_harga_satuan,
-                        kategori_id: values.kategori_id,
-                        tahun: 2022,
                     };
+
+                    alert(JSON.stringify(payload, null, 2));
 
                     action.setSubmitting(true);
 
                     setTimeout(() => {
                         axios
-                            .post("/api/data/inventory/create/barang", payload)
+                            .put(`/api/data/inventory/update/${parseInt(kategoriId)}/${parseInt(barangId)}`, payload)
                             .then(() => {
                                 toast({
                                     position: "top-right",
-                                    title: "Item created.",
-                                    description: `Barang bernama ${values.nama}  berhasil dibuat.`,
+                                    title: "Item updated.",
+                                    description: `Barang bernama ${values.nama}  berhasil diupdate.`,
                                     status: "success",
                                     duration: 9000,
                                     isClosable: true,
@@ -90,30 +98,6 @@ const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
             >
                 {(props) => (
                     <Form>
-                        <Field name="kategori_id">
-                            {({
-                                field,
-                                form,
-                            }: {
-                                field: FieldInputProps<string>;
-                                form: FormikProps<{ kategori_id: string }>;
-                            }): JSX.Element => (
-                                <FormControl isInvalid={form.errors.kategori_id && form.touched.kategori_id}>
-                                    <FormLabel htmlFor="kategori" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                        Kategori
-                                    </FormLabel>
-                                    <Select {...field} id="kategori_id" disabled={props.isSubmitting}>
-                                        <option value="">Pilih kategori</option>
-                                        {categories.map((category) => (
-                                            <option key={category.kategori} value={category.id}>
-                                                {category.kategori}
-                                            </option>
-                                        ))}
-                                    </Select>
-                                    <FormErrorMessage>{form.errors.kategori_id}</FormErrorMessage>
-                                </FormControl>
-                            )}
-                        </Field>
                         <Field name="nama">
                             {({
                                 field,
@@ -400,7 +384,7 @@ const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
                             type="submit"
                             disabled={props.isSubmitting}
                         >
-                            Submit
+                            Update
                         </Button>
                     </Form>
                 )}
@@ -409,10 +393,13 @@ const ActionsCreateBarang: NextPage<PageProps> = ({ categories }) => {
     );
 };
 
-export const getServerSideProps = buildServerSideProps<PageProps>(async () => {
-    const categories: any = await fetch("/api/data/inventory/categories");
+export const getServerSideProps = buildServerSideProps<PageProps, PageQuery>(async (ctx) => {
+    const kategory_id = ctx.query.kategori_id;
+    const barang_id = ctx.query.barang_id;
 
-    return { categories };
+    const payload = await fetch(`/api/data/inventory/actions/update/${parseInt(kategory_id)}/${parseInt(barang_id)}`);
+
+    return { payload: payload, kategoriId: kategory_id, barangId: barang_id };
 });
 
-export default ActionsCreateBarang;
+export default ActionsUpdateBarang;
