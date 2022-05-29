@@ -450,6 +450,25 @@ export class InventoryService {
     }
 
     /**
+     * @description  Get item demand data based on year and id
+     * @param {Number} year - The year
+     * @param {Number} id - The item demand id
+     * @returns {DemandBarang} The item demand data
+     */
+    public async demandBarangById(year: number, id: number): Promise<DemandBarang> {
+        let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
+        let demand_barang: DemandBarang;
+
+        demand_barang_data.forEach((demand_barang_object) => {
+            if (demand_barang_object.id == id) {
+                demand_barang = demand_barang_object;
+            }
+        });
+
+        return demand_barang;
+    }
+
+    /**
      * @description Filter item demand data based on status
      * @param {Number} year - The year
      * @param {Number} status - The status

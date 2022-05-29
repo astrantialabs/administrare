@@ -470,6 +470,16 @@ export class InventoryController {
     }
 
     /**
+     * @description Get item demand data based on year and id
+     * @param {Number} id - The item demand id
+     * @returns {DemandBarang} The item demand data
+     */
+    @Get("demand/barang/:id")
+    public async demandBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandBarang> {
+        return await this.inventoryService.demandBarangById(2022, id);
+    }
+
+    /**
      * @description Filter item demand data based on status
      * @param {Number} status - The status
      * @returns {DemandBarang[]} The filtered item demand data
