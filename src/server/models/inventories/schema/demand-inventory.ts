@@ -38,6 +38,12 @@ export class DemandBarang {
     @Prop({ type: MongooseSchema.Types.String, required: true })
     barang: string;
 
+    @Prop({ type: MongooseSchema.Types.Date, required: true })
+    createad_at: Date;
+
+    @Prop({ type: MongooseSchema.Types.Date, required: false })
+    responded_at: Date | null;
+
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     status: number;
 }
@@ -51,6 +57,12 @@ export class DemandKategori {
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
     kategori: string;
+
+    @Prop({ type: MongooseSchema.Types.Date, required: true })
+    createad_at: Date;
+
+    @Prop({ type: MongooseSchema.Types.Date, required: false })
+    responded_at: Date | null;
 
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     status: number;

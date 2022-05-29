@@ -409,6 +409,8 @@ export class InventoryService {
             id: demand_data.kategori.length + 1,
             username: username,
             kategori: category,
+            createad_at: new Date(),
+            responded_at: null,
             status: 0,
         };
 
@@ -467,6 +469,8 @@ export class InventoryService {
             kategori_id: category_id,
             username: username,
             barang: item,
+            createad_at: new Date(),
+            responded_at: null,
             status: 0,
         };
 
