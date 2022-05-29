@@ -425,7 +425,7 @@ export class InventoryController {
      * @param {Number} status - The status
      * @returns {DemandKategori[]} The filtered category demand data
      */
-    @Get("demand/kategori/:status")
+    @Get("demand/kategori/status/:status")
     public async demandKategoriByStatus(
         @Param("status", new ParseIntPipe()) status: number
     ): Promise<DemandKategori[]> {
@@ -464,7 +464,7 @@ export class InventoryController {
      * @param {Number} status - The status
      * @returns {DemandBarang[]} The filtered item demand data
      */
-    @Get("demand/barang/:status")
+    @Get("demand/barang/status/:status")
     public async demandBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandBarang[]> {
         return await this.inventoryService.demandBarangByStatus(2022, status);
     }
