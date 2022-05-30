@@ -533,7 +533,8 @@ export class InventoryService {
         year: number,
         category_id: number,
         username: string,
-        item: string
+        item: string,
+        unit: string
     ): Promise<DemandBarang> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
@@ -542,6 +543,7 @@ export class InventoryService {
             kategori_id: category_id,
             username: username,
             barang: item,
+            satuan: unit,
             createad_at: new Date(),
             responded_at: null,
             status: 0,

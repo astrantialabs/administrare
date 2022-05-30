@@ -38,6 +38,9 @@ export class DemandBarang {
     @Prop({ type: MongooseSchema.Types.String, required: true })
     barang: string;
 
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    satuan: string;
+
     @Prop({ type: MongooseSchema.Types.Date, required: true })
     createad_at: Date;
 

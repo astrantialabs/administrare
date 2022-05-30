@@ -518,10 +518,11 @@ export class InventoryController {
     public async demandCreateBarang(
         @Body("kategori_id", new ParseIntPipe()) category_id: number,
         @Body("username") username: string,
-        @Body("barang") barang: string
+        @Body("barang") barang: string,
+        @Body("satuan") satuan: string
     ): Promise<DemandBarang> {
         try {
-            return await this.inventoryService.demandCreateBarang(2022, category_id, username, barang);
+            return await this.inventoryService.demandCreateBarang(2022, category_id, username, barang, satuan);
         } catch (error) {
             this.logger.error(error);
         }
