@@ -443,7 +443,7 @@ export class InventoryService {
     /**
      * @description Update status of category demand data
      * @param {Number} year - The year
-     * @param {Number} id - The category id
+     * @param {Number} id - The category demand id
      * @param {Number} status - The The new status
      * @returns {DemandKategori} The updated status of category demand data
      */
@@ -552,6 +552,37 @@ export class InventoryService {
         this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
         return new_item_demand;
+    }
+
+    /**
+     * @description Update status of item demand data
+     * @param {Number} year - The year
+     * @param {Number} id - The item demand id
+     * @param {Number} status - The The new status
+     * @returns {DemandBarang} The updated status of item demand data
+     */
+    public async demandResponseBarang(year: number, id: number, status: number): Promise<DemandBarang | HttpException> {
+        let status_list = [0, 1, 2];
+
+        if (status_list.includes(status)) {
+            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+            let responded_demand_barang: DemandBarang;
+
+            demand_data.barang.forEach((demand_barang_object) => {
+                if (demand_barang_object.id == id) {
+                    demand_barang_object.responded_at = new Date();
+                    demand_barang_object.status = status;
+
+                    responded_demand_barang = demand_barang_object;
+                }
+            });
+
+            this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+            return responded_demand_barang;
+        } else if (!status_list.includes(status)) {
+            return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
+        }
     }
 
     //#endregion demand

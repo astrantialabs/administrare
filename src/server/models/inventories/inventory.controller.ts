@@ -462,7 +462,7 @@ export class InventoryController {
 
     /**
      * @description Update status of category demand data
-     * @param {Number} id - The category id
+     * @param {Number} id - The category demand id
      * @param {Number} status - The new status
      * @returns {DemandKategori} The updated status of category demand data
      */
@@ -522,6 +522,24 @@ export class InventoryController {
     ): Promise<DemandBarang> {
         try {
             return await this.inventoryService.demandCreateBarang(2022, category_id, username, barang);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    /**
+     * @description Update status of item demand data
+     * @param {Number} id - The item demand id
+     * @param {Number} status - The new status
+     * @returns {DemandBarang} The updated status of item demand data
+     */
+    @Put("demand/response/barang/:id/:status")
+    public async demandResponseBarang(
+        @Param("id", new ParseIntPipe()) id: number,
+        @Param("status", new ParseIntPipe()) status: number
+    ): Promise<DemandBarang | HttpException> {
+        try {
+            return await this.inventoryService.demandResponseBarang(2022, id, status);
         } catch (error) {
             this.logger.error(error);
         }
