@@ -30,6 +30,23 @@ export class ParameterCreateItemDto {
     saldo_akhir: SaldoAkhir;
 }
 
+export class FormikCreateDemandBarang extends FormikValidatorBase {
+    @IsOptional()
+    kategori_id: number;
+
+    @IsNotEmpty({ message: "Username tidak boleh kosong!" })
+    @IsString()
+    username: string = "";
+
+    @IsNotEmpty({ message: "Nama barang tidak boleh kosong!" })
+    @IsString()
+    barang: string = "";
+
+    @IsNotEmpty({ message: "Nama satuan barang tidak boleh kosong!" })
+    @IsString()
+    satuan: string = "";
+}
+
 export class FormikCreateBarangModel extends FormikValidatorBase {
     @IsOptional()
     kategori_id: number;
