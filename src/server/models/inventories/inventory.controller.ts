@@ -232,16 +232,18 @@ export class InventoryController {
 
     //#endregion utilities
 
-    //#region crud
+    //#region master
 
     /**
      * @description Get category data based on year and category id
      * @param {Number} category_id - The category id
      * @returns {Inventory} The category data
      */
-    @Get("get/:category_id")
-    public async getKategori(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<Inventory> {
-        return await this.inventoryService.getKategori(2022, category_id);
+    @Get("master/get/kategori/:category_id")
+    public async masterGetKategoriByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<Inventory> {
+        return await this.inventoryService.masterGetKategoriByKategoriId(2022, category_id);
     }
 
     /**
@@ -250,12 +252,12 @@ export class InventoryController {
      * @param {Number} item_id - The item id
      * @returns {Barang} The item data
      */
-    @Get("get/:category_id/:item_id")
-    public async getItem(
+    @Get("master/get/kategori/:category_id/barang/:item_id")
+    public async masterGetBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
     ): Promise<Barang> {
-        return await this.inventoryService.getItem(2022, category_id, item_id);
+        return await this.inventoryService.masterGetBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
     /**
@@ -263,14 +265,14 @@ export class InventoryController {
      * @param {ParameterCreateCategoryDto} body - The data required
      * @returns {Inventory} The new category data
      */
-    @Post("create/kategori")
-    public async createKategori(@Body() body: FormikCreateKategoriModel): Promise<Inventory> {
+    @Post("master/create/kategori")
+    public async masterCreateKategori(@Body() body: FormikCreateKategoriModel): Promise<Inventory> {
         try {
             const payload: ParameterCreateCategoryDto = {
                 tahun: 2022,
                 kategori: body.kategori.toUpperCase(),
             };
-            return await this.inventoryService.createKategori(payload.tahun, payload.kategori);
+            return await this.inventoryService.masterCreateKategori(payload.tahun, payload.kategori);
         } catch (error) {
             this.logger.error(error);
         }
@@ -281,8 +283,8 @@ export class InventoryController {
      * @param {ParameterCreateItemDto} body - The data required
      * @returns {Barang} The new item data
      */
-    @Post("create/barang")
-    public async createBarang(@Body() body: any): Promise<Barang> {
+    @Post("master/create/barang")
+    public async masterCreateBarang(@Body() body: any): Promise<Barang> {
         try {
             const payload: ParameterCreateItemDto = {
                 tahun: body.tahun,
@@ -317,7 +319,7 @@ export class InventoryController {
                 saldo_akhir: payload.saldo_akhir,
             };
 
-            return await this.inventoryService.createBarang(payload.tahun, payload.kategori_id, barang);
+            return await this.inventoryService.masterCreateBarang(payload.tahun, payload.kategori_id, barang);
         } catch (error) {
             this.logger.error(error);
         }
@@ -329,12 +331,12 @@ export class InventoryController {
      * @param {String} kategori - The new category name
      * @returns {Inventory} The updated category data
      */
-    @Put("update/:category_id")
-    public async updateKategori(
+    @Put("master/update/kategori/:category_id")
+    public async masterUpdateKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Body("kategori") kategori: string
     ): Promise<Inventory> {
-        return await this.inventoryService.updateKategori(2022, category_id, kategori);
+        return await this.inventoryService.masterUpdateKategoriByKategoriId(2022, category_id, kategori);
     }
 
     /**
@@ -344,8 +346,8 @@ export class InventoryController {
      * @param {Any} body - the new item data
      * @returns {Barang} The updated item data
      */
-    @Put("update/:category_id/:item_id")
-    public async updateItem(
+    @Put("master/update/kategori/:category_id/barang/:item_id")
+    public async masterUpdateBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number,
         @Body() body: any
@@ -372,7 +374,12 @@ export class InventoryController {
             },
         };
 
-        return await this.inventoryService.updateItem(2022, category_id, item_id, barang);
+        return await this.inventoryService.masterUpdateBarangByKategoriIdAndBarangId(
+            2022,
+            category_id,
+            item_id,
+            barang
+        );
     }
 
     /**
@@ -380,10 +387,12 @@ export class InventoryController {
      * @param {Number} category_id - The category id
      * @returns {Inventory} The deleted category data
      */
-    @Delete("delete/:category_id")
-    public async deleteKategori(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<Inventory> {
+    @Delete("master/delete/kategori/:category_id")
+    public async masterDeleteKategoriByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<Inventory> {
         try {
-            return await this.inventoryService.deleteKategori(2022, category_id);
+            return await this.inventoryService.masterDeleteKategoriByKategoriId(2022, category_id);
         } catch (error) {
             this.logger.error(error);
         }
@@ -395,19 +404,19 @@ export class InventoryController {
      * @param {Number} item_id - The item id
      * @returns {Barang} The deleted item data
      */
-    @Delete("delete/:category_id/:item_id")
-    public async deleteBarang(
+    @Delete("master/delete/kategori/:category_id/item/:item_id")
+    public async masterDeleteBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
     ): Promise<Barang> {
         try {
-            return await this.inventoryService.deleteBarang(2022, category_id, item_id);
+            return await this.inventoryService.masterDeleteBarangByKategoriIdAndBarangId(2022, category_id, item_id);
         } catch (error) {
             this.logger.error(error);
         }
     }
 
-    //#endregion crud
+    //#endregion master
 
     //#region demand
 
@@ -415,9 +424,18 @@ export class InventoryController {
      * @description Get every category demand data based on year
      * @returns {DemandKategori[]} The category demand data
      */
-    @Get("demand/kategori/all")
-    public async demandKategoriAll(): Promise<DemandKategori[]> {
-        return await this.inventoryService.demandKategoriAll(2022);
+    @Get("demand/get/kategori/all")
+    public async demandGetKategoriAll(): Promise<DemandKategori[]> {
+        return await this.inventoryService.demandGetKategoriAll(2022);
+    }
+
+    /**
+     * @description Get every item demand data based on year
+     * @returns {DemandBarang[]} The item demand data
+     */
+    @Get("demand/get/barang/all")
+    public async demandGetBarangAll(): Promise<DemandBarang[]> {
+        return await this.inventoryService.demandGetBarangAll(2022);
     }
 
     /**
@@ -425,9 +443,19 @@ export class InventoryController {
      * @param {Number} id - The category demand id
      * @returns {DemandKategori} The category demand data
      */
-    @Get("demand/kategori/:id")
-    public async demandKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandKategori> {
-        return await this.inventoryService.demandKategoriById(2022, id);
+    @Get("demand/get/kategori/:id")
+    public async demandGetKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandKategori> {
+        return await this.inventoryService.demandGetKategoriById(2022, id);
+    }
+
+    /**
+     * @description Get item demand data based on year and id
+     * @param {Number} id - The item demand id
+     * @returns {DemandBarang} The item demand data
+     */
+    @Get("demand/get/barang/:id")
+    public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandBarang> {
+        return await this.inventoryService.demandGetBarangById(2022, id);
     }
 
     /**
@@ -435,11 +463,21 @@ export class InventoryController {
      * @param {Number} status - The status
      * @returns {DemandKategori[]} The filtered category demand data
      */
-    @Get("demand/kategori/status/:status")
-    public async demandKategoriByStatus(
+    @Get("demand/get/kategori/status/:status")
+    public async demandGetKategoriByStatus(
         @Param("status", new ParseIntPipe()) status: number
     ): Promise<DemandKategori[]> {
-        return await this.inventoryService.demandKategoriByStatus(2022, status);
+        return await this.inventoryService.demandGetKategoriByStatus(2022, status);
+    }
+
+    /**
+     * @description Filter item demand data based on status
+     * @param {Number} status - The status
+     * @returns {DemandBarang[]} The filtered item demand data
+     */
+    @Get("demand/get/barang/status/:status")
+    public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandBarang[]> {
+        return await this.inventoryService.demandGetBarangByStatus(2022, status);
     }
 
     /**
@@ -458,53 +496,6 @@ export class InventoryController {
         } catch (error) {
             this.logger.error(error);
         }
-    }
-
-    /**
-     * @description Update status of category demand data
-     * @param {Number} id - The category demand id
-     * @param {Number} status - The new status
-     * @returns {DemandKategori} The updated status of category demand data
-     */
-    @Put("demand/response/kategori/:id/:status")
-    public async demandResponseKategori(
-        @Param("id", new ParseIntPipe()) id: number,
-        @Param("status", new ParseIntPipe()) status: number
-    ): Promise<DemandKategori | HttpException> {
-        try {
-            return await this.inventoryService.demandResponseKategori(2022, id, status);
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
-
-    /**
-     * @description Get every item demand data based on year
-     * @returns {DemandBarang[]} The item demand data
-     */
-    @Get("demand/barang/all")
-    public async demandBarangAll(): Promise<DemandBarang[]> {
-        return await this.inventoryService.demandBarangAll(2022);
-    }
-
-    /**
-     * @description Get item demand data based on year and id
-     * @param {Number} id - The item demand id
-     * @returns {DemandBarang} The item demand data
-     */
-    @Get("demand/barang/:id")
-    public async demandBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandBarang> {
-        return await this.inventoryService.demandBarangById(2022, id);
-    }
-
-    /**
-     * @description Filter item demand data based on status
-     * @param {Number} status - The status
-     * @returns {DemandBarang[]} The filtered item demand data
-     */
-    @Get("demand/barang/status/:status")
-    public async demandBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandBarang[]> {
-        return await this.inventoryService.demandBarangByStatus(2022, status);
     }
 
     /**
@@ -529,18 +520,36 @@ export class InventoryController {
     }
 
     /**
+     * @description Update status of category demand data
+     * @param {Number} id - The category demand id
+     * @param {Number} status - The new status
+     * @returns {DemandKategori} The updated status of category demand data
+     */
+    @Put("demand/response/kategori/:id/status/:status")
+    public async demandResponseKategoriById(
+        @Param("id", new ParseIntPipe()) id: number,
+        @Param("status", new ParseIntPipe()) status: number
+    ): Promise<DemandKategori | HttpException> {
+        try {
+            return await this.inventoryService.demandResponseKategoriById(2022, id, status);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    /**
      * @description Update status of item demand data
      * @param {Number} id - The item demand id
      * @param {Number} status - The new status
      * @returns {DemandBarang} The updated status of item demand data
      */
-    @Put("demand/response/barang/:id/:status")
-    public async demandResponseBarang(
+    @Put("demand/response/barang/:id/status/:status")
+    public async demandResponseBarangById(
         @Param("id", new ParseIntPipe()) id: number,
         @Param("status", new ParseIntPipe()) status: number
     ): Promise<DemandBarang | HttpException> {
         try {
-            return await this.inventoryService.demandResponseBarang(2022, id, status);
+            return await this.inventoryService.demandResponseBarangById(2022, id, status);
         } catch (error) {
             this.logger.error(error);
         }
