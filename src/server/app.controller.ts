@@ -63,8 +63,15 @@ export class AppController {
         return {};
     }
 
-    @Get("inventory/actions/barang/create")
-    @Render("inventory/actions/barang/create")
+    @Get("inventory/demand")
+    @Render("inventory/demand/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventory_demand_index() {
+        return {};
+    }
+
+    @Get("inventory/demand/barang/create")
+    @Render("inventory/demand/barang/create")
     @UseInterceptors(ParamsInterceptor)
     public inventory_demand_barang_create(): {} {
         return {};
