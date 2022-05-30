@@ -21,7 +21,7 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Barang, Inventory, InventoryData, InventoryDataDocument } from "./schema/inventory.schema";
@@ -438,6 +438,41 @@ export class InventoryService {
         this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
         return new_category_demand;
+    }
+
+    /**
+     * @description Update status of category demand data
+     * @param {Number} year - The year
+     * @param {Number} id - The category id
+     * @param {Number} status - The The new status
+     * @returns {DemandKategori} The updated status of category demand data
+     */
+    public async demandResponseKategori(
+        year: number,
+        id: number,
+        status: number
+    ): Promise<DemandKategori | HttpException> {
+        let status_list = [0, 1, 2];
+
+        if (status_list.includes(status)) {
+            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+            let responded_demand_kategori: DemandKategori;
+
+            demand_data.kategori.forEach((demand_kategori_object) => {
+                if (demand_kategori_object.id == id) {
+                    demand_kategori_object.responded_at = new Date();
+                    demand_kategori_object.status = status;
+
+                    responded_demand_kategori = demand_kategori_object;
+                }
+            });
+
+            this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+            return responded_demand_kategori;
+        } else if (!status_list.includes(status)) {
+            return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
+        }
     }
 
     /**

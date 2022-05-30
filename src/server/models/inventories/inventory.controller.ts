@@ -21,7 +21,7 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { from, Observable, toArray } from "rxjs";
 
 import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
@@ -455,6 +455,24 @@ export class InventoryController {
     ): Promise<DemandKategori> {
         try {
             return await this.inventoryService.demandCreateKategori(2022, username, category);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
+    /**
+     * @description Update status of category demand data
+     * @param {Number} id - The category id
+     * @param {Number} status - The new status
+     * @returns {DemandKategori} The updated status of category demand data
+     */
+    @Put("demand/response/kategori/:id/:status")
+    public async demandResponseKategori(
+        @Param("id", new ParseIntPipe()) id: number,
+        @Param("status", new ParseIntPipe()) status: number
+    ): Promise<DemandKategori | HttpException> {
+        try {
+            return await this.inventoryService.demandResponseKategori(2022, id, status);
         } catch (error) {
             this.logger.error(error);
         }
