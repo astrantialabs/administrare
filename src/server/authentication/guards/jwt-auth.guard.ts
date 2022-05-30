@@ -21,8 +21,9 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Injectable } from "@nestjs/common";
+import { ExecutionContext, Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard("jwt") {}

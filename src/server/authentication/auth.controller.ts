@@ -26,7 +26,7 @@ import { LoginPayload } from "@/shared/typings/interfaces/login-payload.interfac
 import { Response as ExpressResponse, Request as ExpressRequest } from "express";
 import { AuthService } from "./auth.service";
 
-@Controller("api/auth")
+@Controller("__api/auth")
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 

@@ -16,7 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+
 import { Provider as ReduxProvider } from "react-redux";
 import NextApp, { AppProps } from "next/app";
 import Head from "next/head";
@@ -25,6 +27,13 @@ import { AppDataContext } from "@/client/ssr/appData";
 import { AppData } from "@/shared/typings/types/app-data";
 import { initializeFetch } from "@/shared/utils/fetch";
 import { store } from "@/client/redux/store";
+
+const theme = extendTheme({
+    fonts: {
+        body: "'Be Vietnam Pro', sans-serif",
+        heading: "'Inter', sans-serif",
+    },
+});
 
 class _app extends NextApp<AppProps> {
     public appData: AppData;
@@ -38,6 +47,7 @@ class _app extends NextApp<AppProps> {
 
     render() {
         const { Component, pageProps } = this.props;
+        const queryClient = new QueryClient();
 
         return (
             <>
@@ -49,10 +59,12 @@ class _app extends NextApp<AppProps> {
                     <title>administrare</title>
                 </Head>
                 <AppDataContext.Provider value={this.appData}>
-                    <ChakraProvider>
-                        <ReduxProvider store={store}>
-                            <Component {...pageProps} />
-                        </ReduxProvider>
+                    <ChakraProvider theme={theme}>
+                        <QueryClientProvider client={queryClient}>
+                            <ReduxProvider store={store}>
+                                <Component {...pageProps} />
+                            </ReduxProvider>
+                        </QueryClientProvider>
                     </ChakraProvider>
                 </AppDataContext.Provider>
             </>

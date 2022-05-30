@@ -21,8 +21,10 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Controller, Get, Render, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Render, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 
+import { ViewAuthFilter } from "./authentication/filters/view-auth.filter";
 import { ParamsInterceptor } from "./common/interceptors/params.interceptor";
 
 @Controller()
@@ -36,10 +38,35 @@ export class AppController {
         return {};
     }
 
+    @Get("login")
+    @Render("authentication/login")
+    @UseInterceptors(ParamsInterceptor)
+    public authentication_login(): {} {
+        return {};
+    }
+
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
+    @Get("dashboard")
+    @Render("dashboard/main")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboard_login(): {} {
+        return {};
+    }
+
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("inventory")
     @Render("inventory/main")
     @UseInterceptors(ParamsInterceptor)
     public inventory_index() {
+        return {};
+    }
+
+    @Get("inventory/actions/barang/create")
+    @Render("inventory/actions/barang/create")
+    @UseInterceptors(ParamsInterceptor)
+    public inventory_demand_barang_create(): {} {
         return {};
     }
 
