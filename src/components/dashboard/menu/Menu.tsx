@@ -18,38 +18,48 @@
 
 import {
     Box,
+    Heading,
     HStack,
     Menu,
     MenuButton,
     MenuDivider,
     MenuItem,
     MenuList,
+    SkeletonText,
     Text,
     useColorModeValue,
     VStack,
 } from "@chakra-ui/react";
 import { Logger } from "@nestjs/common";
+import axios from "axios";
 import Router from "next/router";
 import React from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { useQuery } from "react-query";
 
 export function DashboardMenu() {
-    const { isLoading, error, data }: { isLoading: boolean; error: any; data: any } = useQuery("repoData", () =>
-        fetch("http://localhost:3000/api/user/username/mirae").then((res) => res.json())
+    const userQuery = useQuery("userQuery", () =>
+        axios.get("http://localhost:3000/api/user/username/mirae", { withCredentials: true }).then((res) => res.data)
     );
-
-    if (isLoading) return <Text>Loading...</Text>;
 
     return (
         <Menu>
             <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: "none" }}>
                 <HStack>
                     <VStack display={{ base: "none", md: "flex" }} alignItems="flex-start" spacing="1px" ml="2">
-                        <Text fontSize="sm">{data.username}</Text>
-                        <Text fontSize="xs" color="gray.600">
-                            {data.permissionLevel}
-                        </Text>
+                        {userQuery.isLoading ? (
+                            <>
+                                <SkeletonText fontSize="sm" noOfLines={1}></SkeletonText>
+                                <SkeletonText fontSize="xs" noOfLines={1}></SkeletonText>
+                            </>
+                        ) : (
+                            <>
+                                <Text fontSize="sm">{userQuery.data.username}</Text>
+                                <Text fontSize="xs" color="gray.600">
+                                    {userQuery.data.permissionLevel}
+                                </Text>
+                            </>
+                        )}
                     </VStack>
                     <Box display={{ base: "none", md: "flex" }}>
                         <FiChevronDown />
@@ -62,7 +72,7 @@ export function DashboardMenu() {
             >
                 <MenuItem>Profile</MenuItem>
                 <MenuDivider />
-                <MenuItem onClick={Router.push("/__api/auth/user/logout") as any}>Sign out</MenuItem>
+                <MenuItem>Sign out</MenuItem>
             </MenuList>
         </Menu>
     );
