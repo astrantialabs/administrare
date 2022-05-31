@@ -113,6 +113,11 @@ export class ConfigService {
             uri: string;
             connection_name: string;
         };
+        request: {
+            collection: string;
+            uri: string;
+            connection_name: string;
+        };
     } {
         return {
             user: {
@@ -144,6 +149,11 @@ export class ConfigService {
                 collection: this.configServer.get<string>("database.demand.collection"),
                 uri: this.configServer.get<string>("database.demand.uri"),
                 connection_name: this.configServer.get<string>("database.demand.connection_name"),
+            },
+            request: {
+                collection: this.configServer.get<string>("database.request.collection"),
+                uri: this.configServer.get<string>("database.request.uri"),
+                connection_name: this.configServer.get<string>("database.request.connection_name"),
             },
         };
     }

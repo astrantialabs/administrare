@@ -62,5 +62,10 @@ export default () => ({
             uri: process.env.DATABASE_DEMAND_INVENTORY_URI || "mongodb://localhost:27017/inventory",
             connection_name: process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME || "demand_database",
         },
+        request: {
+            collection: process.env.DATABASE_REQUEST_INVENTORY_COLLECTION || "requests",
+            uri: process.env.DATABASE_REQUEST_INVENTORY_URI || "mongodb://localhost:27017/inventory",
+            connection_name: process.env.DATABASE_REQUEST_INVENTORY_CONNECTION_NAME || "request_database",
+        },
     },
 });

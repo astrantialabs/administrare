@@ -84,6 +84,13 @@ class EnvironmentVariables {
     DATABASE_DEMAND_INVENTORY_URI: string;
     @IsString()
     DATABASE_DEMAND_INVENTORY_CONNECTION_NAME: string;
+
+    @IsString()
+    DATABASE_REQUEST_INVENTORY_COLLECTION: string;
+    @IsString()
+    DATABASE_REQUEST_INVENTORY_URI: string;
+    @IsString()
+    DATABASE_REQUEST_INVENTORY_CONNECTION_NAME: string;
 }
 
 export function validation(config: Record<string, unknown>): EnvironmentVariables {

@@ -24,6 +24,7 @@ import { InventoryController } from "./inventory.controller";
 import { InventoryService } from "./inventory.service";
 import { DemandInventoryData, DemandInventoryDataSchema } from "./schema/demand-inventory";
 import { InventoryData, InventoryDataSchema } from "./schema/inventory.schema";
+import { RequestInventoryData, RequestInventoryDataSchema } from "./schema/request-inventory";
 
 @Module({
     imports: [
@@ -47,6 +48,16 @@ import { InventoryData, InventoryDataSchema } from "./schema/inventory.schema";
                 },
             ],
             process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME
+        ),
+        MongooseModule.forFeature(
+            [
+                {
+                    name: RequestInventoryData.name,
+                    schema: RequestInventoryDataSchema,
+                    collection: process.env.DATABASE_REQUEST_INVENTORY_COLLECTION,
+                },
+            ],
+            process.env.DATABASE_REQUEST_INVENTORY_CONNECTION_NAME
         ),
     ],
     exports: [InventoryService],

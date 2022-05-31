@@ -32,6 +32,7 @@ import { Barang, Inventory, InventoryDataDocument } from "./schema/inventory.sch
 import { ParameterCreateItemDto } from "./dto/item/create-item.schema";
 import { FormikCreateKategoriModel, ParameterCreateCategoryDto } from "./dto/category/create-category.schema";
 import { DemandBarang, DemandKategori } from "./schema/demand-inventory";
+import { RequestBarang } from "./schema/request-inventory";
 
 /**
  * @class DataController
@@ -556,4 +557,17 @@ export class InventoryController {
     }
 
     //#endregion demand
+
+    //#region request
+
+    /**
+     * @description Get every requested item data based on year
+     * @returns {RequestBarang[]} The requested item data
+     */
+    @Get("request/get/all")
+    public async requestGetAll(): Promise<RequestBarang[]> {
+        return await this.inventoryService.requestGetAll(2022);
+    }
+
+    //#endregion request
 }

@@ -59,6 +59,10 @@ export declare global {
             DATABASE_DEMAND_INVENTORY_COLLECTION: string;
             DATABASE_DEMAND_INVENTORY_URI: string;
             DATABASE_DEMAND_INVENTORY_CONNECTION_NAME: string;
+
+            DATABASE_REQUEST_INVENTORY_COLLECTION: string;
+            DATABASE_REQUEST_INVENTORY_URI: string;
+            DATABASE_REQUEST_INVENTORY_CONNECTION_NAME: string;
         }
     }
 }

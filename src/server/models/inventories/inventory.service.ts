@@ -31,6 +31,7 @@ import {
     DemandInventoryDataDocument,
     DemandKategori,
 } from "./schema/demand-inventory";
+import { RequestBarang, RequestInventoryData, RequestInventoryDataDocument } from "./schema/request-inventory";
 
 /**
  * @class InventoryService
@@ -46,7 +47,9 @@ export class InventoryService {
     constructor(
         @InjectModel(InventoryData.name) private readonly inventoryDataModel: Model<InventoryDataDocument>,
         @InjectModel(DemandInventoryData.name)
-        private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>
+        private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>,
+        @InjectModel(RequestInventoryData.name)
+        private readonly requestInventoryDataModel: Model<RequestInventoryDataDocument>
     ) {}
 
     //#region main
@@ -609,4 +612,26 @@ export class InventoryService {
     }
 
     //#endregion demand
+
+    //#region request
+
+    /**
+     * @description Find request data based on year
+     * @param {Number} year - The year
+     * @returns {RequestInventoryDataDocument} The request data
+     */
+    public async requestFindOne(year: number): Promise<RequestInventoryDataDocument> {
+        return await this.requestInventoryDataModel.findOne({ tahun: year }).exec();
+    }
+
+    /**
+     * @description Get every requested item data based on year
+     * @param {Number} year - The year
+     * @returns {RequestBarang[]} The requested item data
+     */
+    public async requestGetAll(year: number): Promise<RequestBarang[]> {
+        return (await this.requestFindOne(year)).barang;
+    }
+
+    //#endregion request
 }
