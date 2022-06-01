@@ -41,7 +41,7 @@ async function boostrap() {
 
     middleware(app);
 
-    await app.listen(configService.port);
+    await app.listen(configService.port).then(() => Logger.log(`Listening on http://localhost:${configService.port}`));
 
     renderService.setErrorHandler(async (error, request, response) => {
         if (configService.env === Environment.DEVELOPMENT) Logger.debug(error);

@@ -564,9 +564,9 @@ export class InventoryController {
      * @description Get every requested item data based on year
      * @returns {RequestBarang[]} The requested item data
      */
-    @Get("request/get/all")
-    public async requestGetAll(): Promise<RequestBarang[]> {
-        return await this.inventoryService.requestGetAll(2022);
+    @Get("request/get/barang/all")
+    public async requestGetBarangAll(): Promise<RequestBarang[]> {
+        return await this.inventoryService.requestGetBarangAll(2022);
     }
 
     //#endregion request

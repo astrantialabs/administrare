@@ -629,7 +629,7 @@ export class InventoryService {
      * @param {Number} year - The year
      * @returns {RequestBarang[]} The requested item data
      */
-    public async requestGetAll(year: number): Promise<RequestBarang[]> {
+    public async requestGetBarangAll(year: number): Promise<RequestBarang[]> {
         return (await this.requestFindOne(year)).barang;
     }
 
