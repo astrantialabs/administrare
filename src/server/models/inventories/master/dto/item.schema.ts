@@ -17,17 +17,22 @@
  */
 
 import { IsNotEmpty, IsString, IsOptional, FormikValidatorBase } from "formik-class-validator";
-import { MutasiBarangKeluar, MutasiBarangMasuk, Saldo, SaldoAkhir } from "../../schema/inventory.schema";
+import {
+    MasterMutasiBarangKeluar,
+    MasterMutasiBarangMasuk,
+    MasterSaldo,
+    MasterSaldoAkhir,
+} from "../schema/master-inventory.schema";
 
 export class ParameterCreateItemDto {
     tahun: number;
     kategori_id: number;
     nama: string;
     satuan: string;
-    saldo: Saldo;
-    mutasi_barang_masuk: MutasiBarangMasuk;
-    mutasi_barang_keluar: MutasiBarangKeluar;
-    saldo_akhir: SaldoAkhir;
+    saldo: MasterSaldo;
+    mutasi_barang_masuk: MasterMutasiBarangMasuk;
+    mutasi_barang_keluar: MasterMutasiBarangKeluar;
+    saldo_akhir: MasterSaldoAkhir;
 }
 
 export class FormikCreateDemandBarang extends FormikValidatorBase {

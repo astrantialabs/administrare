@@ -29,7 +29,9 @@ import Next from "next";
 import { AppController } from "./app.controller";
 import { AuthModule } from "./authentication/auth.module";
 import { ConfigModule } from "./config/config.module";
-import { InventoryModule } from "./models/inventories/inventory.module";
+import { DemandInventoryModule } from "./models/inventories/demand/demand-inventory.module";
+import { MasterInventoryModule } from "./models/inventories/master/master-inventory.module";
+import { RequestInventoryModule } from "./models/inventories/request/request-inventory.module";
 import { UserModule } from "./models/users/user.module";
 import { MongoDBProviderModule } from "./providers/mongodb.module";
 
@@ -52,7 +54,16 @@ export class AppModule {
 
         return {
             module: AppModule,
-            imports: [renderModule, ConfigModule, MongoDBProviderModule, UserModule, AuthModule, InventoryModule],
+            imports: [
+                renderModule,
+                ConfigModule,
+                MongoDBProviderModule,
+                UserModule,
+                AuthModule,
+                MasterInventoryModule,
+                DemandInventoryModule,
+                RequestInventoryModule,
+            ],
             exports: [ConfigService],
             controllers: [AppController],
             providers: [ConfigService],

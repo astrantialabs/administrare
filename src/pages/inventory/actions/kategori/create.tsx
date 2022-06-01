@@ -30,7 +30,7 @@ import { Formik, Form, Field, FieldInputProps, FormikProps } from "formik";
 import { NextPage } from "next";
 import axios from "axios";
 
-import { FormikCreateKategoriModel } from "@/server/models/inventories/dto/category/create-category.schema";
+import { FormikCreateKategoriModel } from "@/server/models/inventories/master/dto/category.schema";
 
 type PageProps = {};
 

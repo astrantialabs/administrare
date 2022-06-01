@@ -34,7 +34,7 @@ import axios from "axios";
 import {
     FormikCreateBarangModel,
     FormikCreateDemandBarang,
-} from "@/server/models/inventories/dto/item/create-item.schema";
+} from "@/server/models/inventories/master/dto/item.schema";
 import { fetch } from "@/shared/utils/fetch";
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 

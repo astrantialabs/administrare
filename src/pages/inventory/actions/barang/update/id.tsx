@@ -31,7 +31,7 @@ import {
 import { Formik, Form, Field, FieldInputProps, FormikProps } from "formik";
 import { NextPage } from "next";
 import axios from "axios";
-import { FormikCreateBarangModel } from "@/server/models/inventories/dto/item/create-item.schema";
+import { FormikCreateBarangModel } from "@/server/models/inventories/master/dto/item.schema";
 import { fetch } from "@/shared/utils/fetch";
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 

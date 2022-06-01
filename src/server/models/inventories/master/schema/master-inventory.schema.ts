@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 /**
  * @fileoverview The inventory schema.
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
@@ -23,9 +24,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 
-export type InventoryDataDocument = InventoryData & Document;
+export type MasterInventoryDataDocument = MasterInventoryData & Document;
 
-export class MutasiBarangMasuk {
+export class MasterMutasiBarangMasuk {
     @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
     jumlah_satuan: number;
 
@@ -33,7 +34,7 @@ export class MutasiBarangMasuk {
     harga_satuan: number;
 }
 
-export class MutasiBarangKeluar {
+export class MasterMutasiBarangKeluar {
     @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
     jumlah_satuan: number;
 
@@ -41,7 +42,7 @@ export class MutasiBarangKeluar {
     harga_satuan: number;
 }
 
-export class Saldo {
+export class MasterSaldo {
     @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
     jumlah_satuan: number | null;
 
@@ -49,7 +50,7 @@ export class Saldo {
     harga_satuan: number;
 }
 
-export class SaldoAkhir {
+export class MasterSaldoAkhir {
     @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
     jumlah_satuan: number;
 
@@ -57,7 +58,7 @@ export class SaldoAkhir {
     harga_satuan: number;
 }
 
-export class Barang {
+export class MasterBarang {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
 
@@ -67,20 +68,20 @@ export class Barang {
     @Prop({ type: MongooseSchema.Types.String, required: true, default: "-" })
     satuan: string;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "Saldo" })
-    saldo: Saldo;
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterSaldo" })
+    saldo: MasterSaldo;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MutasiBarangMasuk" })
-    mutasi_barang_masuk: MutasiBarangMasuk;
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterMutasiBarangMasuk" })
+    mutasi_barang_masuk: MasterMutasiBarangMasuk;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MutasiBarangKeluar" })
-    mutasi_barang_keluar: MutasiBarangKeluar;
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterMutasiBarangKeluar" })
+    mutasi_barang_keluar: MasterMutasiBarangKeluar;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "SaldoAkhir" })
-    saldo_akhir: SaldoAkhir;
+    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterSaldoAkhir" })
+    saldo_akhir: MasterSaldoAkhir;
 }
 
-export class Inventory {
+export class MasterInventory {
     [x: string]: any;
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
@@ -88,20 +89,20 @@ export class Inventory {
     @Prop({ type: MongooseSchema.Types.String, required: true })
     kategori: string;
 
-    @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "Barang" })
-    barang: Barang[];
+    @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "MasterBarang" })
+    barang: MasterBarang[];
 }
 
 @Schema()
-export class InventoryData {
+export class MasterInventoryData {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
 
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     tahun: number;
 
-    @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "Inventory" })
-    inventory: Inventory[];
+    @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "MasterInventory" })
+    inventory: MasterInventory[];
 }
 
-export const InventoryDataSchema = SchemaFactory.createForClass(InventoryData);
+export const MasterInventoryDataSchema = SchemaFactory.createForClass(MasterInventoryData);
