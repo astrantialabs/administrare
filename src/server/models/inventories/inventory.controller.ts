@@ -17,27 +17,29 @@
  */
 
 /**
- * @fileoverview The app controller.
+ * @fileoverview The inventory controller.
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Controller, Get, Render, Sse, UseInterceptors } from "@nestjs/common";
-import { interval, map, Observable } from "rxjs";
+import { Controller, Get, Render, UseInterceptors } from "@nestjs/common";
 
-import { ParamsInterceptor } from "./common/interceptors/params.interceptor";
+import { ParamsInterceptor } from "@/server/common/interceptors/params.interceptor";
 
-export interface MessageEvent {
-    data: string | object;
-}
-
-@Controller()
-export class AppController {
+@Controller("inventory")
+export class InventoryController {
     constructor() {}
 
     @Get("")
-    @Render("dashboard/main")
+    @Render("dashboard/inventory/main")
     @UseInterceptors(ParamsInterceptor)
-    public index() {
+    public dashboardInventoryMain(): {} {
+        return {};
+    }
+
+    @Get("create")
+    @Render("dashboard/inventory/actions/create")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboardInventoryCreate(): {} {
         return {};
     }
 }
