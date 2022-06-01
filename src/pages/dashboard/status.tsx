@@ -16,10 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 import { NextPage } from "next";
 import { Heading, Text, Stack } from "@chakra-ui/react";
 import { useSubscription, eventSource$ } from "react-query-subscription";
+
+import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 
 const Status: NextPage = () => {
     const { data, isLoading } = useSubscription("events", () => eventSource$("/event"), {});

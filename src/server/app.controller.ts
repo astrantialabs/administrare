@@ -39,27 +39,13 @@ export class AppController {
     constructor() {}
 
     @Get("")
-    @Render("index")
+    @Render("dashboard/main")
     @UseInterceptors(ParamsInterceptor)
     public index() {
         return {};
     }
 
-    @Get("login")
-    @Render("authentication/login")
-    @UseInterceptors(ParamsInterceptor)
-    public authentication_login(): {} {
-        return {};
-    }
-
-    @Get("dashboard")
-    @Render("dashboard/main")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboard_main(): {} {
-        return {};
-    }
-
-    @Get("dashboard/status")
+    @Get("status")
     @Render("dashboard/status")
     @UseInterceptors(ParamsInterceptor)
     public dashboard_status(): {} {
@@ -67,44 +53,9 @@ export class AppController {
     }
 
     @Get("inventory")
-    @Render("inventory/main")
+    @Render("dashboard/inventory/main")
     @UseInterceptors(ParamsInterceptor)
-    public inventory_index() {
-        return {};
-    }
-
-    @Get("inventory/demand")
-    @Render("inventory/demand/main")
-    @UseInterceptors(ParamsInterceptor)
-    public inventory_demand_index() {
-        return {};
-    }
-
-    @Get("inventory/demand/barang/create")
-    @Render("inventory/demand/barang/create")
-    @UseInterceptors(ParamsInterceptor)
-    public inventory_demand_barang_create(): {} {
-        return {};
-    }
-
-    @Get("inventory/actions/barang/create")
-    @Render("inventory/actions/barang/create")
-    @UseInterceptors(ParamsInterceptor)
-    public inventory_actions_barang_create(): {} {
-        return {};
-    }
-
-    @Get("inventory/actions/kategori/create")
-    @Render("inventory/actions/kategori/create")
-    @UseInterceptors(ParamsInterceptor)
-    public inventory_actions_kategori_create(): {} {
-        return {};
-    }
-
-    @Get("inventory/actions/barang/update/:kategori_id/:barang_id")
-    @Render("inventory/actions/barang/update/id")
-    @UseInterceptors(ParamsInterceptor)
-    public inventory_actions_barang_update(): {} {
+    public dashboard_inventory_main(): {} {
         return {};
     }
 

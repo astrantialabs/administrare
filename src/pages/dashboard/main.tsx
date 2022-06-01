@@ -16,14 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 import { NextPage } from "next";
+
+import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 
 const DashboardMain: NextPage = () => {
     return (
         <Sidebar>
             <div>
-                <h1 className="title">DashboardMain</h1>
+                <h1 className="title">Dashboard</h1>
             </div>
         </Sidebar>
     );

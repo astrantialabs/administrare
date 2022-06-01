@@ -18,12 +18,16 @@
 
 import { NextPage } from "next";
 
-const AuthenticationLogin: NextPage = () => {
+import Sidebar from "@/components/dashboard/sidebar/Sidebar";
+
+const DashboardInventoryDelete: NextPage = () => {
     return (
-        <div>
-            <h1 className="title">Authentication Login</h1>
-        </div>
+        <Sidebar>
+            <div>
+                <h1 className="title">Inventory Delete</h1>
+            </div>
+        </Sidebar>
     );
 };
 
-export default AuthenticationLogin;
+export default DashboardInventoryDelete;
