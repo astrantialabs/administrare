@@ -17,11 +17,14 @@
  */
 
 import { NextPage } from "next";
+import { useSubscription, eventSource$ } from "react-query-subscription";
 
 const Home: NextPage = () => {
     return (
         <div>
-            <h1 className="title">Home</h1>
+            <>
+                <h1 className="title">Home</h1>
+            </>
         </div>
     );
 };

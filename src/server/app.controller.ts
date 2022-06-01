@@ -21,11 +21,18 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Controller, Get, Render, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Render, Sse, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { interval, map, Observable } from "rxjs";
+import * as os from "os";
+import * as v8 from "v8";
 
 import { ViewAuthFilter } from "./authentication/filters/view-auth.filter";
 import { ParamsInterceptor } from "./common/interceptors/params.interceptor";
+
+export interface MessageEvent {
+    data: string | object;
+}
 
 @Controller()
 export class AppController {
@@ -45,17 +52,20 @@ export class AppController {
         return {};
     }
 
-    @UseGuards(AuthGuard("jwt"))
-    @UseFilters(ViewAuthFilter)
     @Get("dashboard")
     @Render("dashboard/main")
     @UseInterceptors(ParamsInterceptor)
-    public dashboard_login(): {} {
+    public dashboard_main(): {} {
         return {};
     }
 
-    @UseGuards(AuthGuard("jwt"))
-    @UseFilters(ViewAuthFilter)
+    @Get("dashboard/status")
+    @Render("dashboard/status")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboard_status(): {} {
+        return {};
+    }
+
     @Get("inventory")
     @Render("inventory/main")
     @UseInterceptors(ParamsInterceptor)
@@ -96,5 +106,25 @@ export class AppController {
     @UseInterceptors(ParamsInterceptor)
     public inventory_actions_barang_update(): {} {
         return {};
+    }
+
+    @Sse("event")
+    public event_index(): Observable<MessageEvent> {
+        return interval(1000).pipe(
+            map(() => {
+                return {
+                    data: {
+                        memory: {
+                            rss: ((process.memoryUsage().rss / 1024 / 1024) * 100) / 100,
+                            heapTotal: ((v8.getHeapStatistics().total_heap_size / 1024 / 1024) * 100) / 100,
+                            heapUsed: ((v8.getHeapStatistics().used_heap_size / 1024 / 1024) * 100) / 100,
+                            external: ((process.memoryUsage().external / 1024 / 1024) * 100) / 100,
+                        },
+                        loadAverage: os.loadavg(),
+                        rps: process.cpuUsage(),
+                    },
+                };
+            })
+        );
     }
 }
