@@ -29,7 +29,7 @@ import { DemandBarang, DemandKategori } from "./schema/demand-inventory";
  * @class DemandInventoryController
  * @description The demand inventory data controller.
  */
-@Controller("api/data/inventory/demand")
+@Controller("__api/data/inventory/demand")
 export class DemandInventoryController {
     private readonly logger = new Logger(DemandInventoryController.name);
 

@@ -36,7 +36,7 @@ import { FormikCreateKategoriModel, ParameterCreateCategoryDto } from "./dto/cat
  * @class MasterInventoryDataController
  * @description The master inventory data controller.
  */
-@Controller("api/data/inventory")
+@Controller("__api/data/inventory")
 export class MasterInventoryController {
     private readonly logger = new Logger(MasterInventoryController.name);
 

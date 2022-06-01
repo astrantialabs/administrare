@@ -30,7 +30,7 @@ import { UserService } from "./user.service";
  * @class UserController
  * @description User controller.
  */
-@Controller("api/user")
+@Controller("__api/user")
 export class UserController {
     private readonly logger = new Logger(UserController.name);
 

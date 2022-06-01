@@ -29,7 +29,7 @@ import { RequestBarang } from "./schema/request-inventory";
  * @class RequestInventoryDataController
  * @description The request inventory data controller.
  */
-@Controller("api/data/inventory/request")
+@Controller("__api/data/inventory/request")
 export class RequestInventoryController {
     private readonly logger = new Logger(RequestInventoryController.name);
 
