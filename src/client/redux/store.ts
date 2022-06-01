@@ -18,10 +18,12 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 import { statusSlice } from "./features/statusSlice";
+import { tableDataSlice } from "./features/tableDataSlice";
 
 export const store = configureStore({
     reducer: {
         status: statusSlice.reducer,
+        tabelData: tableDataSlice.reducer,
     },
 });
 
