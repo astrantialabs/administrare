@@ -26,6 +26,7 @@
  * @description The inventory data payload type interface.
  */
 export interface InventoryDataPayload {
+    actions?: any;
     no?: any;
     uraian_barang: any;
     satuan: any;

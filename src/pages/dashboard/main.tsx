@@ -17,15 +17,22 @@
  */
 
 import { NextPage } from "next";
-
 import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 
 const DashboardMain: NextPage = () => {
     return (
-        <Sidebar>
+        <Sidebar type="inventory">
             <div>
                 <h1 className="title">Dashboard</h1>
             </div>
+            {/* <Menu>
+                <MenuButton as={Button}>Actions</MenuButton>
+                <MenuList>
+                    <MenuItem>
+                        <LinkOverlay href={`/inventory/create`}>Create</LinkOverlay>
+                    </MenuItem>
+                </MenuList>
+            </Menu> */}
         </Sidebar>
     );
 };

@@ -42,7 +42,7 @@ import {
 
 import dayjs from "dayjs";
 
-const DashboardInventoryDemandMain: NextPage = () => {
+const DashboardInventoryDemandAction: NextPage = () => {
     const status = useAppSelector((state: RootState) => state.status.value);
     const dispatch = useAppDispatch();
 
@@ -149,4 +149,4 @@ const DashboardInventoryDemandMain: NextPage = () => {
     );
 };
 
-export default DashboardInventoryDemandMain;
+export default DashboardInventoryDemandAction;

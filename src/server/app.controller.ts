@@ -35,7 +35,7 @@ export class AppController {
     constructor() {}
 
     @Get("")
-    @Render("dashboard/main")
+    @Render("index")
     @UseInterceptors(ParamsInterceptor)
     public index() {
         return {};

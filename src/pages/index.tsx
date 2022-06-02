@@ -17,7 +17,7 @@
  */
 
 import { NextPage } from "next";
-import { useSubscription, eventSource$ } from "react-query-subscription";
+import { io } from "socket.io-client";
 
 const Home: NextPage = () => {
     return (

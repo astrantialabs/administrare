@@ -110,6 +110,11 @@ export class MasterInventoryController {
             data.forEach((data_item) => {
                 data_item.inventory.forEach(async (inventory_item, inventory_index) => {
                     table_data.push({
+                        actions: {
+                            category_id: inventory_item.id,
+                            item_id: null,
+                            isKategori: true,
+                        },
                         no: await this.utilsService.romanizeNumber(inventory_index + 1),
                         uraian_barang: inventory_item.kategori,
                         satuan: "",
@@ -132,6 +137,11 @@ export class MasterInventoryController {
 
                     inventory_item.barang.forEach((barang_item, barang_index) => {
                         table_data.push({
+                            actions: {
+                                category_id: inventory_item.id,
+                                item_id: barang_item.id,
+                                isKategori: false,
+                            },
                             no: barang_index + 1,
                             uraian_barang: barang_item.nama,
                             satuan: barang_item.satuan,

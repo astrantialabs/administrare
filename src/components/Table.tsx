@@ -30,12 +30,26 @@ export function Table<T extends object>(props: TableNewProps<T>) {
     const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } = props;
 
     return (
-        <ChakraTable {...getTableProps()} variant={`simple`} colorScheme={`cyan`}>
+        <ChakraTable
+            {...getTableProps()}
+            borderTopWidth="1px"
+            borderTopColor={`gray.200`}
+            variant={`simple`}
+            colorScheme={`cyan`}
+        >
             <Thead>
                 {headerGroups.map((headerGroup) => (
                     <Tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map((column) => (
-                            <Th {...column.getHeaderProps()}>{column.render("Header") as any}</Th>
+                            <Th
+                                {...column.getHeaderProps()}
+                                borderLeftWidth="1px"
+                                borderLeftColor={`gray.200`}
+                                borderRightWidth="1px"
+                                borderRightColor={`gray.200`}
+                            >
+                                {column.render("Header") as any}
+                            </Th>
                         ))}
                     </Tr>
                 ))}
@@ -46,7 +60,17 @@ export function Table<T extends object>(props: TableNewProps<T>) {
                     return (
                         <Tr {...row.getRowProps()}>
                             {row.cells.map((cell) => {
-                                return <Td {...cell.getCellProps()}>{cell.render("Cell") as any}</Td>;
+                                return (
+                                    <Td
+                                        borderLeftWidth="1px"
+                                        borderLeftColor={`gray.200`}
+                                        borderRightWidth="1px"
+                                        borderRightColor={`gray.200`}
+                                        {...cell.getCellProps()}
+                                    >
+                                        {cell.render("Cell") as any}
+                                    </Td>
+                                );
                             })}
                         </Tr>
                     );

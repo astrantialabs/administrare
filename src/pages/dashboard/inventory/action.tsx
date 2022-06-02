@@ -23,18 +23,37 @@ import { useAppSelector } from "@/client/hooks/useAppSelector";
 import { RootState } from "@/client/redux/store";
 import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 import { setTableData } from "@/client/redux/features/tableDataSlice";
-import { useEffect, useMemo } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
 import { Column, useTable } from "react-table";
 import { Table } from "@/components/Table";
 import axios from "axios";
 import { useQuery } from "react-query";
+import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+
+const MenuFC = () => {
+    {
+        <Menu>
+            <MenuButton as={Button}>Actions</MenuButton>
+            <MenuList>
+                <MenuItem>
+                    <LinkOverlay href={`/inventory/create`}>Update</LinkOverlay>
+                </MenuItem>
+            </MenuList>
+        </Menu>;
+    }
+};
 
 const createArr = (n: number, tableData: any): InventoryDataPayload[] => {
     const data: any[] = [];
     for (let i = 0; i < n; i += 1) {
         tableData.map((item: any, index: any) => {
             data.push({
+                actions: {
+                    category_id: item.actions.category_id,
+                    item_id: item.actions.item_id,
+                    isKategori: item.actions.isKategori,
+                },
                 no: item.no,
                 uraian_barang: item.uraian_barang,
                 satuan: item.satuan,
@@ -60,6 +79,52 @@ const TableInstance = ({ tableData }: any) => {
     const data = useMemo<InventoryDataPayload[]>(() => createArr(1, tableData), []);
     const columns = useMemo<Column<InventoryDataPayload>[]>(
         () => [
+            {
+                Header: "Actions",
+                accessor: "actions",
+                Cell: ({ value }) => {
+                    if (value.isKategori) {
+                        return (
+                            <Menu>
+                                <MenuButton as={Button}>Actions</MenuButton>
+                                <MenuList>
+                                    <MenuItem mb={4}>
+                                        <LinkOverlay href={`/inventory/update/kategori/${value.category_id}`}>
+                                            Update Kategori
+                                        </LinkOverlay>
+                                    </MenuItem>
+                                    <MenuItem mt={4}>
+                                        <LinkOverlay href={`/inventory/delete/kategori/${value.category_id}`}>
+                                            Delete Kategori
+                                        </LinkOverlay>
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                        );
+                    }
+                    return (
+                        <Menu>
+                            <MenuButton as={Button}>Actions</MenuButton>
+                            <MenuList>
+                                <MenuItem mb={4}>
+                                    <LinkOverlay
+                                        href={`/inventory/update/barang/${value.category_id}/${value.item_id}`}
+                                    >
+                                        Update Barang
+                                    </LinkOverlay>
+                                </MenuItem>
+                                <MenuItem mt={4}>
+                                    <LinkOverlay
+                                        href={`/inventory/delete/barang/${value.category_id}/${value.item_id}`}
+                                    >
+                                        Delete Barang
+                                    </LinkOverlay>
+                                </MenuItem>
+                            </MenuList>
+                        </Menu>
+                    );
+                },
+            },
             {
                 Header: "No",
                 accessor: "no",
@@ -171,7 +236,7 @@ const TableInstance = ({ tableData }: any) => {
     );
 };
 
-const DashboardInventoryMain: NextPage = () => {
+const DashboardInventoryActions: NextPage = () => {
     const tableData = useAppSelector((state: RootState) => state.tabelData.data);
     const dispatch = useAppDispatch();
 
@@ -203,4 +268,4 @@ const DashboardInventoryMain: NextPage = () => {
     );
 };
 
-export default DashboardInventoryMain;
+export default DashboardInventoryActions;

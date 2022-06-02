@@ -36,10 +36,31 @@ export class InventoryController {
         return {};
     }
 
+    @Get("actions")
+    @Render("dashboard/inventory/action")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboardInventoryActions(): {} {
+        return {};
+    }
+
     @Get("create")
     @Render("dashboard/inventory/actions/create")
     @UseInterceptors(ParamsInterceptor)
     public dashboardInventoryCreate(): {} {
+        return {};
+    }
+
+    @Get("demand")
+    @Render("dashboard/inventory/demand/main")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboardInventoryDemandMain(): {} {
+        return {};
+    }
+
+    @Get("demand/actions")
+    @Render("dashboard/inventory/demand/action")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboardInventoryDemandActions(): {} {
         return {};
     }
 }

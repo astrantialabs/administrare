@@ -35,6 +35,13 @@ import {
     FlexProps,
     useDisclosure,
     IconButton,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    LinkOverlay,
+    HStack,
+    Button,
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
 import { ReactNode } from "react";
@@ -85,6 +92,13 @@ interface SidebarProps extends BoxProps {
     onClose: () => void;
 }
 
+const Switch = (str: string | number) =>
+    ({
+        finance: "finance",
+        inventory: "inventory",
+        archive: "archive",
+    }[str] || "");
+
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     return (
         <Box
@@ -107,27 +121,41 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 Home
             </NavigationItem>
             <Divider mt={4} mb={4} bg={`gray.200`} />
-            <NavigationItem link={`/finance`} icon={FiPieChart}>
-                Finance Summary
-            </NavigationItem>
-            <NavigationItem link={`/inventory`} icon={FiBook}>
-                Inventory
-            </NavigationItem>
-            <Flex h={`10`} alignItems={`center`} mx={`4`} justifyContent={`space-between`}>
-                <Text fontSize={`small`} fontWeight={`bold`}>
-                    data archive
-                </Text>
-            </Flex>
-            <NavigationItem link={`/archive/hi`} icon={FiFolder}>
-                Industrial Relations
-            </NavigationItem>
-            <Divider mt={4} mb={4} bg={`gray.200`} />
+
+            {Switch("inventory") && (
+                <>
+                    <Flex h={`10`} alignItems={`center`} mx={`4`} justifyContent={`space-between`}>
+                        <Text fontSize={`small`} fontWeight={`bold`}>
+                            inventory
+                        </Text>
+                    </Flex>
+                    <NavigationItem link={`/inventory`} icon={FiPieChart}>
+                        Inventory
+                    </NavigationItem>
+                    <NavigationItem link={`/inventory/actions`} icon={FiPieChart}>
+                        Inventory Actions
+                    </NavigationItem>
+                    <Divider mt={4} mb={4} bg={`gray.200`} />
+                    <Flex h={`10`} alignItems={`center`} mx={`4`} justifyContent={`space-between`}>
+                        <Text fontSize={`small`} fontWeight={`bold`}>
+                            inventory demand
+                        </Text>
+                    </Flex>
+                    <NavigationItem link={`/inventory/demand`} icon={FiPieChart}>
+                        Demand
+                    </NavigationItem>
+                    <NavigationItem link={`/inventory/demand/actions`} icon={FiPieChart}>
+                        Demand Actions
+                    </NavigationItem>
+                </>
+            )}
         </Box>
     );
 };
 
 interface MobileNavigationProps extends FlexProps {
     onOpen: () => void;
+    type: string;
 }
 
 const MobileNavigation = ({ onOpen, ...rest }: MobileNavigationProps) => {
@@ -136,10 +164,8 @@ const MobileNavigation = ({ onOpen, ...rest }: MobileNavigationProps) => {
             ml={{ base: 0, md: 60 }}
             px={{ base: 4, md: 4 }}
             height="20"
-            alignItems="center"
             bg={`white`}
-            borderBottomWidth="1px"
-            borderBottomColor={`gray.200`}
+            alignItems={`center`}
             justifyContent={{ base: "space-between", md: "flex-end" }}
             {...rest}
         >
@@ -150,17 +176,16 @@ const MobileNavigation = ({ onOpen, ...rest }: MobileNavigationProps) => {
                 aria-label="open menu"
                 icon={<FiMenu />}
             />
-
-            <Text display={{ base: "flex", md: "none" }} fontSize="2xl" fontWeight="bold">
-                Administrare
-            </Text>
-
-            {/* <HStack spacing={{ base: "0", md: "6" }}></HStack> */}
+            {/* {Switch("inventory") && (
+                <>
+                    <HStack visibility={{ lg: `visible`, sm: `hidden` }}></HStack>
+                </>
+            )} */}
         </Flex>
     );
 };
 
-export default function Sidebar({ children }: { children: ReactNode }) {
+export default function Sidebar({ type, children }: { type: string; children: ReactNode }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <Box minH={`100vh`}>
@@ -178,7 +203,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
                     <SidebarContent onClose={onClose} />
                 </DrawerContent>
             </Drawer>
-            <MobileNavigation onOpen={onOpen} />
+            <MobileNavigation type={type} onOpen={onOpen} />
             <Box ml={{ base: 0, md: 60 }} p={4} zIndex={`-1`}>
                 {children}
             </Box>

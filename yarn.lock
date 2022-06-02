@@ -151,21 +151,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.14.6, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2":
-  version: 7.14.6
-  resolution: "@babel/runtime@npm:7.14.6"
-  dependencies:
-    regenerator-runtime: ^0.13.4
-  checksum: 927ffed7871f2ed29f967a8dad7a72aa10662f93b6735a89d664a161fa4dc2074b8947ca159a8a0a49cec9a71c8de473d7c2b22d3de0ee4d7dd06d24a7f98018
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.9.2":
   version: 7.18.0
   resolution: "@babel/runtime@npm:7.18.0"
   dependencies:
     regenerator-runtime: ^0.13.4
   checksum: 9d0caa5fe690623fb6c5df6fb3b3581d227b55ef9f7c35eba0da83d10aa756669a81fe521ac4dbc007e5790716bac40ebe71ff098e2d1a9599dd696a282a3e95
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2":
+  version: 7.14.6
+  resolution: "@babel/runtime@npm:7.14.6"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: 927ffed7871f2ed29f967a8dad7a72aa10662f93b6735a89d664a161fa4dc2074b8947ca159a8a0a49cec9a71c8de473d7c2b22d3de0ee4d7dd06d24a7f98018
   languageName: node
   linkType: hard
 
@@ -2372,6 +2372,7 @@ __metadata:
     connect-mongodb-session: ^3.1.1
     cookie-parser: ^1.4.6
     csurf: ^1.11.0
+    dayjs: ^1.11.2
     eslint: ^7.30.0
     eslint-config-next: ^11.0.1
     eslint-config-prettier: ^8.3.0
@@ -2391,7 +2392,6 @@ __metadata:
     react-dom: ^18.1.0
     react-icons: ^4.3.1
     react-query: ^3.39.1
-    react-query-subscription: ^1.5.0
     react-redux: ^8.0.2
     react-table: ^7.8.0
     reflect-metadata: ^0.1.13
@@ -3533,6 +3533,13 @@ __metadata:
   version: 1.0.7
   resolution: "damerau-levenshtein@npm:1.0.7"
   checksum: ec8161cb381523e0db9b5c9b64863736da3197808b6fdc4a3a2ca764c0b4357e9232a4c5592220fb18755a91240b8fee7b13ab1b269fbbdc5f68c36f0053aceb
+  languageName: node
+  linkType: hard
+
+"dayjs@npm:^1.11.2":
+  version: 1.11.2
+  resolution: "dayjs@npm:1.11.2"
+  checksum: 78f8bd04a9e5f5554aa06eacda65a7d59e162d39f621a46fd34fb3b51367c3662426d86b4e2f4ac535f81e0c4d5af3e8a83b37e672412eb556267d726c61f8f3
   languageName: node
   linkType: hard
 
@@ -7079,19 +7086,6 @@ __metadata:
   version: 18.1.0
   resolution: "react-is@npm:18.1.0"
   checksum: d206a0fe6790851bff168727bfb896de02c5591695afb0c441163e8630136a3e13ee1a7ddd59fdccddcc93968b4721ae112c10f790b194b03b35a3dc13a355ef
-  languageName: node
-  linkType: hard
-
-"react-query-subscription@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "react-query-subscription@npm:1.5.0"
-  dependencies:
-    "@babel/runtime": 7.14.6
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0
-    react-query: ^3.0.0
-    rxjs: ^7.1.0
-  checksum: 092eaa7d3cacbc6f20929d7f6fe48d348f01d89ba94aa9018f1e0a21dead790e6cb1e0420720c1125dfda494140c2e897d24cce2375a21a633b070c610067ec5
   languageName: node
   linkType: hard
 
