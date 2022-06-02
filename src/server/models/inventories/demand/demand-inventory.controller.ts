@@ -23,7 +23,7 @@
 
 import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { DemandInventoryService } from "./demand-inventory.service";
-import { DemandBarang, DemandKategori } from "./schema/demand-inventory";
+import { DemandBarang, DemandKategori } from "./schema/demand-inventory.schema";
 
 /**
  * @class DemandInventoryController

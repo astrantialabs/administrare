@@ -29,7 +29,7 @@ import {
     DemandInventoryData,
     DemandInventoryDataDocument,
     DemandKategori,
-} from "./schema/demand-inventory";
+} from "./schema/demand-inventory.schema";
 
 /**
  * @class DemandInventoryService

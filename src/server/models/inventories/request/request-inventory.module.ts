@@ -18,7 +18,7 @@
 
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { RequestInventoryData, RequestInventoryDataSchema } from "../request/schema/request-inventory";
+import { RequestInventoryData, RequestInventoryDataSchema } from "./schema/request-inventory.schema";
 import { RequestInventoryController } from "./request-inventory.controller";
 import { RequestInventoryService } from "./request-inventory.service";
 

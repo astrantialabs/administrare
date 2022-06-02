@@ -23,7 +23,7 @@
 
 import { Controller, Get, Logger } from "@nestjs/common";
 import { RequestInventoryService } from "./request-inventory.service";
-import { RequestBarang } from "./schema/request-inventory";
+import { RequestBarang } from "./schema/request-inventory.schema";
 
 /**
  * @class RequestInventoryDataController
