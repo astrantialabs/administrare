@@ -16,18 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { NextPage } from "next";
+/**
+ * @fileoverview The axios instance.
+ * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
+ */
 
-import Sidebar from "@/components/dashboard/sidebar/Sidebar";
+import axios from "axios";
 
-const DashboardInventoryCreate: NextPage = () => {
-    return (
-        <Sidebar>
-            <div>
-                <h1 className="title">Inventory Create</h1>
-            </div>
-        </Sidebar>
-    );
-};
-
-export default DashboardInventoryCreate;
+export const axiosInstance = axios.create({
+    baseURL: "http://localhost:3000/",
+    headers: {
+        "Content-type": "application/json",
+    },
+});

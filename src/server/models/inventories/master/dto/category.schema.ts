@@ -16,15 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsString, IsNotEmpty, FormikValidatorBase } from "formik-class-validator";
-
-export class ParameterCreateCategoryDto {
+/**
+ * @class ParameterMasterInventoryCreateCategoryDto
+ */
+export class ParameterMasterInventoryCreateCategoryDto {
     tahun: number;
     kategori: string;
-}
-
-export class FormikCreateKategoriModel extends FormikValidatorBase {
-    @IsString()
-    @IsNotEmpty({ message: "Kategori tidak boleh kosong!" })
-    kategori: string = "";
 }

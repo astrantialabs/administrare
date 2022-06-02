@@ -43,10 +43,17 @@ export class InventoryController {
         return {};
     }
 
-    @Get("create")
-    @Render("dashboard/inventory/actions/create")
+    @Get("create/kategori")
+    @Render("dashboard/inventory/actions/kategori/create")
     @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryCreate(): {} {
+    public dashboardInventoryCreateKategori(): {} {
+        return {};
+    }
+
+    @Get("create/barang")
+    @Render("dashboard/inventory/actions/barang/create")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboardInventoryCreateBarang(): {} {
         return {};
     }
 

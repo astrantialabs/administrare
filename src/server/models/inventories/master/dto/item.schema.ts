@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsNotEmpty, IsString, IsOptional, FormikValidatorBase } from "formik-class-validator";
 import {
     MasterMutasiBarangKeluar,
     MasterMutasiBarangMasuk,
@@ -24,7 +23,10 @@ import {
     MasterSaldoAkhir,
 } from "../schema/master-inventory.schema";
 
-export class ParameterCreateItemDto {
+/**
+ * @class ParameterCreateItemDto
+ */
+export class ParameterMasterInventoryCreateBarangDto {
     tahun: number;
     kategori_id: number;
     nama: string;
@@ -35,75 +37,17 @@ export class ParameterCreateItemDto {
     saldo_akhir: MasterSaldoAkhir;
 }
 
-export class FormikCreateDemandBarang extends FormikValidatorBase {
-    @IsOptional()
+export class ParameterMasterInventoryCreateBarangAlternativeDto {
     kategori_id: number;
-
-    @IsNotEmpty({ message: "Username tidak boleh kosong!" })
-    @IsString()
-    username: string = "";
-
-    @IsNotEmpty({ message: "Nama barang tidak boleh kosong!" })
-    @IsString()
-    barang: string = "";
-
-    @IsNotEmpty({ message: "Nama satuan barang tidak boleh kosong!" })
-    @IsString()
-    satuan: string = "";
-}
-
-export class FormikCreateBarangModel extends FormikValidatorBase {
-    @IsOptional()
-    kategori_id: number;
-
-    @IsNotEmpty({ message: "Nama barang tidak boleh kosong!" })
-    @IsString()
-    nama: string = "";
-
-    @IsNotEmpty({ message: "Nama satuan barang tidak boleh kosong!" })
-    @IsString()
-    satuan: string = "";
-
-    @IsOptional()
-    saldo_jumlah_satuan?: string | null = null;
-
-    @IsOptional()
-    saldo_harga_satuan?: string | null = null;
-
-    @IsOptional()
-    saldo_akhir_jumlah_satuan?: string | null = null;
-
-    @IsOptional()
-    saldo_akhir_harga_satuan?: string | null = null;
-
-    @IsOptional()
-    mutasi_barang_masuk_jumlah_satuan?: string | null = null;
-
-    @IsOptional()
-    mutasi_barang_masuk_harga_satuan?: string | null = null;
-
-    @IsOptional()
-    mutasi_barang_keluar_jumlah_satuan?: string | null = null;
-
-    @IsOptional()
-    mutasi_barang_keluar_harga_satuan?: string | null = null;
-
-    constructor(isUpdate: boolean = false, data?: any) {
-        super();
-
-        if (isUpdate) {
-            data.map((item: any) => {
-                this.nama = item.uraian_barang;
-                this.satuan = item.satuan;
-                this.saldo_jumlah_satuan = item.saldo_jumlah_satuan;
-                this.saldo_harga_satuan = item.saldo_harga_satuan;
-                this.saldo_akhir_jumlah_satuan = item.saldo_akhir_jumlah_satuan;
-                this.saldo_akhir_harga_satuan = item.saldo_akhir_harga_satuan;
-                this.mutasi_barang_masuk_jumlah_satuan = item.mutasi_barang_masuk_jumlah_satuan;
-                this.mutasi_barang_masuk_harga_satuan = item.mutasi_barang_masuk_harga_satuan;
-                this.mutasi_barang_keluar_jumlah_satuan = item.mutasi_barang_keluar_jumlah_satuan;
-                this.mutasi_barang_keluar_harga_satuan = item.mutasi_barang_keluar_harga_satuan;
-            });
-        }
-    }
+    nama: string;
+    satuan: string;
+    saldo_jumlah_satuan?: string | number;
+    saldo_harga_satuan?: string;
+    saldo_akhir_jumlah_satuan?: string | null;
+    saldo_akhir_harga_satuan?: string | null;
+    mutasi_barang_masuk_jumlah_satuan?: string | null;
+    mutasi_barang_masuk_harga_satuan?: string | null;
+    mutasi_barang_keluar_jumlah_satuan?: string | null;
+    mutasi_barang_keluar_harga_satuan?: string | null;
+    tahun: number;
 }

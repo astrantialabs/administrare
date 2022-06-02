@@ -29,8 +29,9 @@ import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payl
 import { UtilsService } from "../../../utils/utils.service";
 import { MasterInventoryService as MasterInventoryService } from "./master-inventory.service";
 import { MasterBarang, MasterInventory, MasterInventoryDataDocument } from "./schema/master-inventory.schema";
-import { ParameterCreateItemDto } from "./dto/item.schema";
-import { FormikCreateKategoriModel, ParameterCreateCategoryDto } from "./dto/category.schema";
+import { ParameterMasterInventoryCreateBarangDto } from "./dto/item.schema";
+import { MasterInventoryKategoriCreateFormModel } from "./validations/kategori.validation";
+import { ParameterMasterInventoryCreateCategoryDto } from "@/server/models/inventories/master/dto/category.schema";
 
 /**
  * @class MasterInventoryDataController
@@ -278,9 +279,9 @@ export class MasterInventoryController {
      * @returns {MasterInventory} The new category data
      */
     @Post("master/create/kategori")
-    public async masterCreateKategori(@Body() body: FormikCreateKategoriModel): Promise<MasterInventory> {
+    public async masterCreateKategori(@Body() body: MasterInventoryKategoriCreateFormModel): Promise<MasterInventory> {
         try {
-            const payload: ParameterCreateCategoryDto = {
+            const payload: ParameterMasterInventoryCreateCategoryDto = {
                 tahun: 2022,
                 kategori: body.kategori.toUpperCase(),
             };
@@ -298,7 +299,7 @@ export class MasterInventoryController {
     @Post("master/create/barang")
     public async masterCreateBarang(@Body() body: any): Promise<MasterBarang> {
         try {
-            const payload: ParameterCreateItemDto = {
+            const payload: ParameterMasterInventoryCreateBarangDto = {
                 tahun: body.tahun,
                 kategori_id: body.kategori_id,
                 nama: body.nama,

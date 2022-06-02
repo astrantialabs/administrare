@@ -16,16 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { NextPage } from "next";
+/**
+ * @fileoverview The master inventory formik validation.
+ * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
+ */
 
-const Home: NextPage = () => {
-    return (
-        <div>
-            <>
-                <h1 className="title">Home</h1>
-            </>
-        </div>
-    );
-};
+import { IsNotEmpty, IsString, FormikValidatorBase } from "formik-class-validator";
 
-export default Home;
+/**
+ * @class MasterInventoryBarangCreateFormModel
+ * @extends {FormikValidatorBase}
+ */
+export class MasterInventoryKategoriCreateFormModel extends FormikValidatorBase {
+    @IsNotEmpty({ message: "Kategori tidak boleh kosong!" })
+    @IsString()
+    kategori: string = "";
+}
