@@ -79,6 +79,13 @@ class EnvironmentVariables {
     DATABASE_MASTER_INVENTORY_CONNECTION_NAME: string;
 
     @IsString()
+    DATABASE_MASTER_TEST_INVENTORY_COLLECTION: string;
+    @IsString()
+    DATABASE_MASTER_TEST_INVENTORY_URI: string;
+    @IsString()
+    DATABASE_MASTER_TEST_INVENTORY_CONNECTION_NAME: string;
+
+    @IsString()
     DATABASE_DEMAND_INVENTORY_COLLECTION: string;
     @IsString()
     DATABASE_DEMAND_INVENTORY_URI: string;

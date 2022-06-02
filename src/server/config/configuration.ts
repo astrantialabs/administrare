@@ -57,6 +57,12 @@ export default () => ({
             uri: process.env.DATABASE_MASTER_INVENTORY_URI || "mongodb://localhost:27017/inventory",
             connection_name: process.env.DATABASE_MASTER_INVENTORY_CONNECTION_NAME || "master_inventory_database",
         },
+        master_test_inventory: {
+            collection: process.env.DATABASE_MASTER_TEST_INVENTORY_COLLECTION || "master-test-inventory",
+            uri: process.env.DATABASE_MASTER_TEST_INVENTORY_URI || "mongodb://localhost:27017/inventory",
+            connection_name:
+                process.env.DATABASE_MASTER_TEST_INVENTORY_CONNECTION_NAME || "master_test_inventory_database",
+        },
         demand_inventory: {
             collection: process.env.DATABASE_DEMAND_INVENTORY_COLLECTION || "demand-inventory",
             uri: process.env.DATABASE_DEMAND_INVENTORY_URI || "mongodb://localhost:27017/inventory",

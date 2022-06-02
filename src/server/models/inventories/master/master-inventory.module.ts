@@ -23,6 +23,7 @@ import { UtilsModule } from "../../../utils/utils.module";
 import { MasterInventoryController } from "./master-inventory.controller";
 import { MasterInventoryService as MasterInventoryService } from "./master-inventory.service";
 import { MasterInventoryData, MasterInventoryDataSchema } from "./schema/master-inventory.schema";
+import { MasterTestInventoriData, MasterTestInventoriDataSchema } from "./schema/master-test-inventory.schema";
 
 @Module({
     imports: [
@@ -36,6 +37,16 @@ import { MasterInventoryData, MasterInventoryDataSchema } from "./schema/master-
                 },
             ],
             process.env.DATABASE_MASTER_INVENTORY_CONNECTION_NAME
+        ),
+        MongooseModule.forFeature(
+            [
+                {
+                    name: MasterTestInventoriData.name,
+                    schema: MasterTestInventoriDataSchema,
+                    collection: process.env.DATABASE_MASTER_TEST_INVENTORY_COLLECTION,
+                },
+            ],
+            process.env.DATABASE_MASTER_TEST_INVENTORY_CONNECTION_NAME
         ),
     ],
     exports: [MasterInventoryService],
