@@ -40,10 +40,10 @@ import { ConfigService } from "../config/config.service";
         }),
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
-            connectionName: process.env.DATABASE_INVENTORY_CONNECTION_NAME,
+            connectionName: process.env.DATABASE_MASTER_INVENTORY_CONNECTION_NAME,
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.database.inventory.uri,
-                connectionName: configService.database.inventory.connection_name,
+                uri: configService.database.master_inventory.uri,
+                connectionName: configService.database.master_inventory.connection_name,
             }),
             inject: [ConfigService],
         }),
@@ -51,8 +51,8 @@ import { ConfigService } from "../config/config.service";
             imports: [ConfigModule],
             connectionName: process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME,
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.database.demand.uri,
-                connectionName: configService.database.demand.connection_name,
+                uri: configService.database.demand_inventory.uri,
+                connectionName: configService.database.demand_inventory.connection_name,
             }),
             inject: [ConfigService],
         }),
@@ -60,8 +60,8 @@ import { ConfigService } from "../config/config.service";
             imports: [ConfigModule],
             connectionName: process.env.DATABASE_REQUEST_INVENTORY_CONNECTION_NAME,
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.database.request.uri,
-                connectionName: configService.database.request.connection_name,
+                uri: configService.database.request_inventory.uri,
+                connectionName: configService.database.request_inventory.connection_name,
             }),
             inject: [ConfigService],
         }),

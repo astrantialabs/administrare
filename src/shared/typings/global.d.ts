@@ -44,10 +44,6 @@ export declare global {
             DATABASE_SUMMARY_URI: string;
             DATABASE_SUMMARY_CONNECTION_NAME: string;
 
-            DATABASE_INVENTORY_COLLECTION: string;
-            DATABASE_INVENTORY_URI: string;
-            DATABASE_INVENTORY_CONNECTION_NAME: string;
-
             DATABASE_ARCHIVE_COLLECTION: string;
             DATABASE_ARCHIVE_URI: string;
             DATABASE_ARCHIVE_CONNECTION_NAME: string;
@@ -55,6 +51,10 @@ export declare global {
             DATABASE_SESSION_COLLECTION: string;
             DATABASE_SESSION_URI: string;
             DATABASE_SESSION_CONNECTION_NAME: string;
+
+            DATABASE_MASTER_INVENTORY_COLLECTION: string;
+            DATABASE_MASTER_INVENTORY_URI: string;
+            DATABASE_MASTER_INVENTORY_CONNECTION_NAME: string;
 
             DATABASE_DEMAND_INVENTORY_COLLECTION: string;
             DATABASE_DEMAND_INVENTORY_URI: string;

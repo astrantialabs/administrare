@@ -42,11 +42,6 @@ export default () => ({
             uri: process.env.DATABASE_SUMMARY_URI || "mongodb://localhost:27017/summary",
             connection_name: process.env.DATABASE_SUMMARY_CONNECTION_NAME || "summary_database",
         },
-        inventory: {
-            collection: process.env.DATABASE_INVENTORY_COLLECTION || "inventories",
-            uri: process.env.DATABASE_INVENTORY_URI || "mongodb://localhost:27017/inventory",
-            connection_name: process.env.DATABASE_INVENTORY_CONNECTION_NAME || "inventory_database",
-        },
         archive: {
             collection: process.env.DATABASE_ARCHIVE_COLLECTION || "archives",
             uri: process.env.DATABASE_ARCHIVE_URI || "mongodb://localhost:27017/archive",
@@ -57,15 +52,20 @@ export default () => ({
             uri: process.env.DATABASE_SESSION_URI || "mongodb://localhost:27017/session",
             connection_name: process.env.DATABASE_SESSION_CONNECTION_NAME || "session_database",
         },
-        demand: {
-            collection: process.env.DATABASE_DEMAND_INVENTORY_COLLECTION || "demands",
-            uri: process.env.DATABASE_DEMAND_INVENTORY_URI || "mongodb://localhost:27017/inventory",
-            connection_name: process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME || "demand_database",
+        master_inventory: {
+            collection: process.env.DATABASE_MASTER_INVENTORY_COLLECTION || "master-inventory",
+            uri: process.env.DATABASE_MASTER_INVENTORY_URI || "mongodb://localhost:27017/inventory",
+            connection_name: process.env.DATABASE_MASTER_INVENTORY_CONNECTION_NAME || "master_inventory_database",
         },
-        request: {
-            collection: process.env.DATABASE_REQUEST_INVENTORY_COLLECTION || "requests",
+        demand_inventory: {
+            collection: process.env.DATABASE_DEMAND_INVENTORY_COLLECTION || "demand-inventory",
+            uri: process.env.DATABASE_DEMAND_INVENTORY_URI || "mongodb://localhost:27017/inventory",
+            connection_name: process.env.DATABASE_DEMAND_INVENTORY_CONNECTION_NAME || "demand_inventory_database",
+        },
+        request_inventory: {
+            collection: process.env.DATABASE_REQUEST_INVENTORY_COLLECTION || "request-inventory",
             uri: process.env.DATABASE_REQUEST_INVENTORY_URI || "mongodb://localhost:27017/inventory",
-            connection_name: process.env.DATABASE_REQUEST_INVENTORY_CONNECTION_NAME || "request_database",
+            connection_name: process.env.DATABASE_REQUEST_INVENTORY_CONNECTION_NAME || "request_inventory_database",
         },
     },
 });

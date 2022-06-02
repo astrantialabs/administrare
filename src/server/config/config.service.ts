@@ -93,11 +93,6 @@ export class ConfigService {
             uri: string;
             connection_name: string;
         };
-        inventory: {
-            collection: string;
-            uri: string;
-            connection_name: string;
-        };
         archive: {
             collection: string;
             uri: string;
@@ -108,12 +103,17 @@ export class ConfigService {
             uri: string;
             connection_name: string;
         };
-        demand: {
+        master_inventory: {
             collection: string;
             uri: string;
             connection_name: string;
         };
-        request: {
+        demand_inventory: {
+            collection: string;
+            uri: string;
+            connection_name: string;
+        };
+        request_inventory: {
             collection: string;
             uri: string;
             connection_name: string;
@@ -130,11 +130,6 @@ export class ConfigService {
                 uri: this.configServer.get<string>("database.summary.uri"),
                 connection_name: this.configServer.get<string>("database.summary.connection_name"),
             },
-            inventory: {
-                collection: this.configServer.get<string>("database.inventory.collection"),
-                uri: this.configServer.get<string>("database.inventory.uri"),
-                connection_name: this.configServer.get<string>("database.inventory.connection_name"),
-            },
             archive: {
                 collection: this.configServer.get<string>("database.archive.collection"),
                 uri: this.configServer.get<string>("database.archive.uri"),
@@ -145,15 +140,20 @@ export class ConfigService {
                 uri: this.configServer.get<string>("database.session.uri"),
                 connection_name: this.configServer.get<string>("database.session.connection_name"),
             },
-            demand: {
-                collection: this.configServer.get<string>("database.demand.collection"),
-                uri: this.configServer.get<string>("database.demand.uri"),
-                connection_name: this.configServer.get<string>("database.demand.connection_name"),
+            master_inventory: {
+                collection: this.configServer.get<string>("database.master_inventory.collection"),
+                uri: this.configServer.get<string>("database.master_inventory.uri"),
+                connection_name: this.configServer.get<string>("database.master_inventory.connection_name"),
             },
-            request: {
-                collection: this.configServer.get<string>("database.request.collection"),
-                uri: this.configServer.get<string>("database.request.uri"),
-                connection_name: this.configServer.get<string>("database.request.connection_name"),
+            demand_inventory: {
+                collection: this.configServer.get<string>("database.demand_inventory.collection"),
+                uri: this.configServer.get<string>("database.demand_inventory.uri"),
+                connection_name: this.configServer.get<string>("database.demand_inventory.connection_name"),
+            },
+            request_inventory: {
+                collection: this.configServer.get<string>("database.request_inventory.collection"),
+                uri: this.configServer.get<string>("database.request_inventory.uri"),
+                connection_name: this.configServer.get<string>("database.request_inventory.connection_name"),
             },
         };
     }

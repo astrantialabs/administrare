@@ -32,10 +32,10 @@ import { MasterInventoryData, MasterInventoryDataSchema } from "./schema/master-
                 {
                     name: MasterInventoryData.name,
                     schema: MasterInventoryDataSchema,
-                    collection: process.env.DATABASE_INVENTORY_COLLECTION,
+                    collection: process.env.DATABASE_MASTER_INVENTORY_COLLECTION,
                 },
             ],
-            process.env.DATABASE_INVENTORY_CONNECTION_NAME
+            process.env.DATABASE_MASTER_INVENTORY_CONNECTION_NAME
         ),
     ],
     exports: [MasterInventoryService],

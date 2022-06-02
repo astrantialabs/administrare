@@ -58,13 +58,6 @@ class EnvironmentVariables {
     DATABASE_SUMMARY_CONNECTION_NAME: string;
 
     @IsString()
-    DATABASE_INVENTORY_COLLECTION: string;
-    @IsString()
-    DATABASE_INVENTORY_URI: string;
-    @IsString()
-    DATABASE_INVENTORY_CONNECTION_NAME: string;
-
-    @IsString()
     DATABASE_ARCHIVE_COLLECTION: string;
     @IsString()
     DATABASE_ARCHIVE_URI: string;
@@ -77,6 +70,13 @@ class EnvironmentVariables {
     DATABASE_SESSION_URI: string;
     @IsString()
     DATABASE_SESSION_CONNECTION_NAME: string;
+
+    @IsString()
+    DATABASE_MASTER_INVENTORY_COLLECTION: string;
+    @IsString()
+    DATABASE_MASTER_INVENTORY_URI: string;
+    @IsString()
+    DATABASE_MASTER_INVENTORY_CONNECTION_NAME: string;
 
     @IsString()
     DATABASE_DEMAND_INVENTORY_COLLECTION: string;
