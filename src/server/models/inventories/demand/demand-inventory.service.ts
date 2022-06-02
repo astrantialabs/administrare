@@ -21,6 +21,7 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
+import { UtilsService } from "@/server/utils/utils.service";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -44,7 +45,8 @@ export class DemandInventoryService {
      */
     constructor(
         @InjectModel(DemandInventoryData.name)
-        private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>
+        private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>,
+        private readonly utilsService: UtilsService
     ) {}
 
     /**
@@ -162,7 +164,7 @@ export class DemandInventoryService {
             id: demand_data.kategori.length + 1,
             username: username,
             kategori: category,
-            createad_at: new Date(),
+            createad_at: this.utilsService.currentDate(),
             responded_at: null,
             status: 0,
         };
@@ -197,7 +199,7 @@ export class DemandInventoryService {
             username: username,
             barang: item,
             satuan: unit,
-            createad_at: new Date(),
+            createad_at: this.utilsService.currentDate(),
             responded_at: null,
             status: 0,
         };
@@ -229,7 +231,7 @@ export class DemandInventoryService {
 
             demand_data.kategori.forEach((demand_kategori_object) => {
                 if (demand_kategori_object.id == id) {
-                    demand_kategori_object.responded_at = new Date();
+                    demand_kategori_object.responded_at = this.utilsService.currentDate();
                     demand_kategori_object.status = status;
 
                     responded_demand_kategori = demand_kategori_object;
@@ -264,7 +266,7 @@ export class DemandInventoryService {
 
             demand_data.barang.forEach((demand_barang_object) => {
                 if (demand_barang_object.id == id) {
-                    demand_barang_object.responded_at = new Date();
+                    demand_barang_object.responded_at = this.utilsService.currentDate();
                     demand_barang_object.status = status;
 
                     responded_demand_barang = demand_barang_object;

@@ -41,11 +41,11 @@ export class RequestBarang {
     @Prop({ type: MongooseSchema.Types.String, required: false })
     deskripsi: string | null;
 
-    @Prop({ type: MongooseSchema.Types.Date, required: true })
-    created_at: Date;
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    created_at: string;
 
-    @Prop({ type: MongooseSchema.Types.Date, required: false })
-    responded_at: Date | null;
+    @Prop({ type: MongooseSchema.Types.String, required: false })
+    responded_at: string | null;
 
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     status: number;

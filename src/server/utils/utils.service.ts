@@ -114,4 +114,18 @@ export class UtilsService {
         let result = a * b;
         return result.toString();
     }
+
+    public currentDate() {
+        const current_date = new Date()
+            .toLocaleString("id-ID", { timeZone: "Asia/Hong_Kong" })
+            .replace(/\//, " ")
+            .replace(/\//, " ")
+            .replace(/\./, " ")
+            .replace(/\./, " ")
+            .split(" ");
+
+        const formated_current_date = `${current_date[2]}-${current_date[1]}-${current_date[0]}-${current_date[3]}-${current_date[4]}-${current_date[5]}`;
+
+        return formated_current_date;
+    }
 }
