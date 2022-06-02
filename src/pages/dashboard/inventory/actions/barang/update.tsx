@@ -22,7 +22,7 @@ import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 
 const DashboardInventoryUpdate: NextPage = () => {
     return (
-        <Sidebar>
+        <Sidebar type="inventory">
             <div>
                 <h1 className="title">Inventory Update</h1>
             </div>

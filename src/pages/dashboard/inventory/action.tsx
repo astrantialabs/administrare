@@ -23,13 +23,24 @@ import { useAppSelector } from "@/client/hooks/useAppSelector";
 import { RootState } from "@/client/redux/store";
 import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 import { setTableData } from "@/client/redux/features/tableDataSlice";
-import { ReactNode, useEffect, useMemo } from "react";
+import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
 import { Column, useTable } from "react-table";
 import { Table } from "@/components/Table";
 import axios from "axios";
 import { useQuery } from "react-query";
-import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+    PopoverBody,
+    PopoverArrow,
+    PopoverCloseButton,
+    Portal,
+} from "@chakra-ui/react";
+import { axiosInstance } from "@/shared/utils/axiosInstance";
+import { setLoading } from "@/client/redux/features/loadingSlice";
 
 const MenuFC = () => {
     {
@@ -76,6 +87,47 @@ const createArr = (n: number, tableData: any): InventoryDataPayload[] => {
 };
 
 const TableInstance = ({ tableData }: any) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = useRef();
+    const dispatch = useAppDispatch();
+    const loading = useAppSelector((state: RootState) => state.loading.value);
+
+    const deleteKategori = (type: any, kategoriId: any, itemId?: any) => {
+        if (type === "kategori") {
+            dispatch(setLoading(true));
+            axiosInstance
+                .delete(`/__api/data/inventory/master/delete/kategori/${kategoriId}`, { withCredentials: true })
+                .then((res) => {
+                    dispatch(setLoading(false));
+
+                    console.log(res);
+
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+
+        if (type === "barang") {
+            dispatch(setLoading(true));
+
+            axiosInstance
+                .delete(`/__api/data/inventory/master/delete/kategori/${kategoriId}/item/${itemId}`, {
+                    withCredentials: true,
+                })
+                .then((res) => {
+                    console.log(res);
+                    dispatch(setLoading(false));
+
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    };
+
     const data = useMemo<InventoryDataPayload[]>(() => createArr(1, tableData), []);
     const columns = useMemo<Column<InventoryDataPayload>[]>(
         () => [
@@ -85,43 +137,66 @@ const TableInstance = ({ tableData }: any) => {
                 Cell: ({ value }) => {
                     if (value.isKategori) {
                         return (
-                            <Menu>
-                                <MenuButton as={Button}>Actions</MenuButton>
-                                <MenuList>
-                                    <MenuItem mb={4}>
-                                        <LinkOverlay href={`/inventory/update/kategori/${value.category_id}`}>
-                                            Update Kategori
-                                        </LinkOverlay>
-                                    </MenuItem>
-                                    <MenuItem mt={4}>
-                                        <LinkOverlay href={`/inventory/delete/kategori/${value.category_id}`}>
-                                            Delete Kategori
-                                        </LinkOverlay>
-                                    </MenuItem>
-                                </MenuList>
-                            </Menu>
+                            <>
+                                <Popover>
+                                    <PopoverTrigger>
+                                        <Button>Actions</Button>
+                                    </PopoverTrigger>
+                                    <Portal>
+                                        <PopoverContent>
+                                            <PopoverArrow />
+                                            <PopoverCloseButton />
+                                            <PopoverBody>
+                                                <Button mx={2} colorScheme="teal" onClick={onOpen}>
+                                                    Update
+                                                </Button>
+
+                                                <Button
+                                                    mx={2}
+                                                    colorScheme="red"
+                                                    isLoading={loading}
+                                                    onClick={() =>
+                                                        deleteKategori("kategori", value.category_id, value.item_id)
+                                                    }
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </PopoverBody>
+                                        </PopoverContent>
+                                    </Portal>
+                                </Popover>
+                            </>
                         );
                     }
                     return (
-                        <Menu>
-                            <MenuButton as={Button}>Actions</MenuButton>
-                            <MenuList>
-                                <MenuItem mb={4}>
-                                    <LinkOverlay
-                                        href={`/inventory/update/barang/${value.category_id}/${value.item_id}`}
-                                    >
-                                        Update Barang
-                                    </LinkOverlay>
-                                </MenuItem>
-                                <MenuItem mt={4}>
-                                    <LinkOverlay
-                                        href={`/inventory/delete/barang/${value.category_id}/${value.item_id}`}
-                                    >
-                                        Delete Barang
-                                    </LinkOverlay>
-                                </MenuItem>
-                            </MenuList>
-                        </Menu>
+                        <>
+                            <Popover>
+                                <PopoverTrigger>
+                                    <Button>Actions</Button>
+                                </PopoverTrigger>
+                                <Portal>
+                                    <PopoverContent>
+                                        <PopoverArrow />
+                                        <PopoverCloseButton />
+                                        <PopoverBody>
+                                            <Button mx={2} colorScheme="teal">
+                                                Update
+                                            </Button>
+                                            <Button
+                                                mx={2}
+                                                colorScheme="red"
+                                                isLoading={loading}
+                                                onClick={() =>
+                                                    deleteKategori("barang", value.category_id, value.item_id)
+                                                }
+                                            >
+                                                Delete
+                                            </Button>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </Portal>
+                            </Popover>
+                        </>
                     );
                 },
             },
