@@ -40,6 +40,15 @@ import { ConfigService } from "../config/config.service";
         }),
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
+            connectionName: process.env.DATABASE_MASTER_FINANCE_CONNECTION_NAME,
+            useFactory: async (configService: ConfigService) => ({
+                uri: configService.database.master_finance.uri,
+                connectionName: configService.database.master_finance.connection_name,
+            }),
+            inject: [ConfigService],
+        }),
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
             connectionName: process.env.DATABASE_MASTER_INVENTORY_CONNECTION_NAME,
             useFactory: async (configService: ConfigService) => ({
                 uri: configService.database.master_inventory.uri,

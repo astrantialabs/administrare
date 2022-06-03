@@ -51,25 +51,18 @@ class EnvironmentVariables {
     DATABASE_USER_CONNECTION_NAME: string;
 
     @IsString()
-    DATABASE_SUMMARY_COLLECTION: string;
-    @IsString()
-    DATABASE_SUMMARY_URI: string;
-    @IsString()
-    DATABASE_SUMMARY_CONNECTION_NAME: string;
-
-    @IsString()
-    DATABASE_ARCHIVE_COLLECTION: string;
-    @IsString()
-    DATABASE_ARCHIVE_URI: string;
-    @IsString()
-    DATABASE_ARCHIVE_CONNECTION_NAME: string;
-
-    @IsString()
     DATABASE_SESSION_COLLECTION: string;
     @IsString()
     DATABASE_SESSION_URI: string;
     @IsString()
     DATABASE_SESSION_CONNECTION_NAME: string;
+
+    @IsString()
+    DATABASE_MASTER_FINANCE_COLLECTION: string;
+    @IsString()
+    DATABASE_MASTER_FINANCE_URI: string;
+    @IsString()
+    DATABASE_MASTER_FINANCE_CONNECTION_NAME: string;
 
     @IsString()
     DATABASE_MASTER_INVENTORY_COLLECTION: string;
@@ -98,6 +91,13 @@ class EnvironmentVariables {
     DATABASE_REQUEST_INVENTORY_URI: string;
     @IsString()
     DATABASE_REQUEST_INVENTORY_CONNECTION_NAME: string;
+
+    @IsString()
+    DATABASE_ARCHIVE_COLLECTION: string;
+    @IsString()
+    DATABASE_ARCHIVE_URI: string;
+    @IsString()
+    DATABASE_ARCHIVE_CONNECTION_NAME: string;
 }
 
 export function validation(config: Record<string, unknown>): EnvironmentVariables {

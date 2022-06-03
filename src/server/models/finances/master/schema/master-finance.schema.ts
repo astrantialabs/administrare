@@ -17,7 +17,7 @@
  */
 
 /**
- * @fileoverview The demand schema.
+ * @fileoverview The master finance schema.
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 

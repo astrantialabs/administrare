@@ -88,17 +88,12 @@ export class ConfigService {
             uri: string;
             connection_name: string;
         };
-        summary: {
-            collection: string;
-            uri: string;
-            connection_name: string;
-        };
-        archive: {
-            collection: string;
-            uri: string;
-            connection_name: string;
-        };
         session: {
+            collection: string;
+            uri: string;
+            connection_name: string;
+        };
+        master_finance: {
             collection: string;
             uri: string;
             connection_name: string;
@@ -123,6 +118,11 @@ export class ConfigService {
             uri: string;
             connection_name: string;
         };
+        archive: {
+            collection: string;
+            uri: string;
+            connection_name: string;
+        };
     } {
         return {
             user: {
@@ -130,20 +130,15 @@ export class ConfigService {
                 uri: this.configServer.get<string>("database.user.uri"),
                 connection_name: this.configServer.get<string>("database.user.connection_name"),
             },
-            summary: {
-                collection: this.configServer.get<string>("database.summary.collection"),
-                uri: this.configServer.get<string>("database.summary.uri"),
-                connection_name: this.configServer.get<string>("database.summary.connection_name"),
-            },
-            archive: {
-                collection: this.configServer.get<string>("database.archive.collection"),
-                uri: this.configServer.get<string>("database.archive.uri"),
-                connection_name: this.configServer.get<string>("database.archive.connection_name"),
-            },
             session: {
                 collection: this.configServer.get<string>("database.session.collection"),
                 uri: this.configServer.get<string>("database.session.uri"),
                 connection_name: this.configServer.get<string>("database.session.connection_name"),
+            },
+            master_finance: {
+                collection: this.configServer.get<string>("database.master_finance.collection"),
+                uri: this.configServer.get<string>("database.master_finance.uri"),
+                connection_name: this.configServer.get<string>("database.master_finance.connection_name"),
             },
             master_inventory: {
                 collection: this.configServer.get<string>("database.master_inventory.collection"),
@@ -164,6 +159,11 @@ export class ConfigService {
                 collection: this.configServer.get<string>("database.request_inventory.collection"),
                 uri: this.configServer.get<string>("database.request_inventory.uri"),
                 connection_name: this.configServer.get<string>("database.request_inventory.connection_name"),
+            },
+            archive: {
+                collection: this.configServer.get<string>("database.archive.collection"),
+                uri: this.configServer.get<string>("database.archive.uri"),
+                connection_name: this.configServer.get<string>("database.archive.connection_name"),
             },
         };
     }

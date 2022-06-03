@@ -29,6 +29,7 @@ import Next from "next";
 import { AppController } from "./app.controller";
 import { AuthModule } from "./authentication/auth.module";
 import { ConfigModule } from "./config/config.module";
+import { FinanceModule } from "./models/finances/finance.module";
 import { InventoryModule } from "./models/inventories/inventory.module";
 import { UserModule } from "./models/users/user.module";
 import { MongoDBProviderModule } from "./providers/mongodb.module";
@@ -52,7 +53,15 @@ export class AppModule {
 
         return {
             module: AppModule,
-            imports: [renderModule, ConfigModule, MongoDBProviderModule, InventoryModule, UserModule, AuthModule],
+            imports: [
+                renderModule,
+                ConfigModule,
+                MongoDBProviderModule,
+                UserModule,
+                AuthModule,
+                FinanceModule,
+                InventoryModule,
+            ],
             exports: [ConfigService],
             controllers: [AppController],
             providers: [ConfigService],

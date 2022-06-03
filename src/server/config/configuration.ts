@@ -37,20 +37,15 @@ export default () => ({
             uri: process.env.DATABASE_USER_URI || "mongodb://localhost:27017/user",
             connection_name: process.env.DATABASE_USER_CONNECTION_NAME || "user_database",
         },
-        summary: {
-            collection: process.env.DATABASE_SUMMARY_COLLECTION || "summaries",
-            uri: process.env.DATABASE_SUMMARY_URI || "mongodb://localhost:27017/summary",
-            connection_name: process.env.DATABASE_SUMMARY_CONNECTION_NAME || "summary_database",
-        },
-        archive: {
-            collection: process.env.DATABASE_ARCHIVE_COLLECTION || "archives",
-            uri: process.env.DATABASE_ARCHIVE_URI || "mongodb://localhost:27017/archive",
-            connection_name: process.env.DATABASE_ARCHIVE_CONNECTION_NAME || "archive_database",
-        },
         session: {
             collection: process.env.DATABASE_SESSION_COLLECTION || "sessions",
             uri: process.env.DATABASE_SESSION_URI || "mongodb://localhost:27017/session",
             connection_name: process.env.DATABASE_SESSION_CONNECTION_NAME || "session_database",
+        },
+        master_finance: {
+            collection: process.env.DATABASE_MASTER_FINANCE_COLLECTION || "master-finance",
+            uri: process.env.DATABASE_MASTER_FINANCE_URI || "mongodb://localhost:27017/finance",
+            connection_name: process.env.DATABASE_MASTER_FINANCE_CONNECTION_NAME || "master_finance_database",
         },
         master_inventory: {
             collection: process.env.DATABASE_MASTER_INVENTORY_COLLECTION || "master-inventory",
@@ -72,6 +67,11 @@ export default () => ({
             collection: process.env.DATABASE_REQUEST_INVENTORY_COLLECTION || "request-inventory",
             uri: process.env.DATABASE_REQUEST_INVENTORY_URI || "mongodb://localhost:27017/inventory",
             connection_name: process.env.DATABASE_REQUEST_INVENTORY_CONNECTION_NAME || "request_inventory_database",
+        },
+        archive: {
+            collection: process.env.DATABASE_ARCHIVE_COLLECTION || "archives",
+            uri: process.env.DATABASE_ARCHIVE_URI || "mongodb://localhost:27017/archive",
+            connection_name: process.env.DATABASE_ARCHIVE_CONNECTION_NAME || "archive_database",
         },
     },
 });

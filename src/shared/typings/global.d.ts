@@ -40,17 +40,13 @@ export declare global {
             DATABASE_USER_URI: string;
             DATABASE_USER_CONNECTION_NAME: string;
 
-            DATABASE_SUMMARY_COLLECTION: string;
-            DATABASE_SUMMARY_URI: string;
-            DATABASE_SUMMARY_CONNECTION_NAME: string;
-
-            DATABASE_ARCHIVE_COLLECTION: string;
-            DATABASE_ARCHIVE_URI: string;
-            DATABASE_ARCHIVE_CONNECTION_NAME: string;
-
             DATABASE_SESSION_COLLECTION: string;
             DATABASE_SESSION_URI: string;
             DATABASE_SESSION_CONNECTION_NAME: string;
+
+            DATABASE_MASTER_FINANCE_COLLECTION: string;
+            DATABASE_MASTER_FINANCE_URI: string;
+            DATABASE_MASTER_FINANCE_CONNECTION_NAME: string;
 
             DATABASE_MASTER_INVENTORY_COLLECTION: string;
             DATABASE_MASTER_INVENTORY_URI: string;
@@ -67,6 +63,10 @@ export declare global {
             DATABASE_REQUEST_INVENTORY_COLLECTION: string;
             DATABASE_REQUEST_INVENTORY_URI: string;
             DATABASE_REQUEST_INVENTORY_CONNECTION_NAME: string;
+
+            DATABASE_ARCHIVE_COLLECTION: string;
+            DATABASE_ARCHIVE_URI: string;
+            DATABASE_ARCHIVE_CONNECTION_NAME: string;
         }
     }
 }
