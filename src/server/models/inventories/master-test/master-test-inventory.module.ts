@@ -20,9 +20,9 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { UtilsModule } from "../../../utils/utils.module";
-import { MasterInventoryController } from "./master-inventory.controller";
-import { MasterInventoryService as MasterInventoryService } from "./master-inventory.service";
-import { MasterInventoryData, MasterInventoryDataSchema } from "./schema/master-inventory.schema";
+import { MasterTestInventoryController } from "./master-test-inventory.controller";
+import { MasterTestInventoryService } from "./master-test-inventory.service";
+import { MasterTestInventoryData, MasterTestInventoryDataSchema } from "./schema/master-test-inventory.schema";
 
 @Module({
     imports: [
@@ -30,16 +30,16 @@ import { MasterInventoryData, MasterInventoryDataSchema } from "./schema/master-
         MongooseModule.forFeature(
             [
                 {
-                    name: MasterInventoryData.name,
-                    schema: MasterInventoryDataSchema,
-                    collection: process.env.DATABASE_MASTER_INVENTORY_COLLECTION,
+                    name: MasterTestInventoryData.name,
+                    schema: MasterTestInventoryDataSchema,
+                    collection: process.env.DATABASE_MASTER_TEST_INVENTORY_COLLECTION,
                 },
             ],
-            process.env.DATABASE_MASTER_INVENTORY_CONNECTION_NAME
+            process.env.DATABASE_MASTER_TEST_INVENTORY_CONNECTION_NAME
         ),
     ],
-    exports: [MasterInventoryService],
-    controllers: [MasterInventoryController],
-    providers: [MasterInventoryService],
+    exports: [MasterTestInventoryService],
+    controllers: [MasterTestInventoryController],
+    providers: [MasterTestInventoryService],
 })
-export class MasterInventoryModule {}
+export class MasterTestInventoryModule {}

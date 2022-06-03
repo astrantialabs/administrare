@@ -24,7 +24,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 
-export type MasterTestInventoriDataDocument = MasterTestInventoriData & Document;
+export type MasterTestInventoryDataDocument = MasterTestInventoryData & Document;
 
 export class MasterTestBarang {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
@@ -80,7 +80,7 @@ export class MasterTestKategori {
 }
 
 @Schema()
-export class MasterTestInventoriData {
+export class MasterTestInventoryData {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
 
@@ -91,4 +91,4 @@ export class MasterTestInventoriData {
     kategori: MasterTestKategori[];
 }
 
-export const MasterTestInventoriDataSchema = SchemaFactory.createForClass(MasterTestInventoriData);
+export const MasterTestInventoryDataSchema = SchemaFactory.createForClass(MasterTestInventoryData);
