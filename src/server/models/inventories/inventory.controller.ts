@@ -57,6 +57,20 @@ export class InventoryController {
         return {};
     }
 
+    @Get("update/kategori/:kategori_id")
+    @Render("dashboard/inventory/actions/kategori/update")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboardInventoryUpdateKategori(): {} {
+        return {};
+    }
+
+    @Get("update/kategori/:kategori_id/:item_id")
+    @Render("dashboard/inventory/actions/barang/update")
+    @UseInterceptors(ParamsInterceptor)
+    public dashboardInventoryUpdateBarang(): {} {
+        return {};
+    }
+
     @Get("demand")
     @Render("dashboard/inventory/demand/main")
     @UseInterceptors(ParamsInterceptor)
