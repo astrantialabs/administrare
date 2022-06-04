@@ -27,7 +27,7 @@ import { DemandBarang, DemandKategori } from "./schema/demand-inventory.schema";
 
 /**
  * @class DemandInventoryController
- * @description The demand inventory data controller.
+ * @description The demand inventory controller.
  */
 @Controller("__api/data/inventory/demand")
 export class DemandInventoryController {
@@ -35,14 +35,14 @@ export class DemandInventoryController {
 
     /**
      * @constructor
-     * @description Creates a new demand inventory data controller.
+     * @description Creates a new demand inventory controller.
      * @param {DemandInventoryService} demandInventoryService - The demand inventory service.
      */
     constructor(private readonly demandInventoryService: DemandInventoryService) {}
 
     /**
-     * @description Get every category demand data based on year
-     * @returns {DemandKategori[]} The category demand data
+     * @description Get every category demand object
+     * @returns {Promise<DemandKategori[]>} The category demand object
      */
     @Get("get/kategori/all")
     public async demandGetKategoriAll(): Promise<DemandKategori[]> {
@@ -50,8 +50,8 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Get every item demand data based on year
-     * @returns {DemandBarang[]} The item demand data
+     * @description Get every item demand object
+     * @returns {Promise<DemandBarang[]>} The item demand object
      */
     @Get("get/barang/all")
     public async demandGetBarangAll(): Promise<DemandBarang[]> {
@@ -59,9 +59,9 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Get category demand data based on year and id
+     * @description Get category demand object based on id
      * @param {Number} id - The category demand id
-     * @returns {DemandKategori} The category demand data
+     * @returns {Promise<DemandKategori>} The category demand object
      */
     @Get("get/kategori/:id")
     public async demandGetKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandKategori> {
@@ -69,9 +69,9 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Get item demand data based on year and id
+     * @description Get item demand object based on id
      * @param {Number} id - The item demand id
-     * @returns {DemandBarang} The item demand data
+     * @returns {Promise<DemandBarang>} The item demand object
      */
     @Get("get/barang/:id")
     public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandBarang> {
@@ -79,9 +79,9 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Filter category demand data based on status
+     * @description Filter category demand object based on status
      * @param {Number} status - The status
-     * @returns {DemandKategori[]} The filtered category demand data
+     * @returns {Promise<DemandKategori[]>} The filtered category demand object
      */
     @Get("get/kategori/status/:status")
     public async demandGetKategoriByStatus(
@@ -91,9 +91,9 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Filter item demand data based on status
+     * @description Filter item demand object based on status
      * @param {Number} status - The status
-     * @returns {DemandBarang[]} The filtered item demand data
+     * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
     @Get("get/barang/status/:status")
     public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandBarang[]> {
@@ -101,10 +101,10 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Create a new category demand
-     * @param {string} username - The user who demands the new category
+     * @description Create a new category demand object
+     * @param {string} username - The user who demands the new category object
      * @param {String} category - The new demanded category name
-     * @returns {DemandKategori} The new demanded category data
+     * @returns {Promise<DemandKategori>} The new demanded category object
      */
     @Post("create/kategori")
     public async demandCreateKategori(
@@ -119,11 +119,11 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Create a new item demand
+     * @description Create a new item demand object
      * @param {Number} category_id - The category id
-     * @param {String} username - The user who demands the new item
+     * @param {String} username - The user who demands the new item object
      * @param {String} barang - The new demanded item name
-     * @returns {DemandBarang} The new demanded item data
+     * @returns {DemandBarang} The new demanded item object
      */
     @Post("create/barang")
     public async demandCreateBarang(
@@ -140,10 +140,10 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Update status of category demand data
+     * @description Update status of category demand object
      * @param {Number} id - The category demand id
      * @param {Number} status - The new status
-     * @returns {DemandKategori} The updated status of category demand data
+     * @returns {Promise<DemandKategori>} The updated status of category demand object
      */
     @Put("response/kategori/:id/status/:status")
     public async demandResponseKategoriById(
@@ -158,10 +158,10 @@ export class DemandInventoryController {
     }
 
     /**
-     * @description Update status of item demand data
+     * @description Update status of item demand object
      * @param {Number} id - The item demand id
      * @param {Number} status - The new status
-     * @returns {DemandBarang} The updated status of item demand data
+     * @returns {DemandBarang} The updated status of item demand object
      */
     @Put("response/barang/:id/status/:status")
     public async demandResponseBarangById(

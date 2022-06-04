@@ -17,7 +17,7 @@
  */
 
 /**
- * @fileoverview The demand inventory controller.
+ * @fileoverview The demand inventory service.
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
@@ -40,7 +40,7 @@ import {
 export class DemandInventoryService {
     /**
      * @constructor
-     * @description Creates a new demand inventory data service.
+     * @description Creates a new demand inventory service.
      * @param {Model} demandInventoryDataModel - The data model.
      */
     constructor(
@@ -50,37 +50,37 @@ export class DemandInventoryService {
     ) {}
 
     /**
-     * @description Find demand data based on year
+     * @description Find demand documnet based on year
      * @param {Number} year - The year
-     * @returns {DemandInventoryDataDocument} The demand data
+     * @returns {DemandInventoryDataDocument} The demand document
      */
     public async demandFindOne(year: number): Promise<DemandInventoryDataDocument> {
         return await this.demandInventoryDataModel.findOne({ tahun: year }).exec();
     }
 
     /**
-     * @description Get every category demand data based on year
+     * @description Get every category demand object
      * @param {Number} year - The year data
-     * @returns {DemandKategori[]} - The category demand data
+     * @returns {Promise<DemandKategori[]>} - The category demand object
      */
     public async demandGetKategoriAll(year: number): Promise<DemandKategori[]> {
         return (await this.demandFindOne(year)).kategori;
     }
 
     /**
-     * @description Get every item demand data based on year
+     * @description Get every item demand object
      * @param {Number} year - The year data
-     * @returns {DemandBarang[]} The item demand data
+     * @returns {Promise<DemandBarang[]>} The item demand object
      */
     public async demandGetBarangAll(year: number): Promise<DemandBarang[]> {
         return (await this.demandFindOne(year)).barang;
     }
 
     /**
-     * @description  Get category demand data based on year and id
+     * @description  Get category demand object based on id
      * @param {Number} year - The year
      * @param {Number} id - The category demand id
-     * @returns {DemandKategori} The category demand data
+     * @returns {Promise<DemandKategori>} The category demand object
      */
     public async demandGetKategoriById(year: number, id: number): Promise<DemandKategori> {
         let demand_kategori_data: DemandKategori[] = (await this.demandFindOne(year)).kategori;
@@ -96,10 +96,10 @@ export class DemandInventoryService {
     }
 
     /**
-     * @description  Get item demand data based on year and id
+     * @description  Get item demand object based on id
      * @param {Number} year - The year
      * @param {Number} id - The item demand id
-     * @returns {DemandBarang} The item demand data
+     * @returns {Promise<DemandBarang>} The item demand object
      */
     public async demandGetBarangById(year: number, id: number): Promise<DemandBarang> {
         let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
@@ -115,10 +115,10 @@ export class DemandInventoryService {
     }
 
     /**
-     * @description Filter category demand data based on status
+     * @description Filter category demand object based on status
      * @param {Number} year - The year
      * @param {Number} status - The status
-     * @returns {Kategori[]} The filtered category demand data
+     * @returns {Promise<DemandKategori[]>} The filtered category demand object
      */
     public async demandGetKategoriByStatus(year: number, status: number): Promise<DemandKategori[]> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
@@ -133,10 +133,10 @@ export class DemandInventoryService {
     }
 
     /**
-     * @description Filter item demand data based on status
+     * @description Filter item demand object based on status
      * @param {Number} year - The year
      * @param {Number} status - The status
-     * @returns {DemandBarang[]} The filtered item demand data
+     * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
     public async demandGetBarangByStatus(year: number, status: number): Promise<DemandBarang[]> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
@@ -151,11 +151,11 @@ export class DemandInventoryService {
     }
 
     /**
-     * @description Create a new category demand
+     * @description Create a new category object
      * @param {Number} year - The year
-     * @param {String} username - The user who demands the new category
-     * @param {String} category - The new category name
-     * @returns {DemandKategori} The new demanded category data
+     * @param {String} username - The user who demands the new category object
+     * @param {String} category - The new demanded category name
+     * @returns {Promise<DemandKategori>} The new demanded category object
      */
     public async demandCreateKategori(year: number, username: string, category: string): Promise<DemandKategori> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
@@ -177,12 +177,12 @@ export class DemandInventoryService {
     }
 
     /**
-     * @description Create a new item demand
+     * @description Create a new item demand object
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
-     * @param {string} username - The user who demands the new item
-     * @param {String} item - The new item name
-     * @returns {DemandBarang} The new demanded item data
+     * @param {string} username - The user who demands the new item object
+     * @param {String} item - The new demanded item name
+     * @returns {DemandBarang} The new demanded item object
      */
     public async demandCreateBarang(
         year: number,
@@ -212,11 +212,11 @@ export class DemandInventoryService {
     }
 
     /**
-     * @description Update status of category demand data
+     * @description Update status of category demand object
      * @param {Number} year - The year
      * @param {Number} id - The category demand id
-     * @param {Number} status - The The new status
-     * @returns {DemandKategori} The updated status of category demand data
+     * @param {Number} status - The new status
+     * @returns {Promise<DemandKategori>} The updated status of category demand object
      */
     public async demandResponseKategoriById(
         year: number,
@@ -247,11 +247,11 @@ export class DemandInventoryService {
     }
 
     /**
-     * @description Update status of item demand data
+     * @description Update status of item demand object
      * @param {Number} year - The year
      * @param {Number} id - The item demand id
-     * @param {Number} status - The The new status
-     * @returns {DemandBarang} The updated status of item demand data
+     * @param {Number} status - The new status
+     * @returns {DemandBarang} The updated status of item demand object
      */
     public async demandResponseBarangById(
         year: number,

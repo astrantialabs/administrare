@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 /**
- * @fileoverview The demand schema.
+ * @fileoverview The demand inventory schema.
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 

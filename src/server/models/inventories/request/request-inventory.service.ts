@@ -17,7 +17,7 @@
  */
 
 /**
- * @fileoverview The request inventory controller.
+ * @fileoverview The request inventory service.
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
@@ -43,18 +43,18 @@ export class RequestInventoryService {
     ) {}
 
     /**
-     * @description Find request data based on year
+     * @description Find request document based on year
      * @param {Number} year - The year
-     * @returns {RequestInventoryDataDocument} The request data
+     * @returns {Promise<RequestInventoryDataDocument>} The request document
      */
     public async requestFindOne(year: number): Promise<RequestInventoryDataDocument> {
         return await this.requestInventoryDataModel.findOne({ tahun: year }).exec();
     }
 
     /**
-     * @description Get every requested item data based on year
+     * @description Get every request item object
      * @param {Number} year - The year
-     * @returns {RequestBarang[]} The requested item data
+     * @returns {Promise<RequestBarang[]>} The request item object
      */
     public async requestGetBarangAll(year: number): Promise<RequestBarang[]> {
         return (await this.requestFindOne(year)).barang;

@@ -27,7 +27,7 @@ import { RequestBarang } from "./schema/request-inventory.schema";
 
 /**
  * @class RequestInventoryDataController
- * @description The request inventory data controller.
+ * @description The request inventory controller.
  */
 @Controller("__api/data/inventory/request")
 export class RequestInventoryController {
@@ -35,14 +35,14 @@ export class RequestInventoryController {
 
     /**
      * @constructor
-     * @description Creates a new request inventory data controller.
+     * @description Creates a new request inventory controller.
      * @param {RequestInventoryService} requestInventoryService - The request inventory service.
      */
     constructor(private readonly requestInventoryService: RequestInventoryService) {}
 
     /**
-     * @description Get every requested item data based on year
-     * @returns {RequestBarang[]} The requested item data
+     * @description Get every request item object
+     * @returns {Promise<RequestBarang[]>} The request item object
      */
     @Get("get/barang/all")
     public async requestGetBarangAll(): Promise<RequestBarang[]> {
