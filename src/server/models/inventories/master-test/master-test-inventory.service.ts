@@ -17,7 +17,7 @@
  */
 
 /**
- * @fileoverview The master inventory data controller.
+ * @fileoverview The master inventory service.
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
@@ -43,6 +43,7 @@ export class MasterTestInventoryService {
      * @constructor
      * @description Creates a new inventory data service.
      * @param {Model} masterInventoryDataModel - The data model.
+     * @param {UtilsService} utilsService - The utils service
      */
     constructor(
         @InjectModel(MasterTestInventoryData.name)
@@ -50,18 +51,45 @@ export class MasterTestInventoryService {
         private readonly utilsService: UtilsService
     ) {}
 
+    //#region main
+
+    /**
+     * @description Find an inventory document based on year
+     * @param {Number} year - The year
+     * @returns {Promise<MasterInventoryDataDocument>} The inventory document
+     */
     public async masterFindOne(year: number): Promise<MasterTestInventoryDataDocument> {
         return await this.masterTestInventoryDataModel.findOne({ tahun: year }).exec();
     }
 
+    //#endregion main
+
+    //#region utility
+
+    /**
+     * @description Get the length of kategori
+     * @param {Number} year - The year
+     * @returns {Promise<Number>} Return the length of kategori
+     */
     public async masterGetKategoriLength(year: number): Promise<number> {
         return (await this.masterGetKategoriAll(year)).length;
     }
 
+    /**
+     * @description Get the length of barang based on category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Promise<Number>} Return the length of barang
+     */
     public async masterGetBarangLengthByKategoriId(year: number, category_id: number): Promise<number> {
         return (await this.masterGetBarangAllByKategoriId(year, category_id)).length;
     }
 
+    /**
+     * @description Get a new kategori id
+     * @param {Number} year - The year
+     * @returns {Promise<Number>} Return a new kategori id
+     */
     public async masterGetNewKategoriId(year: number): Promise<number> {
         const master_kategori_data: MasterTestKategori[] = await this.masterGetKategoriAll(year);
         let kategori_length: number = await this.masterGetKategoriLength(year);
@@ -78,6 +106,12 @@ export class MasterTestInventoryService {
         return new_kategori_id;
     }
 
+    /**
+     * @description Get a new barang id based on category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Promise<Number>} Return a new barang id
+     */
     public async masterGetNewBarangIdByKategoriId(year: number, category_id: number): Promise<number> {
         const master_barang_data: MasterTestBarang[] = await this.masterGetBarangAllByKategoriId(year, category_id);
         let barang_length: number = await this.masterGetBarangLengthByKategoriId(year, category_id);
@@ -94,14 +128,35 @@ export class MasterTestInventoryService {
         return new_barang_id;
     }
 
+    //#endregion utility
+
+    //#region crud
+
+    /**
+     * @description Get all kategori object
+     * @param {Number} year - The year
+     * @returns {Promise<MasterKategori[]>} return all kategori object
+     */
     public async masterGetKategoriAll(year: number): Promise<MasterTestKategori[]> {
         return (await this.masterFindOne(year)).kategori;
     }
 
+    /**
+     * @description Get all barang object based on category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Promise<MasterBarang[]>} return all barang object
+     */
     public async masterGetBarangAllByKategoriId(year: number, category_id: number): Promise<MasterTestBarang[]> {
         return (await this.masterGetKategoriByKategoriId(year, category_id)).barang;
     }
 
+    /**
+     * @description Get kategori object based on category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Promise<MasterKategori>} return kategori object
+     */
     public async masterGetKategoriByKategoriId(year: number, category_id: number): Promise<MasterTestKategori> {
         const master_kategori_data: MasterTestKategori[] = await this.masterGetKategoriAll(year);
         let master_kategori: MasterTestKategori;
@@ -115,6 +170,13 @@ export class MasterTestInventoryService {
         return master_kategori;
     }
 
+    /**
+     * @description Get barang object based on category id and item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @returns {Promise<MasterBarang>} Return barang object
+     */
     public async masterGetBarangByKategoriIdAndBarangId(
         year: number,
         category_id: number,
@@ -132,6 +194,12 @@ export class MasterTestInventoryService {
         return master_barang;
     }
 
+    /**
+     * @description Create a new kategori object
+     * @param {Number} year - The year
+     * @param {Number} kategori - The new kategori
+     * @returns {Promise<MasterKategori>} Return the new kategori object
+     */
     public async masterCreateKategori(year: number, category: MasterTestKategori): Promise<MasterTestKategori> {
         let master_inventory_data: MasterTestInventoryDataDocument = await this.masterFindOne(year);
 
@@ -143,6 +211,13 @@ export class MasterTestInventoryService {
         return category;
     }
 
+    /**
+     * @description Create a new barang object
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {MasterBarang} item - The new barang object
+     * @returns {Promise<MasterBarang>} Return the new barang object
+     */
     public async masterCreateBarang(
         year: number,
         category_id: number,
@@ -162,6 +237,13 @@ export class MasterTestInventoryService {
         return item;
     }
 
+    /**
+     * @description Update kategori object based on category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {String} category - The category
+     * @returns {Promise<MasterKategori>} Return the updated kategori object
+     */
     public async masterUpdateKategoriByKategoriId(
         year: number,
         category_id: number,
@@ -184,6 +266,14 @@ export class MasterTestInventoryService {
         return updated_category_object;
     }
 
+    /**
+     * @description Update barang object based on category id and item item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @param {ParameterMasterUpdateItemDto} barang - The barang data
+     * @returns {Promise<MasterBarang>} Return the updated barang object
+     */
     public async masterUpdateBarangByKategoriIdAndItemId(
         year: number,
         category_id: number,
@@ -222,6 +312,12 @@ export class MasterTestInventoryService {
         return updated_item_object;
     }
 
+    /**
+     * @description Delete kategori object based on category id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @returns {Promise<MasterKategori>} Return the deleted kategori object
+     */
     public async masterDeleteKategoriByKategoriId(year: number, category_id: number): Promise<MasterTestKategori> {
         let master_inventory_data: MasterTestInventoryDataDocument = await this.masterFindOne(year);
         let deleted_category_object: MasterTestKategori;
@@ -239,6 +335,13 @@ export class MasterTestInventoryService {
         return deleted_category_object;
     }
 
+    /**
+     * @description Delete barang object based on category id and item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @returns {Promise<MasterBarang>} Return the deleted barang object
+     */
     public async masterDeleteBarangByKategoriIdAndBarangId(
         year: number,
         category_id: number,
@@ -263,4 +366,6 @@ export class MasterTestInventoryService {
 
         return deleted_item_object;
     }
+
+    //#endregion crud
 }
