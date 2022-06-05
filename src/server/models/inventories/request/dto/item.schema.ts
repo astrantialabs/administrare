@@ -16,23 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export class ParameterMasterTestCreateItemDto {
+export class ParameterRequestCreateItemDto {
     kategori_id: number;
-    nama: string;
-    satuan: string;
-    saldo_jumlah_satuan: number;
-    mutasi_barang_masuk_jumlah_satuan: number;
-    mutasi_barang_keluar_jumlah_satuan: number;
-    harga_satuan: number;
-    keterangan: string | null;
-}
-
-export class ParameterMasterTestUpdateItemDto {
-    nama: string;
-    satuan: string;
-    saldo_jumlah_satuan: number;
-    mutasi_barang_masuk_jumlah_satuan: number;
-    mutasi_barang_keluar_jumlah_satuan: number;
-    harga_satuan: number;
-    keterangan: string | null;
+    barang_id: number;
+    total: number;
+    deskripsi: string | null;
 }

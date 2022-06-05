@@ -21,7 +21,8 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { Injectable } from "@nestjs/common";
+import { UtilsService } from "@/server/utils/utils.service";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { RequestBarang, RequestInventoryData, RequestInventoryDataDocument } from "./schema/request-inventory.schema";
@@ -39,7 +40,8 @@ export class RequestInventoryService {
      */
     constructor(
         @InjectModel(RequestInventoryData.name)
-        private readonly requestInventoryDataModel: Model<RequestInventoryDataDocument>
+        private readonly requestInventoryDataModel: Model<RequestInventoryDataDocument>,
+        private readonly utilsService: UtilsService
     ) {}
 
     /**
@@ -58,5 +60,94 @@ export class RequestInventoryService {
      */
     public async requestGetBarangAll(year: number): Promise<RequestBarang[]> {
         return (await this.requestFindOne(year)).barang;
+    }
+
+    /**
+     * @description Get request item object based on id
+     * @param {Number} year - The year
+     * @param {Number} id - The id
+     * @returns {Promise<RequestBarang>} The request item object
+     */
+    public async requestGetBarangById(year: number, id: number): Promise<RequestBarang> {
+        const request_barang_data: RequestBarang[] = await this.requestGetBarangAll(year);
+        let request_barang: RequestBarang;
+
+        request_barang_data.forEach((item_object) => {
+            if (item_object.id == id) {
+                request_barang = item_object;
+            }
+        });
+
+        return request_barang;
+    }
+
+    /**
+     * @description Get request item object based on status
+     * @param {Number} year - The year
+     * @param {Number} status - The status
+     * @returns {Promise<RequestBarang[]>} The request item object
+     */
+    public async requestGetBarangByStatus(year: number, status: number): Promise<RequestBarang[]> {
+        const request_barang_data: RequestBarang[] = await this.requestGetBarangAll(year);
+        let request_barang: RequestBarang[] = [];
+
+        request_barang_data.forEach((item_object) => {
+            if (item_object.status == status) {
+                request_barang.push(item_object);
+            }
+        });
+
+        return request_barang;
+    }
+
+    /**
+     * @description Create a new request barang object
+     * @param {Number} year - The year
+     * @param {RequestBarang} item - The new request barang object
+     * @returns {Promise<RequestBarang>} The new request barang object
+     */
+    public async requestCreateBarang(year: number, item: RequestBarang): Promise<RequestBarang> {
+        let request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
+
+        request_inventory_data.barang.push(item);
+
+        this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
+
+        return item;
+    }
+
+    /**
+     * @description Response an barang object based on id and status
+     * @param {Number} year - The year
+     * @param {Number} id - The barang id
+     * @param {Number} status - The status
+     * @returns {Promise<RequestBarang>} Return the responded barang object
+     */
+    public async requestResponseBarangById(
+        year: number,
+        id: number,
+        status: number
+    ): Promise<RequestBarang | HttpException> {
+        let status_list = [0, 1, 2];
+
+        if (status_list.includes(status)) {
+            let request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
+            let responded_request_barang: RequestBarang;
+
+            request_inventory_data.barang.forEach((item_object) => {
+                if (item_object.id == id) {
+                    item_object.responded_at = this.utilsService.currentDate();
+                    item_object.status = status;
+
+                    responded_request_barang = item_object;
+                }
+            });
+
+            this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
+
+            return responded_request_barang;
+        } else if (!status_list.includes(status)) {
+            return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
+        }
     }
 }

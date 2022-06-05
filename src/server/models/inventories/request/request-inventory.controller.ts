@@ -21,7 +21,9 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { Controller, Get, Logger } from "@nestjs/common";
+import { UtilsService } from "@/server/utils/utils.service";
+import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { ParameterRequestCreateItemDto } from "./dto/item.schema";
 import { RequestInventoryService } from "./request-inventory.service";
 import { RequestBarang } from "./schema/request-inventory.schema";
 
@@ -37,15 +39,76 @@ export class RequestInventoryController {
      * @constructor
      * @description Creates a new request inventory controller.
      * @param {RequestInventoryService} requestInventoryService - The request inventory service.
+     * @param {UtilsService} utilsService - The utils service.
      */
-    constructor(private readonly requestInventoryService: RequestInventoryService) {}
+    constructor(
+        private readonly requestInventoryService: RequestInventoryService,
+        private readonly utilsService: UtilsService
+    ) {}
 
     /**
-     * @description Get every request item object
-     * @returns {Promise<RequestBarang[]>} The request item object
+     * @description Get every request barang object
+     * @returns {Promise<RequestBarang[]>} The request barang object
      */
     @Get("barang/all")
     public async requestGetBarangAll(): Promise<RequestBarang[]> {
         return await this.requestInventoryService.requestGetBarangAll(2022);
+    }
+
+    /**
+     * @description Get request barang object based on id
+     * @param {Number} id - The id
+     * @returns {Promise<RequestBarang>} The request barang object
+     */
+    @Get("barang/:id")
+    public async requestGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<RequestBarang> {
+        return await this.requestInventoryService.requestGetBarangById(2022, id);
+    }
+
+    /**
+     * @description Get request barang object based on status
+     * @param {Number} status - The status
+     * @returns {Promise<RequestBarang[]>} The request barang object
+     */
+    @Get("barang/status/:status")
+    public async requestGetBarangByStatus(
+        @Param("status", new ParseIntPipe()) status: number
+    ): Promise<RequestBarang[]> {
+        return await this.requestInventoryService.requestGetBarangByStatus(2022, status);
+    }
+
+    /**
+     * @description Create a new request barang object
+     * @param {ParameterRequestCreateItemDto} body - The new barang data
+     * @returns {Promise<RequestBarang>} The new request barang object
+     */
+    @Post("new/barang")
+    public async requestCreateBarang(@Body() body: ParameterRequestCreateItemDto): Promise<RequestBarang> {
+        let item: RequestBarang = {
+            id: (await this.requestGetBarangAll()).length + 1,
+            kategori_id: body.kategori_id,
+            barang_id: body.barang_id,
+            total: body.total,
+            deskripsi: body.deskripsi,
+            created_at: this.utilsService.currentDate(),
+            responded_at: null,
+            status: 0,
+        };
+
+        return await this.requestInventoryService.requestCreateBarang(2022, item);
+    }
+
+    /**
+     * @description Response an barang object based on id and status
+     * @param {Number} id - The barang id
+     * @param {Number} status - The status
+     * @returns {Promise<RequestBarang>} Return the responded barang object
+     */
+    @Put("response/barang/:id/status/:status")
+    public async requestResponseBarangById(
+        @Param("id", new ParseIntPipe()) id: number,
+        @Param("status", new ParseIntPipe()) status: number
+    ): Promise<RequestBarang | HttpException> {
+        return await this.requestInventoryService.requestResponseBarangById(2022, id, status);
     }
 }

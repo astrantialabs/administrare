@@ -21,9 +21,11 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { RequestInventoryData, RequestInventoryDataSchema } from "./schema/request-inventory.schema";
 import { RequestInventoryController } from "./request-inventory.controller";
 import { RequestInventoryService } from "./request-inventory.service";
+import { UtilsModule } from "@/server/utils/utils.module";
 
 @Module({
     imports: [
+        UtilsModule,
         MongooseModule.forFeature(
             [
                 {
