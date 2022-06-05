@@ -44,7 +44,7 @@ export class RequestInventoryController {
      * @description Get every request item object
      * @returns {Promise<RequestBarang[]>} The request item object
      */
-    @Get("get/barang/all")
+    @Get("barang/all")
     public async requestGetBarangAll(): Promise<RequestBarang[]> {
         return await this.requestInventoryService.requestGetBarangAll(2022);
     }

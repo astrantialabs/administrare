@@ -44,7 +44,7 @@ export class DemandInventoryController {
      * @description Get every category demand object
      * @returns {Promise<DemandKategori[]>} The category demand object
      */
-    @Get("get/kategori/all")
+    @Get("kategori/all")
     public async demandGetKategoriAll(): Promise<DemandKategori[]> {
         return await this.demandInventoryService.demandGetKategoriAll(2022);
     }
@@ -53,7 +53,7 @@ export class DemandInventoryController {
      * @description Get every item demand object
      * @returns {Promise<DemandBarang[]>} The item demand object
      */
-    @Get("get/barang/all")
+    @Get("barang/all")
     public async demandGetBarangAll(): Promise<DemandBarang[]> {
         return await this.demandInventoryService.demandGetBarangAll(2022);
     }
@@ -63,7 +63,7 @@ export class DemandInventoryController {
      * @param {Number} id - The category demand id
      * @returns {Promise<DemandKategori>} The category demand object
      */
-    @Get("get/kategori/:id")
+    @Get("kategori/:id")
     public async demandGetKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandKategori> {
         return await this.demandInventoryService.demandGetKategoriById(2022, id);
     }
@@ -73,7 +73,7 @@ export class DemandInventoryController {
      * @param {Number} id - The item demand id
      * @returns {Promise<DemandBarang>} The item demand object
      */
-    @Get("get/barang/:id")
+    @Get("barang/:id")
     public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandBarang> {
         return await this.demandInventoryService.demandGetBarangById(2022, id);
     }
@@ -83,7 +83,7 @@ export class DemandInventoryController {
      * @param {Number} status - The status
      * @returns {Promise<DemandKategori[]>} The filtered category demand object
      */
-    @Get("get/kategori/status/:status")
+    @Get("kategori/status/:status")
     public async demandGetKategoriByStatus(
         @Param("status", new ParseIntPipe()) status: number
     ): Promise<DemandKategori[]> {
@@ -95,7 +95,7 @@ export class DemandInventoryController {
      * @param {Number} status - The status
      * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
-    @Get("get/barang/status/:status")
+    @Get("barang/status/:status")
     public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandBarang[]> {
         return await this.demandInventoryService.demandGetBarangByStatus(2022, status);
     }
@@ -106,7 +106,7 @@ export class DemandInventoryController {
      * @param {String} category - The new demanded category name
      * @returns {Promise<DemandKategori>} The new demanded category object
      */
-    @Post("create/kategori")
+    @Post("new/kategori")
     public async demandCreateKategori(
         @Body("username") username: string,
         @Body("kategori") category: string
@@ -125,7 +125,7 @@ export class DemandInventoryController {
      * @param {String} barang - The new demanded item name
      * @returns {DemandBarang} The new demanded item object
      */
-    @Post("create/barang")
+    @Post("new/barang")
     public async demandCreateBarang(
         @Body("kategori_id", new ParseIntPipe()) category_id: number,
         @Body("username") username: string,

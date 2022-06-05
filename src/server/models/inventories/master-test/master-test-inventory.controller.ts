@@ -69,7 +69,7 @@ export class MasterTestInventoryController {
      * @description Get all kategori object
      * @returns {Promise<MasterKategori[]>} Return all kategori object
      */
-    @Get("get/kategori/all")
+    @Get("kategori/all")
     public async masterGetKategoriAll(): Promise<MasterTestKategori[]> {
         return await this.masterTestInventoryService.masterGetKategoriAll(2022);
     }
@@ -79,7 +79,7 @@ export class MasterTestInventoryController {
      * @param {Number} category_id - The category id
      * @returns {Promise<MasterBarang[]>} Return all barang object
      */
-    @Get("get/kategori/:category_id/barang/all")
+    @Get("kategori/:category_id/barang/all")
     public async masterGetBarangAllByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number
     ): Promise<MasterTestBarang[]> {
@@ -91,7 +91,7 @@ export class MasterTestInventoryController {
      * @param {Number} category_id - The category id
      * @returns {Promise<MasterKategori>} Return kategori object
      */
-    @Get("get/kategori/:category_id")
+    @Get("kategori/:category_id")
     public async masterGetKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number
     ): Promise<MasterTestKategori> {
@@ -104,7 +104,7 @@ export class MasterTestInventoryController {
      * @param {Number} item_id - The item id
      * @returns {Promise<MasterBarang>} Return barang object
      */
-    @Get("get/kategori/:category_id/barang/:item_id")
+    @Get("kategori/:category_id/barang/:item_id")
     public async masterGetBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
@@ -117,7 +117,7 @@ export class MasterTestInventoryController {
      * @param {String} kategori - The new kategori
      * @returns {Promise<MasterKategori>} Return the new kategori object
      */
-    @Post("create/kategori")
+    @Post("new/kategori")
     public async masterCreateKategori(@Body("kategori") kategori: string): Promise<MasterTestKategori> {
         let new_kategori: MasterTestKategori = {
             id: await this.masterTestInventoryService.masterGetNewKategoriId(2022),
@@ -135,7 +135,7 @@ export class MasterTestInventoryController {
      * @param {ParameterMasterCreateItemDto} body - The new barang data
      * @returns {Promise<MasterBarang>} Return the new barang object
      */
-    @Post("create/barang")
+    @Post("new/barang")
     public async masterCreateBarang(@Body() body: ParameterMasterTestCreateItemDto): Promise<MasterTestBarang> {
         let kategori_id = body.kategori_id;
 
@@ -166,7 +166,7 @@ export class MasterTestInventoryController {
      * @param {String} kategori - The kategori
      * @returns {Promise<MasterKategori>} Return the updated kategori object
      */
-    @Put("update/kategori/:category_id")
+    @Put("kategori/:category_id")
     public async masterUpdateKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Body("kategori") kategori: string
@@ -181,7 +181,7 @@ export class MasterTestInventoryController {
      * @param {ParameterMasterUpdateItemDto} body - The barang data
      * @returns {Promise<MasterBarang>} Return the updated barang object
      */
-    @Put("update/kategori/:category_id/barang/:item_id")
+    @Put("kategori/:category_id/barang/:item_id")
     public async masterUpdateBarangByKategoriIdAndItemId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number,
@@ -210,7 +210,7 @@ export class MasterTestInventoryController {
      * @param {Number} category_id - The category id
      * @returns {Promise<MasterKategori>} Return the deleted kategori object
      */
-    @Delete("delete/kategori/:category_id")
+    @Delete("kategori/:category_id")
     public async masterDeleteKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number
     ): Promise<MasterTestKategori> {
@@ -223,7 +223,7 @@ export class MasterTestInventoryController {
      * @param {Number} item_id - The item id
      * @returns {Promise<MasterBarang>} Return the deleted barang object
      */
-    @Delete("delete/kategori/:category_id/barang/:item_id")
+    @Delete("kategori/:category_id/barang/:item_id")
     public async masterDeleteBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
