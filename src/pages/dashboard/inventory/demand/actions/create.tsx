@@ -22,7 +22,7 @@ import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 
 const DashboardInventoryDemandCreate: NextPage = () => {
     return (
-        <Sidebar>
+        <Sidebar type="inventory">
             <div>
                 <h1 className="title">Inventory Create Demand</h1>
             </div>

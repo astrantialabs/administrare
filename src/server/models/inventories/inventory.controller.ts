@@ -72,16 +72,9 @@ export class InventoryController {
     }
 
     @Get("demand")
-    @Render("dashboard/inventory/demand/main")
+    @Render("inventory/demand/main")
     @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryDemandMain(): {} {
-        return {};
-    }
-
-    @Get("demand/actions")
-    @Render("dashboard/inventory/demand/action")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryDemandActions(): {} {
+    public inventoryDemandMain(): {} {
         return {};
     }
 }
