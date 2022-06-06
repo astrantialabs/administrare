@@ -22,7 +22,20 @@
  */
 
 import { UtilsService } from "@/server/utils/utils.service";
-import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { JumlahData } from "@/shared/typings/types/inventory";
+import {
+    Body,
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Logger,
+    Param,
+    ParseIntPipe,
+    Post,
+    Put,
+} from "@nestjs/common";
+import { MasterTestInventoryService } from "../master-test/master-test-inventory.service";
 import { ParameterRequestCreateItemDto } from "./dto/item.schema";
 import { RequestInventoryService } from "./request-inventory.service";
 import { RequestBarang } from "./schema/request-inventory.schema";
@@ -43,7 +56,8 @@ export class RequestInventoryController {
      */
     constructor(
         private readonly requestInventoryService: RequestInventoryService,
-        private readonly utilsService: UtilsService
+        private readonly utilsService: UtilsService,
+        private readonly masterTestInventoryService: MasterTestInventoryService
     ) {}
 
     /**
@@ -83,19 +97,39 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} The new request barang object
      */
     @Post("new/barang")
-    public async requestCreateBarang(@Body() body: ParameterRequestCreateItemDto): Promise<RequestBarang> {
-        let item: RequestBarang = {
-            id: (await this.requestGetBarangAll()).length + 1,
-            kategori_id: body.kategori_id,
-            barang_id: body.barang_id,
-            total: body.total,
-            deskripsi: body.deskripsi,
-            created_at: this.utilsService.currentDate(),
-            responded_at: null,
-            status: 0,
-        };
+    public async requestCreateBarang(
+        @Body() body: ParameterRequestCreateItemDto
+    ): Promise<RequestBarang | HttpException> {
+        let jumlah_data: JumlahData =
+            await this.masterTestInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
+                2022,
+                body.kategori_id,
+                body.barang_id
+            );
 
-        return await this.requestInventoryService.requestCreateBarang(2022, item);
+        if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + body.total) {
+            let item: RequestBarang = {
+                id: (await this.requestGetBarangAll()).length + 1,
+                kategori_id: body.kategori_id,
+                barang_id: body.barang_id,
+                total: body.total,
+                deskripsi: body.deskripsi,
+                created_at: this.utilsService.currentDate(),
+                responded_at: null,
+                status: 0,
+            };
+
+            this.masterTestInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
+                2022,
+                item.kategori_id,
+                item.barang_id,
+                item.total
+            );
+
+            return await this.requestInventoryService.requestCreateBarang(2022, item);
+        } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + body.total) {
+            return new HttpException("saldo_akhir not enough", HttpStatus.BAD_GATEWAY);
+        }
     }
 
     /**

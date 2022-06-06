@@ -22,6 +22,7 @@
  */
 
 import { UtilsService } from "@/server/utils/utils.service";
+import { JumlahData } from "@/shared/typings/types/inventory";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -126,6 +127,66 @@ export class MasterTestInventoryService {
         }
 
         return new_barang_id;
+    }
+
+    /**
+     * @description Get saldo_akhir_jumlah_satuan and jumlah_permintaan based on category id and item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The  item id
+     * @returns {JumlahData} Return jumlah data
+     */
+    public async masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number
+    ): Promise<JumlahData> {
+        let master_barang_object: MasterTestBarang = await this.masterGetBarangByKategoriIdAndBarangId(
+            year,
+            category_id,
+            item_id
+        );
+
+        let jumlah_data: JumlahData = {
+            saldo_akhir: master_barang_object.saldo_akhir_jumlah_satuan,
+            permintaan: master_barang_object.jumlah_permintaan,
+        };
+
+        return jumlah_data;
+    }
+
+    /**
+     * @description Increase jumlah_permintaan based on category id and item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @param {Number} increase - The amount of jumlah_permintaan will be increase
+     * @returns {MasterTestBarang} The updated barang object
+     */
+    public async masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number,
+        increase: number
+    ) {
+        let master_inventory_data: MasterTestInventoryDataDocument = await this.masterFindOne(year);
+        let updated_item_object: MasterTestBarang;
+
+        master_inventory_data.kategori.forEach((category_object) => {
+            if (category_object.id == category_id) {
+                category_object.barang.forEach((item_object) => {
+                    if (item_object.id == item_id) {
+                        item_object.jumlah_permintaan += increase;
+
+                        updated_item_object = item_object;
+                    }
+                });
+            }
+        });
+
+        this.masterTestInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+
+        return updated_item_object;
     }
 
     //#endregion utility
