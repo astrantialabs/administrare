@@ -128,7 +128,7 @@ export class RequestInventoryService {
         id: number,
         status: number
     ): Promise<RequestBarang | HttpException> {
-        let status_list = [0, 1, 2];
+        let status_list = [1, 2];
 
         if (status_list.includes(status)) {
             let request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);

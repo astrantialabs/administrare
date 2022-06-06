@@ -112,6 +112,23 @@ export class MasterTestInventoryController {
         return await this.masterTestInventoryService.masterGetBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
+    @Get("kategori/:category_id/name")
+    public async masterGetKategoriNameByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<string> {
+        return (await this.masterTestInventoryService.masterGetKategoriByKategoriId(2022, category_id)).kategori;
+    }
+
+    @Get("kategori/:category_id/barang/:item_id/name")
+    public async masterGetBarangNameByKategoriIdAndBarangId(
+        @Param("category_id", new ParseIntPipe()) category_id: number,
+        @Param("item_id", new ParseIntPipe()) item_id: number
+    ): Promise<string> {
+        return (
+            await this.masterTestInventoryService.masterGetBarangByKategoriIdAndBarangId(2022, category_id, item_id)
+        ).nama;
+    }
+
     /**
      * @description Create a new kategori object
      * @param {String} kategori - The new kategori
