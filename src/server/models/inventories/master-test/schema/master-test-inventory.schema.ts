@@ -55,6 +55,9 @@ export class MasterTestBarang {
     saldo_akhir_jumlah_satuan: number;
 
     @Prop({ type: MongooseSchema.Types.Number, required: true })
+    jumlah_permintaan: number;
+
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
     harga_satuan: number;
 
     @Prop({ type: MongooseSchema.Types.String, required: false })

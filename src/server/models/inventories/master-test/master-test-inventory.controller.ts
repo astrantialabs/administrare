@@ -139,7 +139,7 @@ export class MasterTestInventoryController {
     public async masterCreateBarang(@Body() body: ParameterMasterTestCreateItemDto): Promise<MasterTestBarang> {
         let kategori_id = body.kategori_id;
 
-        let new_barang = {
+        let new_barang: MasterTestBarang = {
             id: await this.masterTestInventoryService.masterGetNewBarangIdByKategoriId(2022, kategori_id),
             nama: body.nama,
             satuan: body.satuan,
@@ -153,6 +153,7 @@ export class MasterTestInventoryController {
                 body.mutasi_barang_masuk_jumlah_satuan,
                 body.mutasi_barang_keluar_jumlah_satuan
             ),
+            jumlah_permintaan: 0,
             harga_satuan: body.harga_satuan,
             keterangan: body.keterangan,
         };
