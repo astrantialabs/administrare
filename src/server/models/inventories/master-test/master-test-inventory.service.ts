@@ -188,6 +188,41 @@ export class MasterTestInventoryService {
 
         return updated_item_object;
     }
+    
+    public async masterResponseJumlahPermintaanByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number,
+        total: number,
+        status: number
+    ) {
+        let master_inventory_data: MasterTestInventoryDataDocument = await this.masterFindOne(year);
+
+        master_inventory_data.kategori.forEach((master_category_object) => {
+            if (master_category_object.id == category_id) {
+                master_category_object.barang.forEach((master_item_object) => {
+                    if (master_item_object.id == item_id) {
+                        if (status == 1) {
+                            master_item_object.mutasi_barang_keluar_jumlah_satuan += total;
+
+                            master_item_object.jumlah_permintaan -= total;
+
+                            master_item_object.saldo_akhir_jumlah_satuan =
+                                this.utilsService.calculateSaldoAkhirJumlahSatuan(
+                                    master_item_object.saldo_jumlah_satuan,
+                                    master_item_object.mutasi_barang_masuk_jumlah_satuan,
+                                    master_item_object.mutasi_barang_keluar_jumlah_satuan
+                                );
+                        } else if (status == 2) {
+                            master_item_object.jumlah_permintaan -= total;
+                        }
+                    }
+                });
+            }
+        });
+
+        this.masterTestInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+    }
 
     //#endregion utility
 

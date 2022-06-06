@@ -24,7 +24,10 @@
 import { UtilsService } from "@/server/utils/utils.service";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { request } from "http";
 import { Model } from "mongoose";
+import { MasterTestInventoryService } from "../master-test/master-test-inventory.service";
+import { MasterTestInventoryDataDocument } from "../master-test/schema/master-test-inventory.schema";
 import { RequestBarang, RequestInventoryData, RequestInventoryDataDocument } from "./schema/request-inventory.schema";
 
 /**
@@ -41,7 +44,8 @@ export class RequestInventoryService {
     constructor(
         @InjectModel(RequestInventoryData.name)
         private readonly requestInventoryDataModel: Model<RequestInventoryDataDocument>,
-        private readonly utilsService: UtilsService
+        private readonly utilsService: UtilsService,
+        private readonly masterTestInventoryService: MasterTestInventoryService
     ) {}
 
     /**
@@ -134,12 +138,20 @@ export class RequestInventoryService {
             let request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
             let responded_request_barang: RequestBarang;
 
-            request_inventory_data.barang.forEach((item_object) => {
-                if (item_object.id == id) {
-                    item_object.responded_at = this.utilsService.currentDate();
-                    item_object.status = status;
+            request_inventory_data.barang.forEach((request_item_object) => {
+                if (request_item_object.id == id) {
+                    request_item_object.responded_at = this.utilsService.currentDate();
+                    request_item_object.status = status;
 
-                    responded_request_barang = item_object;
+                    responded_request_barang = request_item_object;
+
+                    this.masterTestInventoryService.masterResponseJumlahPermintaanByKategoriIdAndBarangId(
+                        2022,
+                        request_item_object.kategori_id,
+                        request_item_object.barang_id,
+                        request_item_object.total,
+                        request_item_object.status
+                    );
                 }
             });
 

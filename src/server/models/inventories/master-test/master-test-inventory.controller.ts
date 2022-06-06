@@ -112,6 +112,11 @@ export class MasterTestInventoryController {
         return await this.masterTestInventoryService.masterGetBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
+    /**
+     * @description Get the name of category object based on category id
+     * @param {Number} category_id - The category id
+     * @returns {Promise<string>} Return the name of category object
+     */
     @Get("kategori/:category_id/name")
     public async masterGetKategoriNameByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number
@@ -119,6 +124,12 @@ export class MasterTestInventoryController {
         return (await this.masterTestInventoryService.masterGetKategoriByKategoriId(2022, category_id)).kategori;
     }
 
+    /**
+     * @description Get the name of item object based on category id and item id
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @returns {Promise<string>} Return the name of item object
+     */
     @Get("kategori/:category_id/barang/:item_id/name")
     public async masterGetBarangNameByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
