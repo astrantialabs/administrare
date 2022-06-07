@@ -23,7 +23,7 @@
 
 import { UtilsService } from "@/server/utils/utils.service";
 import { JumlahData } from "@/shared/typings/types/inventory";
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { ParameterMasterTestUpdateItemDto } from "./dto/item.schema";
@@ -428,9 +428,23 @@ export class MasterTestInventoryService {
 
         master_inventory_data.kategori.forEach((category_object, index) => {
             if (category_object.id == category_id) {
-                deleted_category_object = category_object;
+                let deletion_is_valid: boolean = true;
+                category_object.barang.forEach((item_object) => {
+                    if (item_object.jumlah_permintaan > 0) {
+                        deletion_is_valid = false;
+                    }
+                });
 
-                master_inventory_data.kategori.splice(index, 1);
+                if (deletion_is_valid) {
+                    deleted_category_object = category_object;
+
+                    master_inventory_data.kategori.splice(index, 1);
+                } else if (!deletion_is_valid) {
+                    return new HttpException(
+                        "jumlah permintaan of items in category needs to be 0",
+                        HttpStatus.BAD_GATEWAY
+                    );
+                }
             }
         });
 
@@ -458,9 +472,13 @@ export class MasterTestInventoryService {
             if (category_object.id == category_id) {
                 category_object.barang.forEach((item_object, index) => {
                     if (item_object.id == item_id) {
-                        deleted_item_object = item_object;
+                        if (item_object.jumlah_permintaan == 0) {
+                            deleted_item_object = item_object;
 
-                        category_object.barang.splice(index, 1);
+                            category_object.barang.splice(index, 1);
+                        } else if (item_object.jumlah_permintaan != 0) {
+                            return new HttpException("jumlah permintaan of item needs to be 0", HttpStatus.BAD_GATEWAY);
+                        }
                     }
                 });
             }
