@@ -22,9 +22,10 @@
  */
 
 import { UtilsService } from "@/server/utils/utils.service";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { MasterTestInventoryService } from "../master-test/master-test-inventory.service";
 import {
     DemandBarang,
     DemandInventoryData,
@@ -46,8 +47,11 @@ export class DemandInventoryService {
     constructor(
         @InjectModel(DemandInventoryData.name)
         private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>,
-        private readonly utilsService: UtilsService
+        private readonly utilsService: UtilsService,
+        private readonly masterTestInventoryService: MasterTestInventoryService
     ) {}
+
+    //#region main
 
     /**
      * @description Find demand documnet based on year
@@ -57,6 +61,30 @@ export class DemandInventoryService {
     public async demandFindOne(year: number): Promise<DemandInventoryDataDocument> {
         return await this.demandInventoryDataModel.findOne({ tahun: year }).exec();
     }
+
+    //#endregion main
+
+    //#region utility
+
+    public async demandBarangWithCategoryName(demand_barang_data: any) {
+        let demand_barang_data_with_category_name = await Promise.all(
+            demand_barang_data.map(async (item_object: any) => {
+                return {
+                    ...item_object,
+                    kategori_name: await this.masterTestInventoryService.masterGetKategoriNameByKategoriId(
+                        2022,
+                        item_object.kategori_id
+                    ),
+                };
+            })
+        );
+
+        return demand_barang_data_with_category_name;
+    }
+
+    //#endregion utility
+
+    //#region crud
 
     /**
      * @description Get every category demand object
@@ -72,8 +100,12 @@ export class DemandInventoryService {
      * @param {Number} year - The year data
      * @returns {Promise<DemandBarang[]>} The item demand object
      */
-    public async demandGetBarangAll(year: number): Promise<DemandBarang[]> {
-        return (await this.demandFindOne(year)).barang;
+    public async demandGetBarangAll(year: number): Promise<any> {
+        let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
+
+        let demand_barang_data_with_category_name = await this.demandBarangWithCategoryName(demand_barang_data);
+
+        return demand_barang_data_with_category_name;
     }
 
     /**
@@ -101,11 +133,12 @@ export class DemandInventoryService {
      * @param {Number} id - The item demand id
      * @returns {Promise<DemandBarang>} The item demand object
      */
-    public async demandGetBarangById(year: number, id: number): Promise<DemandBarang> {
+    public async demandGetBarangById(year: number, id: number): Promise<any> {
         let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
-        let demand_barang: DemandBarang;
+        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(demand_barang_data);
+        let demand_barang: any;
 
-        demand_barang_data.forEach((demand_barang_object) => {
+        demand_barang_data_with_category_name.forEach((demand_barang_object: any) => {
             if (demand_barang_object.id == id) {
                 demand_barang = demand_barang_object;
             }
@@ -139,9 +172,10 @@ export class DemandInventoryService {
      * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
     public async demandGetBarangByStatus(year: number, status: number): Promise<DemandBarang[]> {
-        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+        let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
+        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(demand_barang_data);
 
-        let filtered_item_demand_data: DemandBarang[] = demand_data.barang.filter((item_object) => {
+        let filtered_item_demand_data: any = demand_barang_data_with_category_name.filter((item_object: any) => {
             if (item_object.status == status) {
                 return item_object;
             }
@@ -288,4 +322,6 @@ export class DemandInventoryService {
             return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
         }
     }
+
+    //#endregion crud
 }

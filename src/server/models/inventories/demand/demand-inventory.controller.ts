@@ -54,7 +54,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang[]>} The item demand object
      */
     @Get("barang/all")
-    public async demandGetBarangAll(): Promise<DemandBarang[]> {
+    public async demandGetBarangAll(): Promise<any> {
         return await this.demandInventoryService.demandGetBarangAll(2022);
     }
 
@@ -74,7 +74,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang>} The item demand object
      */
     @Get("barang/:id")
-    public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandBarang> {
+    public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<any> {
         return await this.demandInventoryService.demandGetBarangById(2022, id);
     }
 
@@ -96,7 +96,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
     @Get("barang/status/:status")
-    public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandBarang[]> {
+    public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<any> {
         return await this.demandInventoryService.demandGetBarangByStatus(2022, status);
     }
 

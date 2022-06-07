@@ -136,7 +136,7 @@ export class MasterTestInventoryController {
     public async masterGetKategoriNameByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number
     ): Promise<string> {
-        return (await this.masterTestInventoryService.masterGetKategoriByKategoriId(2022, category_id)).kategori;
+        return await this.masterTestInventoryService.masterGetKategoriNameByKategoriId(2022, category_id);
     }
 
     /**
@@ -150,9 +150,11 @@ export class MasterTestInventoryController {
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
     ): Promise<string> {
-        return (
-            await this.masterTestInventoryService.masterGetBarangByKategoriIdAndBarangId(2022, category_id, item_id)
-        ).nama;
+        return await this.masterTestInventoryService.masterGetBarangNameByKategoriIdAndBarangId(
+            2022,
+            category_id,
+            item_id
+        );
     }
 
     /**

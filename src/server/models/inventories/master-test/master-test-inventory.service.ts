@@ -335,6 +335,18 @@ export class MasterTestInventoryService {
         return master_barang;
     }
 
+    public async masterGetKategoriNameByKategoriId(year: number, category_id: number): Promise<string> {
+        return (await this.masterGetKategoriByKategoriId(year, category_id)).kategori;
+    }
+
+    public async masterGetBarangNameByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number
+    ): Promise<string> {
+        return (await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id)).nama;
+    }
+
     /**
      * @description Create a new kategori object
      * @param {Number} year - The year
