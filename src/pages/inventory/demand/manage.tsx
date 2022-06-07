@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { UseQueryResult } from "react-query";
 import dayjs from "dayjs";
-import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup } from "@chakra-ui/react";
+import { Stat, StatLabel, StatNumber, StatGroup } from "@chakra-ui/react";
 
 import {
     InventoryDemandCategories,
@@ -73,23 +73,16 @@ export const QueryDataFilter = <T extends unknown[]>(status: number, query: UseQ
     }
 };
 
-export const QueryDataFilterCustom = (
-    kategori_id: number,
-    query: UseQueryResult<InventoryDemandCategories, unknown>
-): void => {
-    console.log(query.data.filter((item: any) => item.id === kategori_id));
-};
-
-export const convertDate = (date: string) => {
+export const ConvertDate = (date: string) => {
     return dayjs(date).format("DD MMM HH:mm:ss");
 };
 
-const InventoryDemandMain: NextPage = () => {
+const InventoryDemandManage: NextPage = () => {
     const status = useAppSelector((state: RootState) => state.status.value);
     const dispatch = useAppDispatch();
 
     const categories = useInventoryDemandCategoriesQuery();
-    const items = useInventoryDemandItemsQuery();
+    let items = useInventoryDemandItemsQuery();
 
     return (
         <Flex flexDirection={[`column`, `row`, `row`]}>
@@ -106,15 +99,10 @@ const InventoryDemandMain: NextPage = () => {
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{category.username}</Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat{" "}
-                                                {convertDate(category.createad_at) === "Invalid Date"
-                                                    ? convertDate(category.createad_at)
-                                                    : "N/A"}
-                                                - direspon{" "}
-                                                {convertDate(category.responded_at) === "Invalid Date"
-                                                    ? convertDate(category.responded_at)
-                                                    : "N/A"}
+                                                dibuat {ConvertDate(category.createad_at)}- direspon{" "}
+                                                {ConvertDate(category.responded_at)}
                                             </Text>
+
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Kategori</StatLabel>
@@ -217,14 +205,8 @@ const InventoryDemandMain: NextPage = () => {
                                             {item.username} dari kategori {item.kategori_name}
                                         </Heading>
                                         <Text fontSize={8} marginBottom={4}>
-                                            dibuat{" "}
-                                            {convertDate(item.createad_at) === "Invalid Date"
-                                                ? convertDate(item.createad_at)
-                                                : "N/A"}
-                                            - direspon{" "}
-                                            {convertDate(item.responded_at) === "Invalid Date"
-                                                ? convertDate(item.responded_at)
-                                                : "N/A"}
+                                            dibuat {ConvertDate(item.createad_at)}- direspon{" "}
+                                            {ConvertDate(item.responded_at)}
                                         </Text>
                                         <StatGroup marginTop={2}>
                                             <Stat marginRight={8}>
@@ -337,4 +319,4 @@ const InventoryDemandMain: NextPage = () => {
     );
 };
 
-export default InventoryDemandMain;
+export default InventoryDemandManage;

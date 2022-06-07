@@ -31,6 +31,7 @@ export type InventoryDemandCategory = {
 export type InventoryDemandItem = {
     id: number;
     kategori_id: number;
+    kategori_name: string;
     username: string;
     barang: string;
     satuan: string;

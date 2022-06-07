@@ -71,10 +71,21 @@ export class InventoryController {
         return {};
     }
 
+    /* -------------------------------------------------------------------------- */
+    /*                              INVENTORY DEMAND                              */
+    /* -------------------------------------------------------------------------- */
+
     @Get("demand")
     @Render("inventory/demand/main")
     @UseInterceptors(ParamsInterceptor)
     public inventoryDemandMain(): {} {
+        return {};
+    }
+
+    @Get("demand/manage")
+    @Render("inventory/demand/manage")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryDemandManage(): {} {
         return {};
     }
 }
