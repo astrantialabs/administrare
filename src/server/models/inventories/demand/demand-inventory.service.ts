@@ -135,14 +135,18 @@ export class DemandInventoryService {
      */
     public async demandGetBarangById(year: number, id: number): Promise<any> {
         let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
-        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(demand_barang_data);
         let demand_barang: any;
 
-        demand_barang_data_with_category_name.forEach((demand_barang_object: any) => {
+        demand_barang_data.forEach((demand_barang_object: any) => {
             if (demand_barang_object.id == id) {
                 demand_barang = demand_barang_object;
             }
         });
+
+        demand_barang["kategori_name"] = await this.masterTestInventoryService.masterGetKategoriNameByKategoriId(
+            2022,
+            demand_barang.kategori_id
+        );
 
         return demand_barang;
     }
@@ -173,15 +177,18 @@ export class DemandInventoryService {
      */
     public async demandGetBarangByStatus(year: number, status: number): Promise<DemandBarang[]> {
         let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
-        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(demand_barang_data);
 
-        let filtered_item_demand_data: any = demand_barang_data_with_category_name.filter((item_object: any) => {
+        let filtered_item_demand_data: any = demand_barang_data.filter((item_object: any) => {
             if (item_object.status == status) {
                 return item_object;
             }
         });
 
-        return filtered_item_demand_data;
+        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(
+            filtered_item_demand_data
+        );
+
+        return demand_barang_data_with_category_name;
     }
 
     /**
