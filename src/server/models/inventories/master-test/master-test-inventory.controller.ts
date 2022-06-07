@@ -30,6 +30,7 @@ import {
     MasterTestKategori,
 } from "./schema/master-test-inventory.schema";
 import { ParameterMasterTestCreateItemDto, ParameterMasterTestUpdateItemDto } from "./dto/item.schema";
+import { ItemSearchData } from "@/shared/typings/types/inventory";
 
 /**
  * @class MasterInventoryDataController
@@ -62,6 +63,20 @@ export class MasterTestInventoryController {
     }
 
     //#endregion main
+
+    //#region utility
+
+    /**
+     * @description Search items based on name
+     * @param {String} name - The name
+     * @returns {Promise<ItemSearchData[]>} Return filtered items
+     */
+    @Get("search/barang/:name")
+    public async masterSearchBarangByName(@Param("name") name: string): Promise<ItemSearchData[]> {
+        return await this.masterTestInventoryService.masterSearchBarangByName(2022, name);
+    }
+
+    //#endregion utility
 
     //#region crud
 

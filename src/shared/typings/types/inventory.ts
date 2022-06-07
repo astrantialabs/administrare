@@ -20,3 +20,11 @@ export type JumlahData = {
     saldo_akhir: number;
     permintaan: number;
 };
+
+export type ItemSearchData = {
+    category_id: number;
+    category_name: string;
+    item_id: number;
+    item_name: string;
+    total_match: number;
+};

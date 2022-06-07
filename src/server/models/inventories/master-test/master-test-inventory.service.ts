@@ -22,8 +22,8 @@
  */
 
 import { UtilsService } from "@/server/utils/utils.service";
-import { JumlahData } from "@/shared/typings/types/inventory";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ItemSearchData, JumlahData } from "@/shared/typings/types/inventory";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { ParameterMasterTestUpdateItemDto } from "./dto/item.schema";
@@ -230,6 +230,43 @@ export class MasterTestInventoryService {
         });
 
         this.masterTestInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+    }
+
+    /**
+     * @description Search items based on name
+     * @param {Number} year - The year
+     * @param {String} name - The name
+     * @returns {Promise<ItemSearchData[]>} Return filtered items
+     */
+    public async masterSearchBarangByName(year: number, name: string): Promise<ItemSearchData[]> {
+        let master_inventory_data: MasterTestInventoryDataDocument = await this.masterFindOne(year);
+        let item_search_data: ItemSearchData[] = [];
+        let search_array: string[] = name.toLowerCase().split("-");
+
+        master_inventory_data.kategori.forEach((category_object) => {
+            category_object.barang.forEach((item_object) => {
+                let total_match: number = 0;
+                search_array.forEach((search_element) => {
+                    if (item_object.nama.toLowerCase().includes(search_element)) {
+                        total_match += 1;
+                    }
+                });
+
+                if (total_match > 0) {
+                    item_search_data.push({
+                        category_id: category_object.id,
+                        category_name: category_object.kategori,
+                        item_id: item_object.id,
+                        item_name: item_object.nama,
+                        total_match: total_match,
+                    });
+                }
+            });
+        });
+
+        item_search_data.sort((a: ItemSearchData, b: ItemSearchData) => b.total_match - a.total_match);
+
+        return item_search_data;
     }
 
     //#endregion utility
