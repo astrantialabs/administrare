@@ -100,35 +100,39 @@ export class RequestInventoryController {
     public async requestCreateBarang(
         @Body() body: ParameterRequestCreateItemDto
     ): Promise<RequestBarang | HttpException> {
-        let jumlah_data: JumlahData =
-            await this.masterTestInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
-                2022,
-                body.kategori_id,
-                body.barang_id
-            );
+        if (body.total > 0) {
+            let jumlah_data: JumlahData =
+                await this.masterTestInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
+                    2022,
+                    body.kategori_id,
+                    body.barang_id
+                );
 
-        if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + body.total) {
-            let item: RequestBarang = {
-                id: (await this.requestGetBarangAll()).length + 1,
-                kategori_id: body.kategori_id,
-                barang_id: body.barang_id,
-                total: body.total,
-                deskripsi: body.deskripsi,
-                created_at: this.utilsService.currentDate(),
-                responded_at: null,
-                status: 0,
-            };
+            if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + body.total) {
+                let item: RequestBarang = {
+                    id: (await this.requestGetBarangAll()).length + 1,
+                    kategori_id: body.kategori_id,
+                    barang_id: body.barang_id,
+                    total: body.total,
+                    deskripsi: body.deskripsi,
+                    created_at: this.utilsService.currentDate(),
+                    responded_at: null,
+                    status: 0,
+                };
 
-            this.masterTestInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
-                2022,
-                item.kategori_id,
-                item.barang_id,
-                item.total
-            );
+                this.masterTestInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
+                    2022,
+                    item.kategori_id,
+                    item.barang_id,
+                    item.total
+                );
 
-            return await this.requestInventoryService.requestCreateBarang(2022, item);
-        } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + body.total) {
-            return new HttpException("saldo_akhir not enough", HttpStatus.BAD_GATEWAY);
+                return await this.requestInventoryService.requestCreateBarang(2022, item);
+            } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + body.total) {
+                return new HttpException("saldo_akhir not enough", HttpStatus.BAD_GATEWAY);
+            }
+        } else if (body.total <= 0) {
+            return new HttpException("total needs to be more than 0", HttpStatus.BAD_GATEWAY);
         }
     }
 
