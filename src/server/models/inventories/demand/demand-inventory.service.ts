@@ -223,7 +223,7 @@ export class DemandInventoryService {
         id: number,
         status: number
     ): Promise<DemandKategori | HttpException> {
-        let status_list = [0, 1, 2];
+        let status_list = [1, 2];
 
         if (status_list.includes(status)) {
             let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
@@ -231,10 +231,14 @@ export class DemandInventoryService {
 
             demand_data.kategori.forEach((demand_kategori_object) => {
                 if (demand_kategori_object.id == id) {
-                    demand_kategori_object.responded_at = this.utilsService.currentDate();
-                    demand_kategori_object.status = status;
+                    if (demand_kategori_object.status == 0) {
+                        demand_kategori_object.responded_at = this.utilsService.currentDate();
+                        demand_kategori_object.status = status;
 
-                    responded_demand_kategori = demand_kategori_object;
+                        responded_demand_kategori = demand_kategori_object;
+                    } else if (status_list.includes(demand_kategori_object.status)) {
+                        return new HttpException("already responded", HttpStatus.BAD_GATEWAY);
+                    }
                 }
             });
 
@@ -258,7 +262,7 @@ export class DemandInventoryService {
         id: number,
         status: number
     ): Promise<DemandBarang | HttpException> {
-        let status_list = [0, 1, 2];
+        let status_list = [1, 2];
 
         if (status_list.includes(status)) {
             let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
@@ -266,10 +270,14 @@ export class DemandInventoryService {
 
             demand_data.barang.forEach((demand_barang_object) => {
                 if (demand_barang_object.id == id) {
-                    demand_barang_object.responded_at = this.utilsService.currentDate();
-                    demand_barang_object.status = status;
+                    if (demand_barang_object.status == 0) {
+                        demand_barang_object.responded_at = this.utilsService.currentDate();
+                        demand_barang_object.status = status;
 
-                    responded_demand_barang = demand_barang_object;
+                        responded_demand_barang = demand_barang_object;
+                    } else if (status_list.includes(demand_barang_object.status)) {
+                        return new HttpException("already responded", HttpStatus.BAD_GATEWAY);
+                    }
                 }
             });
 

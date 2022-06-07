@@ -160,14 +160,14 @@ export class MasterTestInventoryService {
      * @param {Number} year - The year
      * @param {Number} category_id - The category id
      * @param {Number} item_id - The item id
-     * @param {Number} increase - The amount of jumlah_permintaan will be increase
+     * @param {Number} total - The amount of jumlah_permintaan will be increase
      * @returns {MasterTestBarang} The updated barang object
      */
     public async masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
         year: number,
         category_id: number,
         item_id: number,
-        increase: number
+        total: number
     ) {
         let master_inventory_data: MasterTestInventoryDataDocument = await this.masterFindOne(year);
         let updated_item_object: MasterTestBarang;
@@ -176,7 +176,7 @@ export class MasterTestInventoryService {
             if (category_object.id == category_id) {
                 category_object.barang.forEach((item_object) => {
                     if (item_object.id == item_id) {
-                        item_object.jumlah_permintaan += increase;
+                        item_object.jumlah_permintaan += total;
 
                         updated_item_object = item_object;
                     }
@@ -188,7 +188,15 @@ export class MasterTestInventoryService {
 
         return updated_item_object;
     }
-    
+
+    /**
+     * @description Response item jumlah_permintaan by category id and item id
+     * @param {Number} year - The year
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @param {Number} total - The total
+     * @param {Number} status - The status
+     */
     public async masterResponseJumlahPermintaanByKategoriIdAndBarangId(
         year: number,
         category_id: number,

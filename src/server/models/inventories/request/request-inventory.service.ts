@@ -140,23 +140,27 @@ export class RequestInventoryService {
 
             request_inventory_data.barang.forEach((request_item_object) => {
                 if (request_item_object.id == id) {
-                    request_item_object.responded_at = this.utilsService.currentDate();
-                    request_item_object.status = status;
+                    if (request_item_object.status == 0) {
+                        request_item_object.responded_at = this.utilsService.currentDate();
+                        request_item_object.status = status;
 
-                    responded_request_barang = request_item_object;
+                        responded_request_barang = request_item_object;
 
-                    this.masterTestInventoryService.masterResponseJumlahPermintaanByKategoriIdAndBarangId(
-                        2022,
-                        request_item_object.kategori_id,
-                        request_item_object.barang_id,
-                        request_item_object.total,
-                        request_item_object.status
-                    );
+                        this.masterTestInventoryService.masterResponseJumlahPermintaanByKategoriIdAndBarangId(
+                            2022,
+                            request_item_object.kategori_id,
+                            request_item_object.barang_id,
+                            request_item_object.total,
+                            request_item_object.status
+                        );
+                    } else if (status_list.includes(request_item_object.status)) {
+                        return new HttpException("already responded", HttpStatus.BAD_GATEWAY);
+                    }
                 }
             });
 
             this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
-
+            
             return responded_request_barang;
         } else if (!status_list.includes(status)) {
             return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
