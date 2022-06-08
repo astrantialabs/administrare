@@ -36,6 +36,9 @@ export class RequestBarang {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     barang_id: number;
 
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    username: string;
+
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     total: number;
 

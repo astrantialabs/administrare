@@ -113,6 +113,7 @@ export class RequestInventoryController {
                     id: (await this.requestGetBarangAll()).length + 1,
                     kategori_id: body.kategori_id,
                     barang_id: body.barang_id,
+                    username: body.username,
                     total: body.total,
                     deskripsi: body.deskripsi,
                     created_at: this.utilsService.currentDate(),

@@ -19,6 +19,7 @@
 export class ParameterRequestCreateItemDto {
     kategori_id: number;
     barang_id: number;
+    username: string;
     total: number;
     deskripsi: string | null;
 }
