@@ -124,28 +124,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
             {Switch("inventory") && (
                 <>
-                    <Flex h={`10`} alignItems={`center`} mx={`4`} justifyContent={`space-between`}>
-                        <Text fontSize={`small`} fontWeight={`bold`}>
-                            inventory
-                        </Text>
-                    </Flex>
                     <NavigationItem link={`/inventory`} icon={FiPieChart}>
                         Inventory
                     </NavigationItem>
-                    <NavigationItem link={`/inventory/actions`} icon={FiPieChart}>
-                        Inventory Actions
-                    </NavigationItem>
-                    <Divider mt={4} mb={4} bg={`gray.200`} />
-                    <Flex h={`10`} alignItems={`center`} mx={`4`} justifyContent={`space-between`}>
-                        <Text fontSize={`small`} fontWeight={`bold`}>
-                            inventory demand
-                        </Text>
-                    </Flex>
+
                     <NavigationItem link={`/inventory/demand`} icon={FiPieChart}>
-                        Demand
-                    </NavigationItem>
-                    <NavigationItem link={`/inventory/demand/actions`} icon={FiPieChart}>
-                        Demand Actions
+                        Inventory Demand
                     </NavigationItem>
                 </>
             )}
@@ -169,13 +153,7 @@ const MobileNavigation = ({ onOpen, ...rest }: MobileNavigationProps) => {
             justifyContent={{ base: "space-between", md: "flex-end" }}
             {...rest}
         >
-            <IconButton
-                display={{ base: "flex", md: "none" }}
-                onClick={onOpen}
-                variant="outline"
-                aria-label="open menu"
-                icon={<FiMenu />}
-            />
+            <IconButton display={{ base: "flex", md: "none" }} onClick={onOpen} variant="outline" aria-label="open menu" icon={<FiMenu />} />
             {/* {Switch("inventory") && (
                 <>
                     <HStack visibility={{ lg: `visible`, sm: `hidden` }}></HStack>
@@ -190,15 +168,7 @@ export default function Sidebar({ type, children }: { type: string; children: Re
     return (
         <Box minH={`100vh`}>
             <SidebarContent onClose={() => onClose} display={{ base: "none", md: "block" }} />
-            <Drawer
-                autoFocus={false}
-                isOpen={isOpen}
-                placement="left"
-                onClose={onClose}
-                returnFocusOnClose={false}
-                onOverlayClick={onClose}
-                size="full"
-            >
+            <Drawer autoFocus={false} isOpen={isOpen} placement="left" onClose={onClose} returnFocusOnClose={false} onOverlayClick={onClose} size="full">
                 <DrawerContent>
                     <SidebarContent onClose={onClose} />
                 </DrawerContent>

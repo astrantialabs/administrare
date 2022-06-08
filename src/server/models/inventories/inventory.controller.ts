@@ -29,63 +29,49 @@ import { ParamsInterceptor } from "@/server/common/interceptors/params.intercept
 export class InventoryController {
     constructor() {}
 
-    @Get("")
-    @Render("dashboard/inventory/main")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryMain(): {} {
-        return {};
-    }
-
-    @Get("actions")
-    @Render("dashboard/inventory/action")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryActions(): {} {
-        return {};
-    }
-
-    @Get("create/kategori")
-    @Render("dashboard/inventory/actions/kategori/create")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryCreateKategori(): {} {
-        return {};
-    }
-
-    @Get("create/barang")
-    @Render("dashboard/inventory/actions/barang/create")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryCreateBarang(): {} {
-        return {};
-    }
-
-    @Get("update/kategori/:kategori_id")
-    @Render("dashboard/inventory/actions/kategori/update")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryUpdateKategori(): {} {
-        return {};
-    }
-
-    @Get("update/kategori/:kategori_id/:item_id")
-    @Render("dashboard/inventory/actions/barang/update")
-    @UseInterceptors(ParamsInterceptor)
-    public dashboardInventoryUpdateBarang(): {} {
-        return {};
-    }
-
     /* -------------------------------------------------------------------------- */
     /*                              INVENTORY DEMAND                              */
     /* -------------------------------------------------------------------------- */
 
     @Get("demand")
-    @Render("inventory/demand/main")
+    @Render("inventory/demand/user/main")
     @UseInterceptors(ParamsInterceptor)
     public inventoryDemandMain(): {} {
         return {};
     }
 
-    @Get("demand/manage")
-    @Render("inventory/demand/manage")
+    @Get("demand/create/kategori")
+    @Render("inventory/demand/manage/create/category")
     @UseInterceptors(ParamsInterceptor)
-    public inventoryDemandManage(): {} {
+    public inventoryDemandCreateKategori(): {} {
+        return {};
+    }
+
+    @Get("demand/create/barang")
+    @Render("inventory/demand/manage/create/item")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryDemandCreateBarang(): {} {
+        return {};
+    }
+
+    @Get("demand/manage")
+    @Render("inventory/demand/manage/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryDemandManageMain(): {} {
+        return {};
+    }
+
+    @Get("demand/manage/create/kategori")
+    @Render("inventory/demand/manage/create/category")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryDemandManageCreateKategori(): {} {
+        return {};
+    }
+
+    @Get("demand/manage/create/barang")
+    @Render("inventory/demand/manage/create/item")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryDemandManageCreateBarang(): {} {
         return {};
     }
 }
