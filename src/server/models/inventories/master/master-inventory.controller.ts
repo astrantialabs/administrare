@@ -17,33 +17,28 @@
  */
 
 /**
- * @fileoverview The Data controller.
- * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
+ * @fileoverview The master inventory controller.
+ * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
 import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
-import { from, Observable, toArray } from "rxjs";
-
-import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
-
 import { UtilsService } from "../../../utils/utils.service";
-import { MasterInventoryService as MasterInventoryService } from "./master-inventory.service";
-import { MasterBarang, MasterInventory, MasterInventoryDataDocument } from "./schema/master-inventory.schema";
-import { ParameterMasterInventoryCreateBarangDto } from "./dto/item.schema";
-import { MasterInventoryKategoriCreateFormModel } from "./validations/kategori.validation";
-import { ParameterMasterInventoryCreateCategoryDto } from "@/server/models/inventories/master/dto/category.schema";
+import { MasterInventoryService } from "./master-inventory.service";
+import { MasterBarang, MasterInventoryDataDocument, MasterKategori } from "./schema/master-inventory.schema";
+import { ParameterMasterCreateItemDto, ParameterMasterUpdateItemDto } from "./dto/item.schema";
+import { ItemSearchData } from "@/shared/typings/types/inventory";
 
 /**
  * @class MasterInventoryDataController
- * @description The master inventory data controller.
+ * @description The master inventory controller.
  */
-@Controller("__api/data/inventory")
+@Controller("__api/data/inventory/master")
 export class MasterInventoryController {
     private readonly logger = new Logger(MasterInventoryController.name);
 
     /**
      * @constructor
-     * @description Creates a new master inventory data controller.
+     * @description Creates a new master inventory controller.
      * @param {MasterInventoryService} masterInventoryService - The master inventory service.
      * @param {UtilsService} utilsService  - The utils service.
      */
@@ -55,217 +50,72 @@ export class MasterInventoryController {
     //#region main
 
     /**
-     * @description Find all data.
-     * @returns {Promise<MasterInventoryDataDocument[]>} The data.
+     * @description Find an inventory document based on year
+     * @returns {Promise<MasterInventoryDataDocument>} The inventory document
      */
-    @Get("")
-    public async findAll(): Promise<MasterInventoryDataDocument[]> {
-        return this.masterInventoryService.findAll();
-    }
-
-    @Get("/actions/update/:kategori_id/:barang_id")
-    public async update(
-        @Param("kategori_id") kategori_id: number,
-        @Param("barang_id") barang_id: number
-    ): Promise<any> {
-        const original_data = await this.masterInventoryService.findAll();
-
-        let payload: any[] = [];
-
-        original_data.forEach(async (inventoryItem: MasterInventoryDataDocument) => {
-            inventoryItem.inventory.forEach(async (item: MasterInventory) => {
-                if (item.id == kategori_id) {
-                    item.barang.forEach(async (barang: MasterBarang) => {
-                        if (barang.id == barang_id) {
-                            payload.push({
-                                uraian_barang: barang.nama,
-                                satuan: barang.satuan,
-                                saldo_jumlah_satuan: barang.saldo.jumlah_satuan,
-                                saldo_harga_satuan: barang.saldo.harga_satuan,
-                                mutasi_barang_masuk_jumlah_satuan: barang.mutasi_barang_masuk.jumlah_satuan,
-                                mutasi_barang_masuk_harga_satuan: barang.mutasi_barang_masuk.harga_satuan,
-                                mutasi_barang_keluar_jumlah_satuan: barang.mutasi_barang_keluar.jumlah_satuan,
-                                mutasi_barang_keluar_harga_satuan: barang.mutasi_barang_keluar.harga_satuan,
-                                saldo_akhir_jumlah_satuan: barang.saldo_akhir.jumlah_satuan,
-                                saldo_akhir_harga_satuan: barang.saldo_akhir.harga_satuan,
-                            });
-                        }
-                    });
-                }
-            });
-        });
-
-        return from(payload).pipe(toArray());
-    }
-
-    /**
-     * @description Finds all data and format it for table display.
-     * @return {Promise<Observable<InventoryDataPayload[]>>} The data.
-     */
-    @Get("table")
-    public async findAllAndFormatToTable(): Promise<Observable<InventoryDataPayload[]>> {
-        try {
-            const data = await this.masterInventoryService.findAll();
-            let table_data: InventoryDataPayload[] = [];
-
-            data.forEach((data_item) => {
-                data_item.inventory.forEach(async (inventory_item, inventory_index) => {
-                    table_data.push({
-                        actions: {
-                            category_id: inventory_item.id,
-                            item_id: null,
-                            isKategori: true,
-                        },
-                        no: await this.utilsService.romanizeNumber(inventory_index + 1),
-                        uraian_barang: inventory_item.kategori,
-                        satuan: "",
-                        saldo_jumlah_satuan: "",
-                        saldo_harga_satuan: "",
-                        saldo_jumlah: "",
-                        mutasi_barang_masuk_jumlah_satuan: "",
-                        mutasi_barang_masuk_harga_satuan: "",
-                        mutasi_barang_masuk_jumlah: "",
-                        mutasi_barang_keluar_jumlah_satuan: "",
-                        mutasi_barang_keluar_harga_satuan: "",
-                        mutasi_barang_keluar_jumlah: "",
-                        saldo_akhir_jumlah_satuan: "",
-                        saldo_akhir_harga_satuan: "",
-                        saldo_akhir_jumlah: "",
-                        isCategory: true,
-                    });
-
-                    if (inventory_item.barang.length === 0) return;
-
-                    inventory_item.barang.forEach((barang_item, barang_index) => {
-                        table_data.push({
-                            actions: {
-                                category_id: inventory_item.id,
-                                item_id: barang_item.id,
-                                isKategori: false,
-                            },
-                            no: barang_index + 1,
-                            uraian_barang: barang_item.nama,
-                            satuan: barang_item.satuan,
-                            saldo_jumlah_satuan: this.utilsService.isNull(barang_item.saldo.jumlah_satuan),
-                            saldo_harga_satuan: this.utilsService.isNull(barang_item.saldo.harga_satuan),
-                            saldo_jumlah: this.utilsService
-                                .isNull(barang_item.saldo.jumlah_satuan * barang_item.saldo.harga_satuan)
-                                .toString(),
-                            mutasi_barang_masuk_jumlah_satuan: this.utilsService.isNull(
-                                barang_item.mutasi_barang_masuk.jumlah_satuan
-                            ),
-                            mutasi_barang_masuk_harga_satuan: this.utilsService.isNull(
-                                barang_item.mutasi_barang_masuk.harga_satuan
-                            ),
-                            mutasi_barang_masuk_jumlah: this.utilsService.multiply(
-                                barang_item.mutasi_barang_masuk.jumlah_satuan,
-                                barang_item.mutasi_barang_masuk.harga_satuan
-                            ),
-                            mutasi_barang_keluar_jumlah_satuan: this.utilsService.isNull(
-                                barang_item.mutasi_barang_keluar.jumlah_satuan
-                            ),
-                            mutasi_barang_keluar_harga_satuan: this.utilsService.isNull(
-                                barang_item.mutasi_barang_keluar.harga_satuan
-                            ),
-                            mutasi_barang_keluar_jumlah: this.utilsService.multiply(
-                                barang_item.mutasi_barang_keluar.jumlah_satuan,
-                                barang_item.mutasi_barang_keluar.harga_satuan
-                            ),
-                            saldo_akhir_jumlah_satuan: this.utilsService.isNull(barang_item.saldo_akhir.jumlah_satuan),
-                            saldo_akhir_harga_satuan: this.utilsService.isNull(barang_item.saldo_akhir.harga_satuan),
-                            saldo_akhir_jumlah: this.utilsService.multiply(
-                                barang_item.saldo_akhir.jumlah_satuan,
-                                barang_item.saldo_akhir.harga_satuan
-                            ),
-                            isCategory: false,
-                        });
-                    });
-                });
-            });
-
-            return from(table_data).pipe(toArray());
-        } catch (error) {
-            this.logger.error(error);
-        }
+    @Get()
+    public async masterFindOne(): Promise<MasterInventoryDataDocument> {
+        return this.masterInventoryService.masterFindOne(2022);
     }
 
     //#endregion main
 
-    //#region utilities
+    //#region utility
 
     /**
-     * @description Finds all data categories
-     * @returns {Promise<string[]>} The data categories.
+     * @description Search items based on name
+     * @param {String} name - The name
+     * @returns {Promise<ItemSearchData[]>} Return filtered items
      */
-    @Get("categories")
-    public async findAllCategories(): Promise<Observable<string[]>> {
-        const data = await this.masterInventoryService.findAll();
-        let categories: any[] = [];
-
-        data.forEach(async (inventoryItem: MasterInventoryDataDocument) => {
-            inventoryItem.inventory.forEach(async (item: MasterInventory) => {
-                categories.push({
-                    kategori: item.kategori,
-                    id: item.id,
-                });
-            });
-        });
-
-        return from(categories).pipe(toArray());
+    @Get("search/barang/:name")
+    public async masterSearchBarangByName(@Param("name") name: string): Promise<ItemSearchData[]> {
+        return await this.masterInventoryService.masterSearchBarangByName(2022, name);
     }
 
-    @Get("categories/roman")
-    public async findAllCategoriesRomanNumeral(): Promise<Observable<string[]>> {
-        const data = await this.masterInventoryService.findAll();
-        let categories_roman: string[] = [];
+    //#endregion utility
 
-        data.forEach(async (inventoryItem: MasterInventoryDataDocument) => {
-            inventoryItem.inventory.forEach(async (item: MasterInventory, index) => {
-                categories_roman.push(await this.utilsService.romanizeNumber(index + 1));
-            });
-        });
-
-        return from(categories_roman).pipe(toArray());
-    }
+    //#region crud
 
     /**
-     * @description Create a new category then add based on year
-     * @param {ParCreateCategoryDto} body - The data required
-     * @returns {ResCreateCategoryDto} The new category data
+     * @description Get all kategori object
+     * @returns {Promise<MasterKategori[]>} Return all kategori object
      */
-    @Post("test")
-    public async test(@Body() body: any): Promise<any> {
-        try {
-            this.logger.debug(body);
-            return;
-        } catch (error) {
-            this.logger.error(error);
-        }
+    @Get("kategori/all")
+    public async masterGetKategoriAll(): Promise<MasterKategori[]> {
+        return await this.masterInventoryService.masterGetKategoriAll(2022);
     }
 
-    //#endregion utilities
-
-    //#region master
-
     /**
-     * @description Get category data based on year and category id
+     * @description Get all barang object based on category id
      * @param {Number} category_id - The category id
-     * @returns {MasterInventory} The category data
+     * @returns {Promise<MasterBarang[]>} Return all barang object
      */
-    @Get("master/get/kategori/:category_id")
+    @Get("kategori/:category_id/barang/all")
+    public async masterGetBarangAllByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<MasterBarang[]> {
+        return await this.masterInventoryService.masterGetBarangAllByKategoriId(2022, category_id);
+    }
+
+    /**
+     * @description Get kategori object based on category id
+     * @param {Number} category_id - The category id
+     * @returns {Promise<MasterKategori>} Return kategori object
+     */
+    @Get("kategori/:category_id")
     public async masterGetKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number
-    ): Promise<MasterInventory> {
+    ): Promise<MasterKategori> {
         return await this.masterInventoryService.masterGetKategoriByKategoriId(2022, category_id);
     }
 
     /**
-     * @description Get item data based on year, category id and item id
+     * @description Get barang object based on category id and item id
      * @param {Number} category_id - The category id
      * @param {Number} item_id - The item id
-     * @returns {MasterBarang} The item data
+     * @returns {Promise<MasterBarang>} Return barang object
      */
-    @Get("master/get/kategori/:category_id/barang/:item_id")
+    @Get("kategori/:category_id/barang/:item_id")
     public async masterGetBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
@@ -274,120 +124,118 @@ export class MasterInventoryController {
     }
 
     /**
-     * @description Create a new category then add based on year
-     * @param {ParameterCreateCategoryDto} body - The data required
-     * @returns {MasterInventory} The new category data
-     */
-    @Post("master/create/kategori")
-    public async masterCreateKategori(@Body() body: MasterInventoryKategoriCreateFormModel): Promise<MasterInventory> {
-        try {
-            const payload: ParameterMasterInventoryCreateCategoryDto = {
-                tahun: 2022,
-                kategori: body.kategori.toUpperCase(),
-            };
-            return await this.masterInventoryService.masterCreateKategori(payload.tahun, payload.kategori);
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
-
-    /**
-     * @description Create a new item then add based on year and category id
-     * @param {ParameterCreateItemDto} body - The data required
-     * @returns {MasterBarang} The new item data
-     */
-    @Post("master/create/barang")
-    public async masterCreateBarang(@Body() body: any): Promise<MasterBarang> {
-        try {
-            const payload: ParameterMasterInventoryCreateBarangDto = {
-                tahun: body.tahun,
-                kategori_id: body.kategori_id,
-                nama: body.nama,
-                satuan: body.satuan,
-                saldo: {
-                    jumlah_satuan: parseInt(body.saldo_jumlah_satuan),
-                    harga_satuan: parseInt(body.saldo_harga_satuan),
-                },
-                mutasi_barang_masuk: {
-                    jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan),
-                    harga_satuan: parseInt(body.mutasi_barang_masuk_harga_satuan),
-                },
-                mutasi_barang_keluar: {
-                    jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan),
-                    harga_satuan: parseInt(body.mutasi_barang_keluar_harga_satuan),
-                },
-                saldo_akhir: {
-                    jumlah_satuan: parseInt(body.saldo_akhir_jumlah_satuan),
-                    harga_satuan: parseInt(body.saldo_akhir_harga_satuan),
-                },
-            };
-
-            const barang: MasterBarang = {
-                id: await this.masterInventoryService.getNewItemId(payload.tahun, payload.kategori_id),
-                nama: payload.nama,
-                satuan: payload.satuan,
-                saldo: payload.saldo,
-                mutasi_barang_masuk: payload.mutasi_barang_masuk,
-                mutasi_barang_keluar: payload.mutasi_barang_keluar,
-                saldo_akhir: payload.saldo_akhir,
-            };
-
-            return await this.masterInventoryService.masterCreateBarang(payload.tahun, payload.kategori_id, barang);
-        } catch (error) {
-            this.logger.error(error);
-        }
-    }
-
-    /**
-     * @description Update category data based on year and category id
+     * @description Get the name of category object based on category id
      * @param {Number} category_id - The category id
-     * @param {String} kategori - The new category name
-     * @returns {MasterInventory} The updated category data
+     * @returns {Promise<string>} Return the name of category object
      */
-    @Put("master/update/kategori/:category_id")
+    @Get("kategori/:category_id/name")
+    public async masterGetKategoriNameByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<string> {
+        return await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, category_id);
+    }
+
+    /**
+     * @description Get the name of item object based on category id and item id
+     * @param {Number} category_id - The category id
+     * @param {Number} item_id - The item id
+     * @returns {Promise<string>} Return the name of item object
+     */
+    @Get("kategori/:category_id/barang/:item_id/name")
+    public async masterGetBarangNameByKategoriIdAndBarangId(
+        @Param("category_id", new ParseIntPipe()) category_id: number,
+        @Param("item_id", new ParseIntPipe()) item_id: number
+    ): Promise<string> {
+        return await this.masterInventoryService.masterGetBarangNameByKategoriIdAndBarangId(2022, category_id, item_id);
+    }
+
+    /**
+     * @description Create a new kategori object
+     * @param {String} kategori - The new kategori
+     * @returns {Promise<MasterKategori>} Return the new kategori object
+     */
+    @Post("new/kategori")
+    public async masterCreateKategori(@Body("kategori") kategori: string): Promise<MasterKategori> {
+        let new_kategori: MasterKategori = {
+            id: await this.masterInventoryService.masterGetNewKategoriId(2022),
+            kategori: kategori,
+            created_at: this.utilsService.currentDate(),
+            updated_at: this.utilsService.currentDate(),
+            barang: [],
+        };
+
+        return await this.masterInventoryService.masterCreateKategori(2022, new_kategori);
+    }
+
+    /**
+     * @description Create a new barang object
+     * @param {ParameterMasterCreateItemDto} body - The new barang data
+     * @returns {Promise<MasterBarang>} Return the new barang object
+     */
+    @Post("new/barang")
+    public async masterCreateBarang(@Body() body: ParameterMasterCreateItemDto): Promise<MasterBarang> {
+        let kategori_id = body.kategori_id;
+
+        let new_barang: MasterBarang = {
+            id: await this.masterInventoryService.masterGetNewBarangIdByKategoriId(2022, kategori_id),
+            nama: body.nama,
+            satuan: body.satuan,
+            created_at: this.utilsService.currentDate(),
+            updated_at: this.utilsService.currentDate(),
+            saldo_jumlah_satuan: body.saldo_jumlah_satuan,
+            mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
+            mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
+            saldo_akhir_jumlah_satuan: this.utilsService.calculateSaldoAkhirJumlahSatuan(
+                body.saldo_jumlah_satuan,
+                body.mutasi_barang_masuk_jumlah_satuan,
+                body.mutasi_barang_keluar_jumlah_satuan
+            ),
+            jumlah_permintaan: 0,
+            harga_satuan: body.harga_satuan,
+            keterangan: body.keterangan,
+        };
+
+        return await this.masterInventoryService.masterCreateBarang(2022, kategori_id, new_barang);
+    }
+
+    /**
+     * @description Update kategori object based on category id
+     * @param {Number} category_id - The category id
+     * @param {String} kategori - The kategori
+     * @returns {Promise<MasterKategori>} Return the updated kategori object
+     */
+    @Put("kategori/:category_id")
     public async masterUpdateKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Body("kategori") kategori: string
-    ): Promise<MasterInventory> {
+    ): Promise<MasterKategori> {
         return await this.masterInventoryService.masterUpdateKategoriByKategoriId(2022, category_id, kategori);
     }
 
     /**
-     * @description update item data based on year, category id and item id
+     * @description Update barang object based on category id and item item id
      * @param {Number} category_id - The category id
      * @param {Number} item_id - The item id
-     * @param {Any} body - the new item data
-     * @returns {MasterBarang} The updated item data
+     * @param {ParameterMasterUpdateItemDto} body - The barang data
+     * @returns {Promise<MasterBarang>} Return the updated barang object
      */
-    @Put("master/update/kategori/:category_id/barang/:item_id")
-    public async masterUpdateBarangByKategoriIdAndBarangId(
+    @Put("kategori/:category_id/barang/:item_id")
+    public async masterUpdateBarangByKategoriIdAndItemId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number,
-        @Body() body: any
+        @Body() body: ParameterMasterUpdateItemDto
     ): Promise<MasterBarang> {
-        let barang: MasterBarang = {
-            id: item_id,
+        let barang: ParameterMasterUpdateItemDto = {
             nama: body.nama,
             satuan: body.satuan,
-            saldo: {
-                jumlah_satuan: parseInt(body.saldo_jumlah_satuan),
-                harga_satuan: parseInt(body.saldo_harga_satuan),
-            },
-            mutasi_barang_masuk: {
-                jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan),
-                harga_satuan: parseInt(body.mutasi_barang_masuk_harga_satuan),
-            },
-            mutasi_barang_keluar: {
-                jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan),
-                harga_satuan: parseInt(body.mutasi_barang_keluar_harga_satuan),
-            },
-            saldo_akhir: {
-                jumlah_satuan: parseInt(body.saldo_akhir_jumlah_satuan),
-                harga_satuan: parseInt(body.saldo_akhir_harga_satuan),
-            },
+            saldo_jumlah_satuan: body.saldo_jumlah_satuan,
+            mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
+            mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
+            harga_satuan: body.harga_satuan,
+            keterangan: body.keterangan,
         };
 
-        return await this.masterInventoryService.masterUpdateBarangByKategoriIdAndBarangId(
+        return await this.masterInventoryService.masterUpdateBarangByKategoriIdAndItemId(
             2022,
             category_id,
             item_id,
@@ -396,42 +244,30 @@ export class MasterInventoryController {
     }
 
     /**
-     * @description Delete category data based on year and category id
+     * @description Delete kategori object based on category id
      * @param {Number} category_id - The category id
-     * @returns {MasterInventory} The deleted category data
+     * @returns {Promise<MasterKategori>} Return the deleted kategori object
      */
-    @Delete("master/delete/kategori/:category_id")
+    @Delete("kategori/:category_id")
     public async masterDeleteKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number
-    ): Promise<MasterInventory> {
-        try {
-            return await this.masterInventoryService.masterDeleteKategoriByKategoriId(2022, category_id);
-        } catch (error) {
-            this.logger.error(error);
-        }
+    ): Promise<MasterKategori> {
+        return await this.masterInventoryService.masterDeleteKategoriByKategoriId(2022, category_id);
     }
 
     /**
-     * @description Delete item data based on year, category id and item id
+     * @description Delete barang object based on category id and item id
      * @param {Number} category_id - The category id
      * @param {Number} item_id - The item id
-     * @returns {MasterBarang} The deleted item data
+     * @returns {Promise<MasterBarang>} Return the deleted barang object
      */
-    @Delete("master/delete/kategori/:category_id/item/:item_id")
+    @Delete("kategori/:category_id/barang/:item_id")
     public async masterDeleteBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
     ): Promise<MasterBarang> {
-        try {
-            return await this.masterInventoryService.masterDeleteBarangByKategoriIdAndBarangId(
-                2022,
-                category_id,
-                item_id
-            );
-        } catch (error) {
-            this.logger.error(error);
-        }
+        return await this.masterInventoryService.masterDeleteBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
-    //#endregion master
+    //#endregion crud
 }

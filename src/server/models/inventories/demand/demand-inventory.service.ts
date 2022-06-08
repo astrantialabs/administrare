@@ -25,7 +25,7 @@ import { UtilsService } from "@/server/utils/utils.service";
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { MasterTestInventoryService } from "../master-test/master-test-inventory.service";
+import { MasterInventoryService } from "../master/master-inventory.service";
 import {
     DemandBarang,
     DemandInventoryData,
@@ -48,7 +48,7 @@ export class DemandInventoryService {
         @InjectModel(DemandInventoryData.name)
         private readonly demandInventoryDataModel: Model<DemandInventoryDataDocument>,
         private readonly utilsService: UtilsService,
-        private readonly masterTestInventoryService: MasterTestInventoryService
+        private readonly masterInventoryService: MasterInventoryService
     ) {}
 
     //#region main
@@ -71,7 +71,7 @@ export class DemandInventoryService {
             demand_barang_data.map(async (item_object: any) => {
                 return {
                     ...item_object,
-                    kategori_name: await this.masterTestInventoryService.masterGetKategoriNameByKategoriId(
+                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(
                         2022,
                         item_object.kategori_id
                     ),
@@ -143,7 +143,7 @@ export class DemandInventoryService {
             }
         });
 
-        demand_barang["kategori_name"] = await this.masterTestInventoryService.masterGetKategoriNameByKategoriId(
+        demand_barang["kategori_name"] = await this.masterInventoryService.masterGetKategoriNameByKategoriId(
             2022,
             demand_barang.kategori_id
         );

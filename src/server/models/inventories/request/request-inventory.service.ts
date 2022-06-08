@@ -26,8 +26,8 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { request } from "http";
 import { Model } from "mongoose";
-import { MasterTestInventoryService } from "../master-test/master-test-inventory.service";
-import { MasterTestInventoryDataDocument } from "../master-test/schema/master-test-inventory.schema";
+import { MasterInventoryService } from "../master/master-inventory.service";
+import { MasterInventoryDataDocument } from "../master/schema/master-inventory.schema";
 import { RequestBarang, RequestInventoryData, RequestInventoryDataDocument } from "./schema/request-inventory.schema";
 
 /**
@@ -45,7 +45,7 @@ export class RequestInventoryService {
         @InjectModel(RequestInventoryData.name)
         private readonly requestInventoryDataModel: Model<RequestInventoryDataDocument>,
         private readonly utilsService: UtilsService,
-        private readonly masterTestInventoryService: MasterTestInventoryService
+        private readonly masterInventoryService: MasterInventoryService
     ) {}
 
     /**
@@ -146,7 +146,7 @@ export class RequestInventoryService {
 
                         responded_request_barang = request_item_object;
 
-                        this.masterTestInventoryService.masterResponseJumlahPermintaanByKategoriIdAndBarangId(
+                        this.masterInventoryService.masterResponseJumlahPermintaanByKategoriIdAndBarangId(
                             2022,
                             request_item_object.kategori_id,
                             request_item_object.barang_id,
@@ -160,7 +160,7 @@ export class RequestInventoryService {
             });
 
             this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
-            
+
             return responded_request_barang;
         } else if (!status_list.includes(status)) {
             return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);

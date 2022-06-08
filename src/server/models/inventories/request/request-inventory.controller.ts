@@ -35,7 +35,7 @@ import {
     Post,
     Put,
 } from "@nestjs/common";
-import { MasterTestInventoryService } from "../master-test/master-test-inventory.service";
+import { MasterInventoryService } from "../master/master-inventory.service";
 import { ParameterRequestCreateItemDto } from "./dto/item.schema";
 import { RequestInventoryService } from "./request-inventory.service";
 import { RequestBarang } from "./schema/request-inventory.schema";
@@ -57,7 +57,7 @@ export class RequestInventoryController {
     constructor(
         private readonly requestInventoryService: RequestInventoryService,
         private readonly utilsService: UtilsService,
-        private readonly masterTestInventoryService: MasterTestInventoryService
+        private readonly masterInventoryService: MasterInventoryService
     ) {}
 
     /**
@@ -102,7 +102,7 @@ export class RequestInventoryController {
     ): Promise<RequestBarang | HttpException> {
         if (body.total > 0) {
             let jumlah_data: JumlahData =
-                await this.masterTestInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
+                await this.masterInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
                     2022,
                     body.kategori_id,
                     body.barang_id
@@ -121,7 +121,7 @@ export class RequestInventoryController {
                     status: 0,
                 };
 
-                this.masterTestInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
+                this.masterInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
                     2022,
                     item.kategori_id,
                     item.barang_id,

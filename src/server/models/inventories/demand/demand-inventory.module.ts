@@ -22,12 +22,12 @@ import { DemandInventoryData, DemandInventoryDataSchema } from "./schema/demand-
 import { DemandInventoryController } from "./demand-inventory.controller";
 import { DemandInventoryService } from "./demand-inventory.service";
 import { UtilsModule } from "@/server/utils/utils.module";
-import { MasterTestInventoryModule } from "../master-test/master-test-inventory.module";
+import { MasterInventoryModule } from "../master/master-inventory.module";
 
 @Module({
     imports: [
         UtilsModule,
-        MasterTestInventoryModule,
+        MasterInventoryModule,
         MongooseModule.forFeature(
             [
                 {

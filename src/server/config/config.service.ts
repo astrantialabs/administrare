@@ -103,11 +103,6 @@ export class ConfigService {
             uri: string;
             connection_name: string;
         };
-        master_test_inventory: {
-            collection: string;
-            uri: string;
-            connection_name: string;
-        };
         demand_inventory: {
             collection: string;
             uri: string;
@@ -144,11 +139,6 @@ export class ConfigService {
                 collection: this.configServer.get<string>("database.master_inventory.collection"),
                 uri: this.configServer.get<string>("database.master_inventory.uri"),
                 connection_name: this.configServer.get<string>("database.master_inventory.connection_name"),
-            },
-            master_test_inventory: {
-                collection: this.configServer.get<string>("database.master_test_inventory.collection"),
-                uri: this.configServer.get<string>("database.master_test_inventory.uri"),
-                connection_name: this.configServer.get<string>("database.master_test_inventory.connection_name"),
             },
             demand_inventory: {
                 collection: this.configServer.get<string>("database.demand_inventory.collection"),

@@ -17,46 +17,14 @@
  */
 
 /**
- * @fileoverview The inventory schema.
- * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
+ * @fileoverview The master inventory schema.
+ * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 
 export type MasterInventoryDataDocument = MasterInventoryData & Document;
-
-export class MasterMutasiBarangMasuk {
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    jumlah_satuan: number;
-
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    harga_satuan: number;
-}
-
-export class MasterMutasiBarangKeluar {
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    jumlah_satuan: number;
-
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    harga_satuan: number;
-}
-
-export class MasterSaldo {
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    jumlah_satuan: number | null;
-
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    harga_satuan: number;
-}
-
-export class MasterSaldoAkhir {
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    jumlah_satuan: number;
-
-    @Prop({ type: MongooseSchema.Types.Number, required: false, default: null })
-    harga_satuan: number;
-}
 
 export class MasterBarang {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
@@ -68,26 +36,47 @@ export class MasterBarang {
     @Prop({ type: MongooseSchema.Types.String, required: true, default: "-" })
     satuan: string;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterSaldo" })
-    saldo: MasterSaldo;
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    created_at: string;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterMutasiBarangMasuk" })
-    mutasi_barang_masuk: MasterMutasiBarangMasuk;
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    updated_at: string;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterMutasiBarangKeluar" })
-    mutasi_barang_keluar: MasterMutasiBarangKeluar;
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    saldo_jumlah_satuan: number;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, required: false, ref: "MasterSaldoAkhir" })
-    saldo_akhir: MasterSaldoAkhir;
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    mutasi_barang_masuk_jumlah_satuan: number;
+
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    mutasi_barang_keluar_jumlah_satuan: number;
+
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    saldo_akhir_jumlah_satuan: number;
+
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    jumlah_permintaan: number;
+
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
+    harga_satuan: number;
+
+    @Prop({ type: MongooseSchema.Types.String, required: false })
+    keterangan: string | null;
 }
 
-export class MasterInventory {
+export class MasterKategori {
     [x: string]: any;
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     id: number;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
     kategori: string;
+
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    created_at: string;
+
+    @Prop({ type: MongooseSchema.Types.String, required: true })
+    updated_at: string;
 
     @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "MasterBarang" })
     barang: MasterBarang[];
@@ -101,8 +90,8 @@ export class MasterInventoryData {
     @Prop({ type: MongooseSchema.Types.Number, required: true })
     tahun: number;
 
-    @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "MasterInventory" })
-    inventory: MasterInventory[];
+    @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "Masterategori" })
+    kategori: MasterKategori[];
 }
 
 export const MasterInventoryDataSchema = SchemaFactory.createForClass(MasterInventoryData);

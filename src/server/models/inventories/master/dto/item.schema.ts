@@ -16,38 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    MasterMutasiBarangKeluar,
-    MasterMutasiBarangMasuk,
-    MasterSaldo,
-    MasterSaldoAkhir,
-} from "../schema/master-inventory.schema";
-
-/**
- * @class ParameterCreateItemDto
- */
-export class ParameterMasterInventoryCreateBarangDto {
-    tahun: number;
+export class ParameterMasterCreateItemDto {
     kategori_id: number;
     nama: string;
     satuan: string;
-    saldo: MasterSaldo;
-    mutasi_barang_masuk: MasterMutasiBarangMasuk;
-    mutasi_barang_keluar: MasterMutasiBarangKeluar;
-    saldo_akhir: MasterSaldoAkhir;
+    saldo_jumlah_satuan: number;
+    mutasi_barang_masuk_jumlah_satuan: number;
+    mutasi_barang_keluar_jumlah_satuan: number;
+    harga_satuan: number;
+    keterangan: string | null;
 }
 
-export class ParameterMasterInventoryCreateBarangAlternativeDto {
-    kategori_id: number;
+export class ParameterMasterUpdateItemDto {
     nama: string;
     satuan: string;
-    saldo_jumlah_satuan?: string | number;
-    saldo_harga_satuan?: string;
-    saldo_akhir_jumlah_satuan?: string | null;
-    saldo_akhir_harga_satuan?: string | null;
-    mutasi_barang_masuk_jumlah_satuan?: string | null;
-    mutasi_barang_masuk_harga_satuan?: string | null;
-    mutasi_barang_keluar_jumlah_satuan?: string | null;
-    mutasi_barang_keluar_harga_satuan?: string | null;
-    tahun: number;
+    saldo_jumlah_satuan: number;
+    mutasi_barang_masuk_jumlah_satuan: number;
+    mutasi_barang_keluar_jumlah_satuan: number;
+    harga_satuan: number;
+    keterangan: string | null;
 }
