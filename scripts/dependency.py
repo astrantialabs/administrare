@@ -22,7 +22,7 @@ class Dependency():
     databaseInventory = environtmentValues.get("DATABASE_INVENTORY")
     inventoryFilePath = "inventories"
     
-    collectionMasterInventory = environtmentValues.get("DATABASE_MASTER_TEST_INVENTORY_COLLECTION")
+    collectionMasterInventory = environtmentValues.get("DATABASE_MASTER_INVENTORY_COLLECTION")
     masterInventoryFilePath = "master"
     
     collectionDemandInventory = environtmentValues.get("DATABASE_DEMAND_INVENTORY_COLLECTION")
