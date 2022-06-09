@@ -58,7 +58,7 @@ export const convertDate = (date: string) => {
     return dayjs(date).format("DD MMM HH:mm:ss");
 };
 
-const InventoryRequestUserMain: NextPage = () => {
+const InventoryRequestManageMain: NextPage = () => {
     const status = useAppSelector((state: RootState) => state.status.value);
     const dispatch = useAppDispatch();
 
@@ -94,6 +94,76 @@ const InventoryRequestUserMain: NextPage = () => {
                                         <Text fontSize={10} mt={4}>
                                             {item.deskripsi}
                                         </Text>
+                                        <Stack direction="row" marginTop={4}>
+                                            {item.status === 0 ? (
+                                                <>
+                                                    <Formik
+                                                        initialValues={{}}
+                                                        onSubmit={async (values, action) => {
+                                                            action.setSubmitting(true);
+
+                                                            await axiosInstance
+                                                                .put(`__api/data/inventory/request/response/barang/${item.id}/status/1`)
+                                                                .then(() => {
+                                                                    items.refetch();
+                                                                    action.setSubmitting(false);
+                                                                })
+                                                                .catch((error) => {
+                                                                    action.setSubmitting(false);
+                                                                    console.log(error);
+                                                                });
+                                                        }}
+                                                    >
+                                                        {(props) => (
+                                                            <Form>
+                                                                <Button
+                                                                    colorScheme="green"
+                                                                    size="sm"
+                                                                    isLoading={props.isSubmitting}
+                                                                    type="submit"
+                                                                    disabled={props.isSubmitting}
+                                                                >
+                                                                    Accept
+                                                                </Button>
+                                                            </Form>
+                                                        )}
+                                                    </Formik>
+                                                    <Formik
+                                                        initialValues={{}}
+                                                        onSubmit={async (values, action) => {
+                                                            action.setSubmitting(true);
+
+                                                            await axiosInstance
+                                                                .put(`__api/data/inventory/request/response/barang/${item.id}/status/2`)
+                                                                .then(() => {
+                                                                    items.refetch();
+                                                                    action.setSubmitting(false);
+                                                                })
+                                                                .catch((error) => {
+                                                                    action.setSubmitting(false);
+                                                                    console.log(error);
+                                                                });
+                                                        }}
+                                                    >
+                                                        {(props) => (
+                                                            <Form>
+                                                                <Button
+                                                                    colorScheme="red"
+                                                                    size="sm"
+                                                                    isLoading={props.isSubmitting}
+                                                                    type="submit"
+                                                                    disabled={props.isSubmitting}
+                                                                >
+                                                                    Reject
+                                                                </Button>
+                                                            </Form>
+                                                        )}
+                                                    </Formik>
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </Stack>
                                     </Box>
                                 </Flex>
                             </Box>
@@ -122,4 +192,4 @@ const InventoryRequestUserMain: NextPage = () => {
     );
 };
 
-export default InventoryRequestUserMain;
+export default InventoryRequestManageMain;

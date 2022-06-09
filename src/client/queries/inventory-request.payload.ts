@@ -29,6 +29,8 @@ export type InventoryRequestItem = {
     created_at: string;
     responded_at: string | null;
     status: number;
+    kategori_name: string;
+    barang_name: string;
 };
 
 export type InventoryRequestItems = Array<InventoryRequestItem>;
