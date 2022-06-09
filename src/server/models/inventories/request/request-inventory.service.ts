@@ -22,7 +22,7 @@
  */
 
 import { UtilsService } from "@/server/utils/utils.service";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { request } from "http";
 import { Model } from "mongoose";
@@ -48,6 +48,8 @@ export class RequestInventoryService {
         private readonly masterInventoryService: MasterInventoryService
     ) {}
 
+    //#region main
+
     /**
      * @description Find request document based on year
      * @param {Number} year - The year
@@ -57,13 +59,43 @@ export class RequestInventoryService {
         return await this.requestInventoryDataModel.findOne({ tahun: year }).exec();
     }
 
+    //#endregion main
+
+    //#region utility
+
+    public async requestBarangWithCategoryAndItemName(request_barang_data: any) {
+        let request_barang_data_with_category_and_item_name = await Promise.all(
+            request_barang_data.map(async (item_object: any) => {
+                return {
+                    ...item_object,
+                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id),
+                    barang_name: await this.masterInventoryService.masterGetBarangNameByKategoriIdAndBarangId(
+                        2022,
+                        item_object.kategori_id,
+                        item_object.barang_id
+                    ),
+                };
+            })
+        );
+
+        return request_barang_data_with_category_and_item_name;
+    }
+
+    //#endregion utility
+
+    //#region crud
+
     /**
      * @description Get every request item object
      * @param {Number} year - The year
      * @returns {Promise<RequestBarang[]>} The request item object
      */
-    public async requestGetBarangAll(year: number): Promise<RequestBarang[]> {
-        return (await this.requestFindOne(year)).barang;
+    public async requestGetBarangAll(year: number): Promise<any> {
+        let request_barang_data: RequestBarang[] = (await this.requestFindOne(year)).barang;
+
+        let request_barang_data_with_category_and_item_name = await this.requestBarangWithCategoryAndItemName(request_barang_data);
+
+        return request_barang_data_with_category_and_item_name;
     }
 
     /**
@@ -162,4 +194,6 @@ export class RequestInventoryService {
             return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
         }
     }
+
+    //#endregion crud
 }
