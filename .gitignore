@@ -53,3 +53,5 @@ lerna-debug.log*
 
 # Misc
 note.txt
+spreadsheets/**/*.xlsx
+spreadsheets/**/*.pdf
