@@ -38,4 +38,4 @@ const fetchInventoryRequestItems = async (): Promise<InventoryRequestItems> => {
     return response.data;
 };
 
-export const useInventoryDemandItemsQuery = () => useQuery(["inventory-request-items"], () => fetchInventoryRequestItems());
+export const useInventoryRequestItemsQuery = () => useQuery(["inventory-request-items"], () => fetchInventoryRequestItems());
