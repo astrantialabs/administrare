@@ -16,10 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * ANCHOR[epic=inventory demand] - item create
- */
-
 import { NextPage } from "next";
 import { Stack, Heading, FormControl, FormLabel, Input, FormErrorMessage, Button, useToast } from "@chakra-ui/react";
 import { FormikValidatorBase, IsNotEmpty } from "formik-class-validator";

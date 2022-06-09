@@ -2,7 +2,4 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "commentAnchors.workspace.enabled": true,
-    "commentAnchors.workspace.lazyLoad": true,
-    "commentAnchors.workspace.excludeFiles": "**/{node_modules,.git,.idea,target,out,build,vendor,dist,.next,.yarn}/**/*"
 }

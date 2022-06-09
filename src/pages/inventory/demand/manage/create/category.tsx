@@ -17,10 +17,6 @@
  */
 
 /**
- * ANCHOR[epic=inventory demand] - category create
- */
-
-/**
  * @fileoverview The inventory demand manage create item page.
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
