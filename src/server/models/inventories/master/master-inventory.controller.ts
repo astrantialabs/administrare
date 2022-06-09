@@ -47,7 +47,7 @@ export class MasterInventoryController {
         private readonly utilsService: UtilsService
     ) {}
 
-    //#region main
+    /* ---------------------------------- MAIN ---------------------------------- */
 
     /**
      * @description Find an inventory document based on year
@@ -58,9 +58,7 @@ export class MasterInventoryController {
         return this.masterInventoryService.masterFindOne(2022);
     }
 
-    //#endregion main
-
-    //#region utility
+    /* --------------------------------- UTILITY -------------------------------- */
 
     /**
      * @description Search items based on name
@@ -72,10 +70,8 @@ export class MasterInventoryController {
         return await this.masterInventoryService.masterSearchBarangByName(2022, name);
     }
 
-    //#endregion utility
-
-    //#region crud
-
+    /* ---------------------------------- CRUD ---------------------------------- */
+    
     /**
      * @description Get all kategori object
      * @returns {Promise<MasterKategori[]>} Return all kategori object
@@ -269,5 +265,4 @@ export class MasterInventoryController {
         return await this.masterInventoryService.masterDeleteBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
-    //#endregion crud
 }
