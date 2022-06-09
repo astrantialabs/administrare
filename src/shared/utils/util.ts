@@ -16,6 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @description Roman number conversion.
+ * @param {Number} number - The number to convert.
+ * @returns {Promise<String>} The roman number.
+ */
 export async function romanizeNumber(number: number): Promise<string> {
     let lookup: any = {
             M: 1000,
@@ -41,4 +46,16 @@ export async function romanizeNumber(number: number): Promise<string> {
         }
     }
     return roman;
+}
+
+/**
+ * @description Slugify a string.
+ * @param {String} text - The string to slugify.
+ * @returns {String} The slugified string.
+ */
+export function slugify(text: string): string {
+    return text
+        .toLowerCase()
+        .replace(/[^\w ]+/g, "")
+        .replace(/ +/g, "-");
 }

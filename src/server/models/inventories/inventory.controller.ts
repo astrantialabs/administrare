@@ -29,6 +29,10 @@ import { ParamsInterceptor } from "@/server/common/interceptors/params.intercept
 export class InventoryController {
     constructor() {}
 
+    /* -------------------------------------------------------------------------- */
+    /*                              INVENTORY REQUEST                             */
+    /* -------------------------------------------------------------------------- */
+
     @Get("request")
     @Render("inventory/request/user/main")
     @UseInterceptors(ParamsInterceptor)
@@ -40,6 +44,13 @@ export class InventoryController {
     @Render("inventory/request/manage/main")
     @UseInterceptors(ParamsInterceptor)
     public inventoryRequestManageMain(): {} {
+        return {};
+    }
+
+    @Get("request/create/barang")
+    @Render("inventory/request/manage/create/item")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryRequestCreateBarang(): {} {
         return {};
     }
 
