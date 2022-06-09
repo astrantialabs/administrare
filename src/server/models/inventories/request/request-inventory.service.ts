@@ -104,11 +104,11 @@ export class RequestInventoryService {
      * @param {Number} id - The id
      * @returns {Promise<RequestBarang>} The request item object
      */
-    public async requestGetBarangById(year: number, id: number): Promise<RequestBarang> {
-        const request_barang_data: RequestBarang[] = await this.requestGetBarangAll(year);
-        let request_barang: RequestBarang;
+    public async requestGetBarangById(year: number, id: number): Promise<any> {
+        const request_barang_data: any = await this.requestGetBarangAll(year);
+        let request_barang: any;
 
-        request_barang_data.forEach((item_object) => {
+        request_barang_data.forEach((item_object: any) => {
             if (item_object.id == id) {
                 request_barang = item_object;
             }
@@ -123,11 +123,11 @@ export class RequestInventoryService {
      * @param {Number} status - The status
      * @returns {Promise<RequestBarang[]>} The request item object
      */
-    public async requestGetBarangByStatus(year: number, status: number): Promise<RequestBarang[]> {
-        const request_barang_data: RequestBarang[] = await this.requestGetBarangAll(year);
-        let request_barang: RequestBarang[] = [];
+    public async requestGetBarangByStatus(year: number, status: number): Promise<any> {
+        const request_barang_data: any = await this.requestGetBarangAll(year);
+        let request_barang: any = [];
 
-        request_barang_data.forEach((item_object) => {
+        request_barang_data.forEach((item_object: any) => {
             if (item_object.status == status) {
                 request_barang.push(item_object);
             }

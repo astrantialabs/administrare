@@ -64,7 +64,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} The request barang object
      */
     @Get("barang/:id")
-    public async requestGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<RequestBarang> {
+    public async requestGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<any> {
         return await this.requestInventoryService.requestGetBarangById(2022, id);
     }
 
@@ -74,7 +74,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang[]>} The request barang object
      */
     @Get("barang/status/:status")
-    public async requestGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<RequestBarang[]> {
+    public async requestGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<any> {
         return await this.requestInventoryService.requestGetBarangByStatus(2022, status);
     }
 
