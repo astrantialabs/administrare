@@ -17,12 +17,13 @@
  */
 
 import { NextPage } from "next";
-import { Stack, Heading, FormControl, FormLabel, Input, FormErrorMessage, Button, useToast } from "@chakra-ui/react";
+import { Stack, Heading, FormControl, FormLabel, Input, Select, FormErrorMessage, Button, useToast } from "@chakra-ui/react";
 import { FormikValidatorBase, IsNotEmpty } from "formik-class-validator";
 import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps } from "formik";
 
 import Sidebar from "@/components/Sidebar";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
+import { useTableCategories } from "@/client/hooks/useTableCategories";
 
 export interface InventoryDemandManageItemParameter {
     username: string;
@@ -45,6 +46,7 @@ export class InventoryDemandManageCreateItemValidationModel extends FormikValida
 }
 
 const InventoryDemandManageCreateItem: NextPage = () => {
+    const categories = useTableCategories();
     const toast = useToast();
 
     const InventoryDemandManageCreateItemSubmit = (
@@ -103,6 +105,27 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                 >
                     {(props: FormikProps<InventoryDemandManageCreateItemValidationModel>) => (
                         <Form>
+                            <Field name="kategori_id">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                    <FormControl my={4}>
+                                        <FormLabel htmlFor="kategori_id" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Kategori
+                                        </FormLabel>
+                                        <Select {...field} disabled={props.isSubmitting} id="kategori_id">
+                                            {categories.isLoading ? (
+                                                <option>Loading...</option>
+                                            ) : (
+                                                categories.data.map((category) => (
+                                                    <option key={category.id} value={category.id}>
+                                                        {category.name}
+                                                    </option>
+                                                ))
+                                            )}
+                                        </Select>
+                                        <FormErrorMessage>{form.errors.kategori_id}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
                             <Field name="username">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl mb={4}>
@@ -133,16 +156,6 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                                         </FormLabel>
                                         <Input {...field} disabled={props.isSubmitting} id="satuan" placeholder="Satuan barang disini.." />
                                         <FormErrorMessage>{form.errors.satuan}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
-                            <Field name="kategori_id">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl my={4}>
-                                        <FormLabel htmlFor="kategori_id" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Kategori
-                                        </FormLabel>
-                                        <FormErrorMessage>{form.errors.kategori_id}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
