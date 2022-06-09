@@ -27,6 +27,7 @@ import { MasterInventoryService } from "./master-inventory.service";
 import { MasterBarang, MasterInventoryDataDocument, MasterKategori } from "./schema/master-inventory.schema";
 import { ParameterMasterCreateItemDto, ParameterMasterUpdateItemDto } from "./dto/item.schema";
 import { ItemSearchData } from "@/shared/typings/types/inventory";
+import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 
 /**
  * @class MasterInventoryDataController
@@ -42,10 +43,7 @@ export class MasterInventoryController {
      * @param {MasterInventoryService} masterInventoryService - The master inventory service.
      * @param {UtilsService} utilsService  - The utils service.
      */
-    constructor(
-        private readonly masterInventoryService: MasterInventoryService,
-        private readonly utilsService: UtilsService
-    ) {}
+    constructor(private readonly masterInventoryService: MasterInventoryService, private readonly utilsService: UtilsService) {}
 
     /* ---------------------------------- MAIN ---------------------------------- */
 
@@ -71,7 +69,7 @@ export class MasterInventoryController {
     }
 
     /* ---------------------------------- CRUD ---------------------------------- */
-    
+
     /**
      * @description Get all kategori object
      * @returns {Promise<MasterKategori[]>} Return all kategori object
@@ -87,9 +85,7 @@ export class MasterInventoryController {
      * @returns {Promise<MasterBarang[]>} Return all barang object
      */
     @Get("kategori/:category_id/barang/all")
-    public async masterGetBarangAllByKategoriId(
-        @Param("category_id", new ParseIntPipe()) category_id: number
-    ): Promise<MasterBarang[]> {
+    public async masterGetBarangAllByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<MasterBarang[]> {
         return await this.masterInventoryService.masterGetBarangAllByKategoriId(2022, category_id);
     }
 
@@ -99,9 +95,7 @@ export class MasterInventoryController {
      * @returns {Promise<MasterKategori>} Return kategori object
      */
     @Get("kategori/:category_id")
-    public async masterGetKategoriByKategoriId(
-        @Param("category_id", new ParseIntPipe()) category_id: number
-    ): Promise<MasterKategori> {
+    public async masterGetKategoriByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<MasterKategori> {
         return await this.masterInventoryService.masterGetKategoriByKategoriId(2022, category_id);
     }
 
@@ -125,9 +119,7 @@ export class MasterInventoryController {
      * @returns {Promise<string>} Return the name of category object
      */
     @Get("kategori/:category_id/name")
-    public async masterGetKategoriNameByKategoriId(
-        @Param("category_id", new ParseIntPipe()) category_id: number
-    ): Promise<string> {
+    public async masterGetKategoriNameByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<string> {
         return await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, category_id);
     }
 
@@ -231,12 +223,7 @@ export class MasterInventoryController {
             keterangan: body.keterangan,
         };
 
-        return await this.masterInventoryService.masterUpdateBarangByKategoriIdAndItemId(
-            2022,
-            category_id,
-            item_id,
-            barang
-        );
+        return await this.masterInventoryService.masterUpdateBarangByKategoriIdAndItemId(2022, category_id, item_id, barang);
     }
 
     /**
@@ -245,9 +232,7 @@ export class MasterInventoryController {
      * @returns {Promise<MasterKategori>} Return the deleted kategori object
      */
     @Delete("kategori/:category_id")
-    public async masterDeleteKategoriByKategoriId(
-        @Param("category_id", new ParseIntPipe()) category_id: number
-    ): Promise<MasterKategori> {
+    public async masterDeleteKategoriByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<MasterKategori> {
         return await this.masterInventoryService.masterDeleteKategoriByKategoriId(2022, category_id);
     }
 
@@ -265,4 +250,14 @@ export class MasterInventoryController {
         return await this.masterInventoryService.masterDeleteBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
+    /* ---------------------------------- TABLE --------------------------------- */
+
+    /**
+     * @description Get all kategori object name, id and roman numeral.
+     * @returns {Promise<MasterKategori[]>} The kategori object name, id and roman numeral.
+     */
+    @Get("table/kategori/all")
+    public async masterTableGetKategoriAll(): Promise<CategoriesPayload> {
+        return await this.masterInventoryService.masterTableGetKategoriAll(2022);
+    }
 }

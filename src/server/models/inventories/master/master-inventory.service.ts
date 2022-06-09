@@ -22,17 +22,14 @@
  */
 
 import { UtilsService } from "@/server/utils/utils.service";
+import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { ItemSearchData, JumlahData } from "@/shared/typings/types/inventory";
+import { romanizeNumber } from "@/shared/utils/util";
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { ParameterMasterUpdateItemDto } from "./dto/item.schema";
-import {
-    MasterBarang,
-    MasterKategori,
-    MasterInventoryData,
-    MasterInventoryDataDocument,
-} from "./schema/master-inventory.schema";
+import { MasterBarang, MasterKategori, MasterInventoryData, MasterInventoryDataDocument } from "./schema/master-inventory.schema";
 
 /**
  * @class MasterInventoryService
@@ -52,7 +49,7 @@ export class MasterInventoryService {
         private readonly utilsService: UtilsService
     ) {}
 
-    //#region main
+    /* ---------------------------------- MAIN ---------------------------------- */
 
     /**
      * @description Find an inventory document based on year
@@ -63,9 +60,7 @@ export class MasterInventoryService {
         return await this.masterInventoryDataModel.findOne({ tahun: year }).exec();
     }
 
-    //#endregion main
-
-    //#region utility
+    /* --------------------------------- UTILITY -------------------------------- */
 
     /**
      * @description Get the length of kategori
@@ -136,16 +131,8 @@ export class MasterInventoryService {
      * @param {Number} item_id - The  item id
      * @returns {JumlahData} Return jumlah data
      */
-    public async masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
-        year: number,
-        category_id: number,
-        item_id: number
-    ): Promise<JumlahData> {
-        let master_barang_object: MasterBarang = await this.masterGetBarangByKategoriIdAndBarangId(
-            year,
-            category_id,
-            item_id
-        );
+    public async masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<JumlahData> {
+        let master_barang_object: MasterBarang = await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id);
 
         let jumlah_data: JumlahData = {
             saldo_akhir: master_barang_object.saldo_akhir_jumlah_satuan,
@@ -163,12 +150,7 @@ export class MasterInventoryService {
      * @param {Number} total - The amount of jumlah_permintaan will be increase
      * @returns {MasterBarang} The updated barang object
      */
-    public async masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
-        year: number,
-        category_id: number,
-        item_id: number,
-        total: number
-    ) {
+    public async masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(year: number, category_id: number, item_id: number, total: number) {
         let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
         let updated_item_object: MasterBarang;
 
@@ -197,13 +179,7 @@ export class MasterInventoryService {
      * @param {Number} total - The total
      * @param {Number} status - The status
      */
-    public async masterResponseJumlahPermintaanByKategoriIdAndBarangId(
-        year: number,
-        category_id: number,
-        item_id: number,
-        total: number,
-        status: number
-    ) {
+    public async masterResponseJumlahPermintaanByKategoriIdAndBarangId(year: number, category_id: number, item_id: number, total: number, status: number) {
         let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
         master_inventory_data.kategori.forEach((master_category_object) => {
@@ -215,12 +191,11 @@ export class MasterInventoryService {
 
                             master_item_object.jumlah_permintaan -= total;
 
-                            master_item_object.saldo_akhir_jumlah_satuan =
-                                this.utilsService.calculateSaldoAkhirJumlahSatuan(
-                                    master_item_object.saldo_jumlah_satuan,
-                                    master_item_object.mutasi_barang_masuk_jumlah_satuan,
-                                    master_item_object.mutasi_barang_keluar_jumlah_satuan
-                                );
+                            master_item_object.saldo_akhir_jumlah_satuan = this.utilsService.calculateSaldoAkhirJumlahSatuan(
+                                master_item_object.saldo_jumlah_satuan,
+                                master_item_object.mutasi_barang_masuk_jumlah_satuan,
+                                master_item_object.mutasi_barang_keluar_jumlah_satuan
+                            );
                         } else if (status == 2) {
                             master_item_object.jumlah_permintaan -= total;
                         }
@@ -269,9 +244,7 @@ export class MasterInventoryService {
         return item_search_data;
     }
 
-    //#endregion utility
-
-    //#region crud
+    /* ---------------------------------- CRUD ---------------------------------- */
 
     /**
      * @description Get all kategori object
@@ -318,11 +291,7 @@ export class MasterInventoryService {
      * @param {Number} item_id - The item id
      * @returns {Promise<MasterBarang>} Return barang object
      */
-    public async masterGetBarangByKategoriIdAndBarangId(
-        year: number,
-        category_id: number,
-        item_id: number
-    ): Promise<MasterBarang> {
+    public async masterGetBarangByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<MasterBarang> {
         const master_barang_data: MasterBarang[] = await this.masterGetBarangAllByKategoriId(year, category_id);
         let master_barang: MasterBarang;
 
@@ -339,11 +308,7 @@ export class MasterInventoryService {
         return (await this.masterGetKategoriByKategoriId(year, category_id)).kategori;
     }
 
-    public async masterGetBarangNameByKategoriIdAndBarangId(
-        year: number,
-        category_id: number,
-        item_id: number
-    ): Promise<string> {
+    public async masterGetBarangNameByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<string> {
         return (await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id)).nama;
     }
 
@@ -393,11 +358,7 @@ export class MasterInventoryService {
      * @param {String} category - The category
      * @returns {Promise<MasterKategori>} Return the updated kategori object
      */
-    public async masterUpdateKategoriByKategoriId(
-        year: number,
-        category_id: number,
-        category: string
-    ): Promise<MasterKategori> {
+    public async masterUpdateKategoriByKategoriId(year: number, category_id: number, category: string): Promise<MasterKategori> {
         let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
         let updated_category_object: MasterKategori;
 
@@ -485,10 +446,7 @@ export class MasterInventoryService {
 
                     master_inventory_data.kategori.splice(index, 1);
                 } else if (!deletion_is_valid) {
-                    return new HttpException(
-                        "jumlah permintaan of items in category needs to be 0",
-                        HttpStatus.BAD_GATEWAY
-                    );
+                    return new HttpException("jumlah permintaan of items in category needs to be 0", HttpStatus.BAD_GATEWAY);
                 }
             }
         });
@@ -505,11 +463,7 @@ export class MasterInventoryService {
      * @param {Number} item_id - The item id
      * @returns {Promise<MasterBarang>} Return the deleted barang object
      */
-    public async masterDeleteBarangByKategoriIdAndBarangId(
-        year: number,
-        category_id: number,
-        item_id: number
-    ): Promise<MasterBarang> {
+    public async masterDeleteBarangByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<MasterBarang> {
         let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
         let deleted_item_object: MasterBarang;
 
@@ -534,5 +488,20 @@ export class MasterInventoryService {
         return deleted_item_object;
     }
 
-    //#endregion crud
+    /* ---------------------------------- TABLE --------------------------------- */
+
+    public async masterTableGetKategoriAll(year: number): Promise<any> {
+        const master_kategori_data: MasterKategori[] = await this.masterGetKategoriAll(year);
+        const categories: CategoriesPayload[] = [];
+
+        master_kategori_data.forEach(async (category_object, index) => {
+            categories.push({
+                id: category_object.id,
+                name: category_object.kategori,
+                roman: await romanizeNumber(index + 1),
+            });
+        });
+
+        return categories;
+    }
 }

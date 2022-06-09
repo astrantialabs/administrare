@@ -1,14 +1,4 @@
 {
-<<<<<<< HEAD
-    "semi": true,
-    "trailingComma": "es5",
-    "tabWidth": 4,
-    "bracketSpacing": true,
-    "singleQuote": false,
-    "arrowParens": "always",
-    "quoteProps": "consistent",
-    "printWidth": 160
-=======
   "semi": true,
   "trailingComma": "es5",
   "tabWidth": 4,
@@ -17,5 +7,4 @@
   "arrowParens": "always",
   "quoteProps": "consistent",
   "printWidth": 160
->>>>>>> 6a6f609 (feat: idk at this point)
 }
