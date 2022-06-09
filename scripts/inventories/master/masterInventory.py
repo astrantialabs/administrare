@@ -16,10 +16,10 @@ class MasterInventory():
         workbook = Excel(filePath)
 
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionMasterInventory)
-        master_inventory_document = collection.find_one({"tahun": 2022})
+        masterInventoryDocument = collection.find_one({"tahun": 2022})
         
         MasterInventory.writeHeader(workbook)
-        MasterInventory.writeBody(workbook, master_inventory_document)
+        MasterInventory.writeMain(workbook, masterInventoryDocument)
 
         workbook.save()
 
@@ -40,36 +40,44 @@ class MasterInventory():
         workbook.write_value_multiple("M5", "O5", d5O5Value)
 
     
-    def writeBody(workbook, master_inventory_document):
+    def writeMain(workbook, masterInventoryDocument): 
         rowStart = 6
-        for categoryIndex, categoryObject in enumerate(master_inventory_document.get("kategori")):
-            workbook.write_value_singular(["A", rowStart], f"{Utility.romanNumeral(categoryIndex + 1)}.")
+
+        footerString = "Total"
+
+        saldoJumlahTotal = 0
+        mutasiBarangMasukJumlahTotal = 0
+        mutasiBarangKeluarJumlahTotal = 0
+        saldoAkhirJumlahTotal = 0
+        for categoryIndex, categoryObject in enumerate(masterInventoryDocument.get("kategori")):
+            romanNumeral = Utility.romanNumeral(categoryIndex + 1)
+            workbook.write_value_singular(["A", rowStart], f"{romanNumeral}.")
             workbook.write_value_singular(["B", rowStart], categoryObject.get("kategori"))
 
             rowStart += 1
 
-            saldoJumlahTotal = 0
-            mutasiBarangMasukJumlahTotal = 0
-            mutasiBarangKeluarJumlahTotal = 0
-            saldoAkhirJumlahTotal = 0
+            saldoJumlahSubTotal = 0
+            mutasiBarangMasukJumlahSubTotal = 0
+            mutasiBarangKeluarJumlahSubTotal = 0
+            saldoAkhirJumlahSubTotal = 0
             for itemIndex, itemObject in enumerate(categoryObject.get("barang")):
                 hargaSatuan = itemObject.get("harga_satuan")
 
                 saldoJumlahSatuan = itemObject.get("saldo_jumlah_satuan")
                 saldoJumlah = saldoJumlahSatuan * hargaSatuan
-                saldoJumlahTotal += saldoJumlah
+                saldoJumlahSubTotal += saldoJumlah
 
                 mutasiBarangMasukJumlahSatuan = itemObject.get("mutasi_barang_masuk_jumlah_satuan")
                 mutasiBarangMasukJumlah = mutasiBarangMasukJumlahSatuan * hargaSatuan
-                mutasiBarangMasukJumlahTotal += mutasiBarangMasukJumlah
+                mutasiBarangMasukJumlahSubTotal += mutasiBarangMasukJumlah
 
                 mutasiBarangKeluarJumlahSatuan = itemObject.get("mutasi_barang_keluar_jumlah_satuan")
                 mutasiBarangKeluarJumlah = mutasiBarangKeluarJumlahSatuan * hargaSatuan
-                mutasiBarangKeluarJumlahTotal += mutasiBarangKeluarJumlah
+                mutasiBarangKeluarJumlahSubTotal += mutasiBarangKeluarJumlah
 
                 saldoAkhirJumlahSatuan = itemObject.get("saldo_akhir_jumlah_satuan")
                 saldoAkhirJumlah = saldoAkhirJumlahSatuan * hargaSatuan
-                saldoAkhirJumlahTotal += saldoAkhirJumlah
+                saldoAkhirJumlahSubTotal += saldoAkhirJumlah
 
                 workbook.write_value_singular(["A", rowStart], itemIndex + 1)
                 workbook.write_value_singular(["B", rowStart], itemObject.get("nama"))
@@ -98,12 +106,30 @@ class MasterInventory():
                 rowStart += 1
 
             workbook.write_value_singular(["B", rowStart], f"SUB TOTAL {categoryObject.get('kategori')}")
-            workbook.write_value_singular(["F", rowStart], saldoJumlahTotal)
-            workbook.write_value_singular(["I", rowStart], mutasiBarangMasukJumlahTotal)
-            workbook.write_value_singular(["L", rowStart], mutasiBarangKeluarJumlahTotal)
-            workbook.write_value_singular(["O", rowStart], saldoAkhirJumlahTotal)
+            workbook.write_value_singular(["F", rowStart], saldoJumlahSubTotal)
+            workbook.write_value_singular(["I", rowStart], mutasiBarangMasukJumlahSubTotal)
+            workbook.write_value_singular(["L", rowStart], mutasiBarangKeluarJumlahSubTotal)
+            workbook.write_value_singular(["O", rowStart], saldoAkhirJumlahSubTotal)
+
+            if(categoryIndex == 0):
+                footerString += f" {romanNumeral}"
+
+            if(categoryIndex != 0):
+                footerString += f"+{romanNumeral}"
+
+            saldoJumlahTotal += saldoJumlahSubTotal
+            mutasiBarangMasukJumlahTotal += mutasiBarangMasukJumlahSubTotal
+            mutasiBarangKeluarJumlahTotal += mutasiBarangKeluarJumlahSubTotal
+            saldoAkhirJumlahTotal += saldoAkhirJumlahSubTotal
 
             rowStart += 2
                 
 
+        workbook.write_value_singular(["A", rowStart], footerString)
+
+        workbook.write_value_singular(["F", rowStart], saldoJumlahTotal)
+        workbook.write_value_singular(["I", rowStart], mutasiBarangMasukJumlahTotal)
+        workbook.write_value_singular(["L", rowStart], mutasiBarangKeluarJumlahTotal)
+        workbook.write_value_singular(["O", rowStart], saldoAkhirJumlahTotal)
+        
             
