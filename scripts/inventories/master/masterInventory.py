@@ -39,6 +39,29 @@ class MasterInventory():
         workbook.write_value_multiple("J5", "L5", d5O5Value)
         workbook.write_value_multiple("M5", "O5", d5O5Value)
 
+        workbook.merge("A1", "O1")
+        workbook.merge("A2", "O2")
+        workbook.merge("A3", "O3")
+
+        workbook.merge("A4", "A5")
+        workbook.merge("B4", "B5")
+        workbook.merge("C4", "C5")
+
+        workbook.merge("D4", "F4")
+        workbook.merge("G4", "I4")
+        workbook.merge("J4", "L4")
+        workbook.merge("M4", "O4")
+
+        workbook.font_singular("A1", bold = True, size = 12)
+        workbook.alignment_singular("A1", vertical = "top", horizontal = "center")
+
+        workbook.alignment_singular("A2", vertical = "top", horizontal = "center")
+
+        workbook.alignment_singular("A3", vertical = "top", horizontal = "left")
+
+        workbook.font_multiple("A4", "O5", bold = True, size = 10)
+        workbook.alignment_multiple("A4", "O5", vertical = "center", horizontal = "center")
+        workbook.border_multiple("A4", "O5", "all", style = "thin")
     
     def writeMain(workbook, masterInventoryDocument): 
         rowStart = 6
