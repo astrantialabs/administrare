@@ -127,11 +127,7 @@ export class RequestInventoryService {
      * @param {Number} status - The status
      * @returns {Promise<RequestBarang>} Return the responded barang object
      */
-    public async requestResponseBarangById(
-        year: number,
-        id: number,
-        status: number
-    ): Promise<RequestBarang | HttpException> {
+    public async requestResponseBarangById(year: number, id: number, status: number): Promise<RequestBarang | HttpException> {
         let status_list = [1, 2];
 
         if (status_list.includes(status)) {

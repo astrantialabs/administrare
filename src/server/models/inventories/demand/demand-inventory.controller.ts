@@ -84,9 +84,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori[]>} The filtered category demand object
      */
     @Get("kategori/status/:status")
-    public async demandGetKategoriByStatus(
-        @Param("status", new ParseIntPipe()) status: number
-    ): Promise<DemandKategori[]> {
+    public async demandGetKategoriByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandKategori[]> {
         return await this.demandInventoryService.demandGetKategoriByStatus(2022, status);
     }
 
@@ -107,10 +105,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori>} The new demanded category object
      */
     @Post("new/kategori")
-    public async demandCreateKategori(
-        @Body("username") username: string,
-        @Body("kategori") category: string
-    ): Promise<DemandKategori> {
+    public async demandCreateKategori(@Body("username") username: string, @Body("kategori") category: string): Promise<DemandKategori> {
         try {
             return await this.demandInventoryService.demandCreateKategori(2022, username, category);
         } catch (error) {

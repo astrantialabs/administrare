@@ -31,11 +31,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post("user/login")
-    public form(
-        @Req() request: ExpressRequest,
-        @Res({ passthrough: true }) response: ExpressResponse,
-        @Body() payload: LoginPayload
-    ) {
+    public form(@Req() request: ExpressRequest, @Res({ passthrough: true }) response: ExpressResponse, @Body() payload: LoginPayload) {
         return this.authService.login(response, request, payload);
     }
 

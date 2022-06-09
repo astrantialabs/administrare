@@ -53,8 +53,6 @@ const fetchInventoryDemandItems = async (): Promise<InventoryDemandItems> => {
     return response.data;
 };
 
-export const useInventoryDemandCategoriesQuery = () =>
-    useQuery(["inventory-demand-categories"], () => fetchInventoryDemandCategories());
+export const useInventoryDemandCategoriesQuery = () => useQuery(["inventory-demand-categories"], () => fetchInventoryDemandCategories());
 
-export const useInventoryDemandItemsQuery = () =>
-    useQuery(["inventory-demand-items"], () => fetchInventoryDemandItems());
+export const useInventoryDemandItemsQuery = () => useQuery(["inventory-demand-items"], () => fetchInventoryDemandItems());

@@ -33,10 +33,7 @@ import { ConfigService } from "../config/config.service";
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(private readonly configService: ConfigService) {
         super({
-            jwtFromRequest: ExtractJwt.fromExtractors([
-                JwtStrategy.extractJWT,
-                ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ]),
+            jwtFromRequest: ExtractJwt.fromExtractors([JwtStrategy.extractJWT, ExtractJwt.fromAuthHeaderAsBearerToken()]),
             ignoreExpiration: false,
             secretOrKey: configService.authentication.jwt_secret,
         });
@@ -50,13 +47,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         return null;
     }
 
-    public async validate({
-        username,
-        id,
-    }: {
-        username: string;
-        id: string;
-    }): Promise<{ username: string; id: string }> {
+    public async validate({ username, id }: { username: string; id: string }): Promise<{ username: string; id: string }> {
         return { username, id };
     }
 }

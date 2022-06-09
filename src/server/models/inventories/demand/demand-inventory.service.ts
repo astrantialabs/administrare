@@ -26,12 +26,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { MasterInventoryService } from "../master/master-inventory.service";
-import {
-    DemandBarang,
-    DemandInventoryData,
-    DemandInventoryDataDocument,
-    DemandKategori,
-} from "./schema/demand-inventory.schema";
+import { DemandBarang, DemandInventoryData, DemandInventoryDataDocument, DemandKategori } from "./schema/demand-inventory.schema";
 
 /**
  * @class DemandInventoryService
@@ -71,10 +66,7 @@ export class DemandInventoryService {
             demand_barang_data.map(async (item_object: any) => {
                 return {
                     ...item_object,
-                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(
-                        2022,
-                        item_object.kategori_id
-                    ),
+                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id),
                 };
             })
         );
@@ -143,10 +135,7 @@ export class DemandInventoryService {
             }
         });
 
-        demand_barang["kategori_name"] = await this.masterInventoryService.masterGetKategoriNameByKategoriId(
-            2022,
-            demand_barang.kategori_id
-        );
+        demand_barang["kategori_name"] = await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id);
 
         return demand_barang;
     }
@@ -184,9 +173,7 @@ export class DemandInventoryService {
             }
         });
 
-        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(
-            filtered_item_demand_data
-        );
+        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(filtered_item_demand_data);
 
         return demand_barang_data_with_category_name;
     }
@@ -225,13 +212,7 @@ export class DemandInventoryService {
      * @param {String} item - The new demanded item name
      * @returns {DemandBarang} The new demanded item object
      */
-    public async demandCreateBarang(
-        year: number,
-        category_id: number,
-        username: string,
-        item: string,
-        unit: string
-    ): Promise<DemandBarang> {
+    public async demandCreateBarang(year: number, category_id: number, username: string, item: string, unit: string): Promise<DemandBarang> {
         let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
         let new_item_demand: DemandBarang = {
@@ -259,11 +240,7 @@ export class DemandInventoryService {
      * @param {Number} status - The new status
      * @returns {Promise<DemandKategori>} The updated status of category demand object
      */
-    public async demandResponseKategoriById(
-        year: number,
-        id: number,
-        status: number
-    ): Promise<DemandKategori | HttpException> {
+    public async demandResponseKategoriById(year: number, id: number, status: number): Promise<DemandKategori | HttpException> {
         let status_list = [1, 2];
 
         if (status_list.includes(status)) {
@@ -298,11 +275,7 @@ export class DemandInventoryService {
      * @param {Number} status - The new status
      * @returns {DemandBarang} The updated status of item demand object
      */
-    public async demandResponseBarangById(
-        year: number,
-        id: number,
-        status: number
-    ): Promise<DemandBarang | HttpException> {
+    public async demandResponseBarangById(year: number, id: number, status: number): Promise<DemandBarang | HttpException> {
         let status_list = [1, 2];
 
         if (status_list.includes(status)) {

@@ -23,18 +23,7 @@
 
 import { UtilsService } from "@/server/utils/utils.service";
 import { JumlahData } from "@/shared/typings/types/inventory";
-import {
-    Body,
-    Controller,
-    Get,
-    HttpException,
-    HttpStatus,
-    Logger,
-    Param,
-    ParseIntPipe,
-    Post,
-    Put,
-} from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { MasterInventoryService } from "../master/master-inventory.service";
 import { ParameterRequestCreateItemDto } from "./dto/item.schema";
 import { RequestInventoryService } from "./request-inventory.service";
@@ -85,9 +74,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang[]>} The request barang object
      */
     @Get("barang/status/:status")
-    public async requestGetBarangByStatus(
-        @Param("status", new ParseIntPipe()) status: number
-    ): Promise<RequestBarang[]> {
+    public async requestGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<RequestBarang[]> {
         return await this.requestInventoryService.requestGetBarangByStatus(2022, status);
     }
 
@@ -97,16 +84,13 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} The new request barang object
      */
     @Post("new/barang")
-    public async requestCreateBarang(
-        @Body() body: ParameterRequestCreateItemDto
-    ): Promise<RequestBarang | HttpException> {
+    public async requestCreateBarang(@Body() body: ParameterRequestCreateItemDto): Promise<RequestBarang | HttpException> {
         if (body.total > 0) {
-            let jumlah_data: JumlahData =
-                await this.masterInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
-                    2022,
-                    body.kategori_id,
-                    body.barang_id
-                );
+            let jumlah_data: JumlahData = await this.masterInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
+                2022,
+                body.kategori_id,
+                body.barang_id
+            );
 
             if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + body.total) {
                 let item: RequestBarang = {
@@ -121,12 +105,7 @@ export class RequestInventoryController {
                     status: 0,
                 };
 
-                this.masterInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
-                    2022,
-                    item.kategori_id,
-                    item.barang_id,
-                    item.total
-                );
+                this.masterInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(2022, item.kategori_id, item.barang_id, item.total);
 
                 return await this.requestInventoryService.requestCreateBarang(2022, item);
             } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + body.total) {

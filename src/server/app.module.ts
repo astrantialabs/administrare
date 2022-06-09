@@ -53,15 +53,7 @@ export class AppModule {
 
         return {
             module: AppModule,
-            imports: [
-                renderModule,
-                ConfigModule,
-                MongoDBProviderModule,
-                UserModule,
-                AuthModule,
-                FinanceModule,
-                InventoryModule,
-            ],
+            imports: [renderModule, ConfigModule, MongoDBProviderModule, UserModule, AuthModule, FinanceModule, InventoryModule],
             exports: [ConfigService],
             controllers: [AppController],
             providers: [ConfigService],

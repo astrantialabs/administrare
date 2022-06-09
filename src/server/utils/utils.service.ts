@@ -145,8 +145,7 @@ export class UtilsService {
         mutasi_barang_masuk_jumlah_satuan: number,
         mutasi_barang_keluar_jumlah_satuan: number
     ): number {
-        const saldo_akhir_jumlah_satuan: number =
-            saldo_jumlah_satuan + mutasi_barang_masuk_jumlah_satuan - mutasi_barang_keluar_jumlah_satuan;
+        const saldo_akhir_jumlah_satuan: number = saldo_jumlah_satuan + mutasi_barang_masuk_jumlah_satuan - mutasi_barang_keluar_jumlah_satuan;
 
         return saldo_akhir_jumlah_satuan;
     }

@@ -52,11 +52,7 @@ export class AuthService {
      * @param {LoginPayload} payload - The login payload.
      * @returns {Promise<{ accessToken: string}>} The access token.
      */
-    public async login(
-        response: ExpressResponse,
-        request: ExpressRequest,
-        payload: LoginPayload
-    ): Promise<{ accessToken: string } | string> {
+    public async login(response: ExpressResponse, request: ExpressRequest, payload: LoginPayload): Promise<{ accessToken: string } | string> {
         const user: UserDocument = await this.userService.findOne(payload.username);
 
         if (request.session.access_token) {
