@@ -18,20 +18,7 @@
 
 import { NextPage } from "next";
 import { Form, Formik } from "formik";
-import {
-    Flex,
-    Box,
-    Heading,
-    Text,
-    Button,
-    Stack,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    VStack,
-    Spacer,
-} from "@chakra-ui/react";
+import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer, Link } from "@chakra-ui/react";
 import { UseQueryResult } from "react-query";
 import dayjs from "dayjs";
 import { Stat, StatLabel, StatNumber, StatGroup } from "@chakra-ui/react";
@@ -91,104 +78,97 @@ const InventoryDemandManageMain: NextPage = () => {
                 {categories.isLoading ? (
                     <Text>Loading...</Text>
                 ) : (
-                    QueryDataFilter<InventoryDemandCategories>(status, categories).map(
-                        (category: InventoryDemandCategory) => (
-                            <Stack key={category.id} spacing={4}>
-                                <Box rounded={4} padding={8} background={BoxStatusBackgroundSwitch(category.status)}>
-                                    <Flex flexGrow={1}>
-                                        <Box flexGrow={1} marginRight={8}>
-                                            <Heading fontSize="small">{category.username}</Heading>
-                                            <Text fontSize={8} marginBottom={4}>
-                                                dibuat {ConvertDate(category.createad_at)}- direspon{" "}
-                                                {ConvertDate(category.responded_at)}
-                                            </Text>
+                    QueryDataFilter<InventoryDemandCategories>(status, categories).map((category: InventoryDemandCategory) => (
+                        <Stack key={category.id} spacing={4}>
+                            <Box rounded={4} padding={8} background={BoxStatusBackgroundSwitch(category.status)}>
+                                <Flex flexGrow={1}>
+                                    <Box flexGrow={1} marginRight={8}>
+                                        <Heading fontSize="small">{category.username}</Heading>
+                                        <Text fontSize={8} marginBottom={4}>
+                                            dibuat {ConvertDate(category.createad_at)}- direspon {ConvertDate(category.responded_at)}
+                                        </Text>
 
-                                            <StatGroup marginTop={2}>
-                                                <Stat marginRight={8}>
-                                                    <StatLabel>Kategori</StatLabel>
-                                                    <StatNumber fontSize="large">{category.kategori}</StatNumber>
-                                                </Stat>
-                                            </StatGroup>
-                                            <Stack direction="row" marginTop={4}>
-                                                {category.status === 0 ? (
-                                                    <>
-                                                        <Formik
-                                                            initialValues={{}}
-                                                            onSubmit={async (values, action) => {
-                                                                action.setSubmitting(true);
+                                        <StatGroup marginTop={2}>
+                                            <Stat marginRight={8}>
+                                                <StatLabel>Kategori</StatLabel>
+                                                <StatNumber fontSize="large">{category.kategori}</StatNumber>
+                                            </Stat>
+                                        </StatGroup>
+                                        <Stack direction="row" marginTop={4}>
+                                            {category.status === 0 ? (
+                                                <>
+                                                    <Formik
+                                                        initialValues={{}}
+                                                        onSubmit={async (values, action) => {
+                                                            action.setSubmitting(true);
 
-                                                                await axiosInstance
-                                                                    .put(
-                                                                        `__api/data/inventory/demand/response/kategori/${category.id}/status/1`
-                                                                    )
-                                                                    .then(() => {
-                                                                        categories.refetch();
-                                                                        action.setSubmitting(false);
-                                                                    })
-                                                                    .catch((error) => {
-                                                                        action.setSubmitting(false);
-                                                                        console.log(error);
-                                                                    });
-                                                            }}
-                                                        >
-                                                            {(props) => (
-                                                                <Form>
-                                                                    <Button
-                                                                        colorScheme="green"
-                                                                        size="sm"
-                                                                        isLoading={props.isSubmitting}
-                                                                        type="submit"
-                                                                        disabled={props.isSubmitting}
-                                                                    >
-                                                                        Accept
-                                                                    </Button>
-                                                                </Form>
-                                                            )}
-                                                        </Formik>
-                                                        <Formik
-                                                            initialValues={{}}
-                                                            onSubmit={async (values, action) => {
-                                                                action.setSubmitting(true);
+                                                            await axiosInstance
+                                                                .put(`__api/data/inventory/demand/response/kategori/${category.id}/status/1`)
+                                                                .then(() => {
+                                                                    categories.refetch();
+                                                                    action.setSubmitting(false);
+                                                                })
+                                                                .catch((error) => {
+                                                                    action.setSubmitting(false);
+                                                                    console.log(error);
+                                                                });
+                                                        }}
+                                                    >
+                                                        {(props) => (
+                                                            <Form>
+                                                                <Button
+                                                                    colorScheme="green"
+                                                                    size="sm"
+                                                                    isLoading={props.isSubmitting}
+                                                                    type="submit"
+                                                                    disabled={props.isSubmitting}
+                                                                >
+                                                                    Accept
+                                                                </Button>
+                                                            </Form>
+                                                        )}
+                                                    </Formik>
+                                                    <Formik
+                                                        initialValues={{}}
+                                                        onSubmit={async (values, action) => {
+                                                            action.setSubmitting(true);
 
-                                                                await axiosInstance
-                                                                    .put(
-                                                                        `__api/data/inventory/demand/response/kategori/${category.id}/status/2`
-                                                                    )
-                                                                    .then(() => {
-                                                                        categories.refetch();
-                                                                        action.setSubmitting(false);
-                                                                    })
-                                                                    .catch((error) => {
-                                                                        action.setSubmitting(false);
-                                                                        console.log(error);
-                                                                    });
-                                                            }}
-                                                        >
-                                                            {(props) => (
-                                                                <Form>
-                                                                    <Button
-                                                                        colorScheme="red"
-                                                                        size="sm"
-                                                                        isLoading={props.isSubmitting}
-                                                                        type="submit"
-                                                                        disabled={props.isSubmitting}
-                                                                    >
-                                                                        Reject
-                                                                    </Button>
-                                                                </Form>
-                                                            )}
-                                                        </Formik>
-                                                    </>
-                                                ) : (
-                                                    <></>
-                                                )}
-                                            </Stack>
-                                        </Box>
-                                    </Flex>
-                                </Box>
-                            </Stack>
-                        )
-                    )
+                                                            await axiosInstance
+                                                                .put(`__api/data/inventory/demand/response/kategori/${category.id}/status/2`)
+                                                                .then(() => {
+                                                                    categories.refetch();
+                                                                    action.setSubmitting(false);
+                                                                })
+                                                                .catch((error) => {
+                                                                    action.setSubmitting(false);
+                                                                    console.log(error);
+                                                                });
+                                                        }}
+                                                    >
+                                                        {(props) => (
+                                                            <Form>
+                                                                <Button
+                                                                    colorScheme="red"
+                                                                    size="sm"
+                                                                    isLoading={props.isSubmitting}
+                                                                    type="submit"
+                                                                    disabled={props.isSubmitting}
+                                                                >
+                                                                    Reject
+                                                                </Button>
+                                                            </Form>
+                                                        )}
+                                                    </Formik>
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </Stack>
+                                    </Box>
+                                </Flex>
+                            </Box>
+                        </Stack>
+                    ))
                 )}
             </Stack>
             <Stack spacing={8} marginY={8} marginX={8}>
@@ -205,8 +185,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                             {item.username} dari kategori {item.kategori_name}
                                         </Heading>
                                         <Text fontSize={8} marginBottom={4}>
-                                            dibuat {ConvertDate(item.createad_at)}- direspon{" "}
-                                            {ConvertDate(item.responded_at)}
+                                            dibuat {ConvertDate(item.createad_at)}- direspon {ConvertDate(item.responded_at)}
                                         </Text>
                                         <StatGroup marginTop={2}>
                                             <Stat marginRight={8}>
@@ -228,9 +207,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                                             action.setSubmitting(true);
 
                                                             await axiosInstance
-                                                                .put(
-                                                                    `__api/data/inventory/demand/response/barang/${item.id}/status/1`
-                                                                )
+                                                                .put(`__api/data/inventory/demand/response/barang/${item.id}/status/1`)
                                                                 .then(() => {
                                                                     items.refetch();
                                                                     action.setSubmitting(false);
@@ -261,9 +238,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                                             action.setSubmitting(true);
 
                                                             await axiosInstance
-                                                                .put(
-                                                                    `__api/data/inventory/demand/response/barang/${item.id}/status/2`
-                                                                )
+                                                                .put(`__api/data/inventory/demand/response/barang/${item.id}/status/2`)
                                                                 .then(() => {
                                                                     items.refetch();
                                                                     action.setSubmitting(false);
@@ -312,7 +287,12 @@ const InventoryDemandManageMain: NextPage = () => {
                             <MenuItem onClick={() => dispatch(setStatus(2))}>Ditolak</MenuItem>
                         </MenuList>
                     </Menu>
-                    <Button>Create</Button>
+                    <Button>
+                        <Link href="/inventory/demand/manage/create/kategori">Create Kategori</Link>
+                    </Button>
+                    <Button>
+                        <Link href="/inventory/demand/manage/create/barang">Create Barang</Link>
+                    </Button>
                 </VStack>
             </Stack>
         </Flex>

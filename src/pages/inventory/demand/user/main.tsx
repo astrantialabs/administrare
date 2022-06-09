@@ -21,7 +21,7 @@ import { Form, Formik } from "formik";
 import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer } from "@chakra-ui/react";
 import { UseQueryResult } from "react-query";
 import dayjs from "dayjs";
-import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup } from "@chakra-ui/react";
+import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup, Link } from "@chakra-ui/react";
 
 import {
     InventoryDemandCategories,
@@ -152,7 +152,12 @@ const InventoryDemandMain: NextPage = () => {
                             <MenuItem onClick={() => dispatch(setStatus(2))}>Ditolak</MenuItem>
                         </MenuList>
                     </Menu>
-                    <Button>Create</Button>
+                    <Button>
+                        <Link href="/inventory/demand/create/kategori">Create Kategori</Link>
+                    </Button>
+                    <Button>
+                        <Link href="/inventory/demand/create/barang">Create Barang</Link>
+                    </Button>
                 </VStack>
             </Stack>
         </Flex>
