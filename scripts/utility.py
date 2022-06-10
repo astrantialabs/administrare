@@ -50,4 +50,4 @@ class Utility():
 
     
     def currentDate():
-        return datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S")
+        return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
