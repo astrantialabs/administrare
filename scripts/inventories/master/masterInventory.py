@@ -1,5 +1,3 @@
-import datetime
-
 from dependency import Dependency
 from excel import Excel
 from database import Database
@@ -9,7 +7,7 @@ class MasterInventory():
     folderPath = f"./{Dependency.mainFilePath}/{Dependency.inventoryFilePath}/{Dependency.masterInventoryFilePath}"
 
     def main():
-        fileName = datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S")
+        fileName = Utility.currentDate()
         filePath = f"{MasterInventory.folderPath}/{fileName}.xlsx"
 
         Excel.create_file(filePath)

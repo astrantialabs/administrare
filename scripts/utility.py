@@ -1,3 +1,5 @@
+import datetime
+
 class Utility():
     def romanNumeral(number):
         respon = ""
@@ -22,3 +24,7 @@ class Utility():
             number = m
 
         return respon
+
+    
+    def currentDate():
+        return datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S")
