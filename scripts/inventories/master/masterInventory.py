@@ -41,7 +41,6 @@ class MasterInventory():
 
         workbook.merge("A1", "O1")
         workbook.merge("A2", "O2")
-        workbook.merge("A3", "O3")
 
         workbook.merge("A4", "A5")
         workbook.merge("B4", "B5")
@@ -62,9 +61,10 @@ class MasterInventory():
         workbook.font_multiple("A4", "O5", bold = True, size = 10)
         workbook.alignment_multiple("A4", "O5", vertical = "center", horizontal = "center")
         workbook.border_multiple("A4", "O5", "all", style = "thin")
-    
+
+
     def writeMain(workbook, masterInventoryDocument): 
-        rowStart = 6
+        rowCount = 6
 
         footerString = "Total"
 
@@ -74,10 +74,15 @@ class MasterInventory():
         saldoAkhirJumlahTotal = 0
         for categoryIndex, categoryObject in enumerate(masterInventoryDocument.get("kategori")):
             romanNumeral = Utility.romanNumeral(categoryIndex + 1)
-            workbook.write_value_singular(["A", rowStart], f"{romanNumeral}.")
-            workbook.write_value_singular(["B", rowStart], categoryObject.get("kategori"))
+            workbook.write_value_singular(["A", rowCount], f"{romanNumeral}.")
+            workbook.write_value_singular(["B", rowCount], categoryObject.get("kategori"))
 
-            rowStart += 1
+            workbook.font_multiple(["A", rowCount], ["B", rowCount], bold = True, size = 10)
+            workbook.alignment_singular(["A", rowCount], vertical = "top", horizontal = "center")
+            workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
+            workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+
+            rowCount += 1
 
             saldoJumlahSubTotal = 0
             mutasiBarangMasukJumlahSubTotal = 0
@@ -102,37 +107,47 @@ class MasterInventory():
                 saldoAkhirJumlah = saldoAkhirJumlahSatuan * hargaSatuan
                 saldoAkhirJumlahSubTotal += saldoAkhirJumlah
 
-                workbook.write_value_singular(["A", rowStart], itemIndex + 1)
-                workbook.write_value_singular(["B", rowStart], itemObject.get("nama"))
-                workbook.write_value_singular(["C", rowStart], itemObject.get("satuan"))
+                workbook.write_value_singular(["A", rowCount], itemIndex + 1)
+                workbook.write_value_singular(["B", rowCount], itemObject.get("nama"))
+                workbook.write_value_singular(["C", rowCount], itemObject.get("satuan"))
 
-                workbook.write_value_singular(["D", rowStart], saldoJumlahSatuan)
-                workbook.write_value_singular(["E", rowStart], hargaSatuan)
-                workbook.write_value_singular(["F", rowStart], saldoJumlah)
+                workbook.write_value_singular(["D", rowCount], saldoJumlahSatuan)
+                workbook.write_value_singular(["E", rowCount], hargaSatuan)
+                workbook.write_value_singular(["F", rowCount], saldoJumlah)
 
-                workbook.write_value_singular(["G", rowStart], mutasiBarangMasukJumlahSatuan)
-                workbook.write_value_singular(["H", rowStart], hargaSatuan)
-                workbook.write_value_singular(["I", rowStart], mutasiBarangMasukJumlah)
+                workbook.write_value_singular(["G", rowCount], mutasiBarangMasukJumlahSatuan)
+                workbook.write_value_singular(["H", rowCount], hargaSatuan)
+                workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlah)
 
-                workbook.write_value_singular(["J", rowStart], mutasiBarangKeluarJumlahSatuan)
-                workbook.write_value_singular(["K", rowStart], hargaSatuan)
-                workbook.write_value_singular(["L", rowStart], mutasiBarangKeluarJumlah)
+                workbook.write_value_singular(["J", rowCount], mutasiBarangKeluarJumlahSatuan)
+                workbook.write_value_singular(["K", rowCount], hargaSatuan)
+                workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlah)
 
-                workbook.write_value_singular(["M", rowStart], saldoAkhirJumlahSatuan)
-                workbook.write_value_singular(["N", rowStart], hargaSatuan)
-                workbook.write_value_singular(["O", rowStart], saldoAkhirJumlah)
+                workbook.write_value_singular(["M", rowCount], saldoAkhirJumlahSatuan)
+                workbook.write_value_singular(["N", rowCount], hargaSatuan)
+                workbook.write_value_singular(["O", rowCount], saldoAkhirJumlah)
 
-                rowStart += 1
+                workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10)
+                workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top", horizontal = "center")
+                workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
+                workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+
+                rowCount += 1
 
 
             if(categoryObject.get("barang")):
-                rowStart += 1
+                workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+                rowCount += 1
+                
+            workbook.write_value_singular(["B", rowCount], f"SUB TOTAL {categoryObject.get('kategori')}")
+            workbook.write_value_singular(["F", rowCount], saldoJumlahSubTotal)
+            workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlahSubTotal)
+            workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlahSubTotal)
+            workbook.write_value_singular(["O", rowCount], saldoAkhirJumlahSubTotal)
 
-            workbook.write_value_singular(["B", rowStart], f"SUB TOTAL {categoryObject.get('kategori')}")
-            workbook.write_value_singular(["F", rowStart], saldoJumlahSubTotal)
-            workbook.write_value_singular(["I", rowStart], mutasiBarangMasukJumlahSubTotal)
-            workbook.write_value_singular(["L", rowStart], mutasiBarangKeluarJumlahSubTotal)
-            workbook.write_value_singular(["O", rowStart], saldoAkhirJumlahSubTotal)
+            workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10, bold = True)
+            workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top")
+            workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
 
             if(categoryIndex == 0):
                 footerString += f" {romanNumeral}"
@@ -145,14 +160,22 @@ class MasterInventory():
             mutasiBarangKeluarJumlahTotal += mutasiBarangKeluarJumlahSubTotal
             saldoAkhirJumlahTotal += saldoAkhirJumlahSubTotal
 
-            rowStart += 2
+            rowCount += 1
+            workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+            rowCount += 1
                 
 
-        workbook.write_value_singular(["A", rowStart], footerString)
+        workbook.write_value_singular(["A", rowCount], footerString)
 
-        workbook.write_value_singular(["F", rowStart], saldoJumlahTotal)
-        workbook.write_value_singular(["I", rowStart], mutasiBarangMasukJumlahTotal)
-        workbook.write_value_singular(["L", rowStart], mutasiBarangKeluarJumlahTotal)
-        workbook.write_value_singular(["O", rowStart], saldoAkhirJumlahTotal)
+        workbook.write_value_singular(["F", rowCount], saldoJumlahTotal)
+        workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlahTotal)
+        workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlahTotal)
+        workbook.write_value_singular(["O", rowCount], saldoAkhirJumlahTotal)
+
+        workbook.font_multiple(["A", rowCount], ["C", rowCount], size = 10, bold = True)
+        workbook.font_multiple(["D", rowCount], ["O", rowCount], size = 11, bold = True)
+        workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top")
+        workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
         
-            
+        workbook.adjust_width("A4", ["O", rowCount - 1], width_limit = 35)
+        workbook.alignment_singular("B4", vertical = "center", horizontal = "center")

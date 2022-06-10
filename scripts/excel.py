@@ -1,6 +1,9 @@
 import openpyxl
+import openpyxl.utils.cell
 
 from openpyxl.styles import *
+from openpyxl.utils import get_column_letter
+from math import ceil
 
 class Excel():
     def __init__(self, file_path: str, active_sheet: int = 1):
@@ -49,30 +52,88 @@ class Excel():
         start_column, start_row = Excel.convert_range(start_range)
         end_column, end_row = Excel.convert_range(end_range)
 
-        width_dict = {}
-        for column in range(start_column, end_column + 1):
-            temp_width_array = []
-            cell_column_letter =  self.active_sheet.cell(row = 1, column = column).column_letter
+        cell_array = {}
+        for row in range(start_row, end_row + 1):
+            
+            temp_cell_array = []
+            for column in range(start_column, end_column + 1):
 
+                cell = self.active_sheet.cell(row = row, column = column)
+
+                if(type(cell).__name__ == "Cell"):
+                    if(type(cell.value) in (int, str)):
+                        temp_cell_array.append([len(str(cell.value)), column])
+
+                    elif(type(cell.value) not in (int, str)):
+                        temp_cell_array.append([0, column])
+
+                elif(type(cell).__name__ == "MergedCell"):
+                    temp_cell_array.append([0, column])
+
+
+            cell_array[row] = temp_cell_array
+
+    
+        merged_cell_range = [str(merged_cell).split(":") for merged_cell in self.active_sheet.merged_cells]
+        
+        for merged_cell in merged_cell_range:
+            start_column, start_row = Excel.convert_range(merged_cell[0])
+            end_column, end_row = Excel.convert_range(merged_cell[1])
+
+            first_row = None
+            cell_value = None
             for row in range(start_row, end_row + 1):
-                temp_value = self.active_sheet.cell(row = row, column = column).value
+                if(row in cell_array):
+                    if first_row == None:
+                        first_row = row
 
-                if(type(temp_value) in (int, str)):
-                    temp_width_array.append(len(str(temp_value)))
+                    column_count = 0
+                    for column in range(start_column, end_column + 1):
+                        for cell in cell_array.get(row):
+                            if cell[1] == column:
+                                if row == first_row:
+                                    if cell_value == None:
+                                        cell_value = cell[0]
+
+                                column_count += 1
 
 
-            max_width_value = max(temp_width_array)
+                    for column in range(start_column, end_column + 1):
+                        for cell in cell_array.get(row):
+                            if cell[1] == column:
+                                if row == first_row:
+                                    cell[0] = ceil(cell_value / column_count)
+
+        
+        rotated_cell_array = []
+        for item_object in cell_array.items():
+            rotated_cell_array.append(item_object[1])
+         
+                
+        rotated_cell_array = [list(elem) for elem in zip(*rotated_cell_array[::-1])]
+
+        width_dict = {}
+        for column in rotated_cell_array:
+            width_array = []
+
+            column_number = column[0][1]
+            
+            cell_column_letter =  get_column_letter(column_number)
+            for cell in column:
+                width_array.append(cell[0])
+
+
+            max_width_value = max(width_array)
 
             if(width_limit > 0):
                 if(max_width_value > width_limit):
                     max_width_value = width_limit
 
-                    self.alignment_multiple([column, start_row], [column, end_row], wrap = True)
-
-
+                    self.alignment_multiple([column_number, 1], [column_number, len(column)], wrap = True)
+            
             width_dict[cell_column_letter] = max_width_value
 
-        
+
         for column, width in width_dict.items():
             self.active_sheet.column_dimensions[column].width = (width + 1 + extra_width)
 
