@@ -24,7 +24,7 @@
 from dotenv import dotenv_values
 
 class Dependency():
-    environtmentValues = dotenv_values("./.env")
+    environtmentValues = dotenv_values("../.env")
 
     #region Main
     mongoDBURI = environtmentValues.get("CLUSTER_URI")

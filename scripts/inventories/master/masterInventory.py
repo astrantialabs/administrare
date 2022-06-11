@@ -31,7 +31,7 @@ class MasterInventory():
 
     def main():
         fileName = Utility.currentDate()
-        filePath = f"{MasterInventory.folderPath}/{fileName}.xlsx"
+        filePath = f"../{MasterInventory.folderPath}/{fileName}.xlsx"
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)

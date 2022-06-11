@@ -21,13 +21,17 @@
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
-
+from fastapi import FastAPI
 from inventories.master.masterInventory import MasterInventory
 
-class Main():
-    def main():
+app = FastAPI()
+
+@app.get("/")
+def home():
+    try:
         MasterInventory.main()
+        return {"success": True}
 
-
-if(__name__ == "__main__"):
-    Main.main()
+    except:
+        return {"success": False}
+    
