@@ -30,3 +30,11 @@ export const axiosInstance = axios.create({
     },
     withCredentials: true,
 });
+
+export const pythonAxiosInstance = axios.create({
+    baseURL: "http://localhost:8000/",
+    headers: {
+        "Content-type": "application/json",
+    },
+    withCredentials: true,
+});
