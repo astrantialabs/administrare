@@ -21,13 +21,16 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
 import { UtilsService } from "../../../utils/utils.service";
 import { MasterInventoryService } from "./master-inventory.service";
 import { MasterBarang, MasterInventoryDataDocument, MasterKategori } from "./schema/master-inventory.schema";
 import { ParameterMasterCreateItemDto, ParameterMasterUpdateItemDto } from "./dto/item.schema";
 import { ItemSearchData } from "@/shared/typings/types/inventory";
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
+import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
+import { createReadStream } from "fs";
+import { join } from "path";
 
 /**
  * @class MasterInventoryDataController
@@ -259,5 +262,22 @@ export class MasterInventoryController {
     @Get("table/kategori/all")
     public async masterTableGetKategoriAll(): Promise<CategoriesPayload> {
         return await this.masterInventoryService.masterTableGetKategoriAll(2022);
+    }
+
+    /* -------------------------------- DOWNLOAD -------------------------------- */
+
+    @Get("download/latest")
+    public async masterDownloadLatest(@Response({ passthrough: true }) res: any): Promise<StreamableFile> {
+        const current_date = this.utilsService.currentDate();
+        const response = await pythonAxiosInstance.post(`__api/inventory/master/download/${current_date}`);
+
+        if (response.data.success) {
+            const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${current_date}.xlsx`));
+            res.set({
+                "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Content-Disposition": `attachment; filename="${current_date}.xlsx"`,
+            });
+            return new StreamableFile(file);
+        }
     }
 }

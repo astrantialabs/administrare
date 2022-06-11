@@ -26,21 +26,22 @@ from excel import Excel
 from database import Database
 from utility import Utility
 
-class MasterInventory():
+class InventoryMaster():
     folderPath = f"./{Dependency.mainFilePath}/{Dependency.inventoryFilePath}/{Dependency.masterInventoryFilePath}"
 
-    def main():
-        fileName = Utility.currentDate()
-        filePath = f"../{MasterInventory.folderPath}/{fileName}.xlsx"
+    def main(currentDate):
+        fileName = currentDate
+        filePath = f"../{InventoryMaster.folderPath}/{fileName}.xlsx"
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)
+        workbook.set_zoom(85)
 
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionMasterInventory)
         masterInventoryDocument = collection.find_one({"tahun": 2022})
         
-        MasterInventory.writeHeader(workbook)
-        MasterInventory.writeMain(workbook, masterInventoryDocument)
+        InventoryMaster.writeHeader(workbook)
+        InventoryMaster.writeMain(workbook, masterInventoryDocument)
 
         workbook.save()
 

@@ -72,6 +72,10 @@ class Excel():
             del self.workbook[deleted_sheet]
 
 
+    def set_zoom(self, value: int):
+        self.active_sheet.sheet_view.zoomScale = value
+
+
     def adjust_width(self, start_range: any, end_range: any, extra_width: int = 0, width_limit: int = 0):
         start_column, start_row = Excel.convert_range(start_range)
         end_column, end_row = Excel.convert_range(end_range)

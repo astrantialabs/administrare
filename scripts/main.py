@@ -22,14 +22,14 @@
 """
 
 from fastapi import FastAPI
-from inventories.master.masterInventory import MasterInventory
+from inventories.master.inventoryMaster import InventoryMaster
 
 app = FastAPI()
 
-@app.get("/")
-def home():
+@app.post("/__api/inventory/master/download/{currentDate}")
+def inventoryMasterDownload(currentDate: str):
     try:
-        MasterInventory.main()
+        InventoryMaster.main(currentDate)
         return {"success": True}
 
     except:
