@@ -17,7 +17,7 @@
 """
 
 """
- # @fileoverview The Main file.
+ # @fileoverview The App file.
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
