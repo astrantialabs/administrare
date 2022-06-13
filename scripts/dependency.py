@@ -36,8 +36,8 @@ class Dependency():
     databaseFinance = environtmentValues.get("DATABASE_FINANCE")
     financeFilePath = "finances"
 
-    collectionMasterFinance = environtmentValues.get("DATABASE_MASTER_FINANCE_COLLECTION")
-    masterFinanceFilePath = "master"
+    collectionFinanceMaster = environtmentValues.get("DATABASE_MASTER_FINANCE_COLLECTION")
+    financeMasterFilePath = "master"
 
     #endregion Finance
 
@@ -45,14 +45,14 @@ class Dependency():
     databaseInventory = environtmentValues.get("DATABASE_INVENTORY")
     inventoryFilePath = "inventories"
     
-    collectionMasterInventory = environtmentValues.get("DATABASE_MASTER_INVENTORY_COLLECTION")
-    masterInventoryFilePath = "master"
+    collectionInventoryMaster = environtmentValues.get("DATABASE_MASTER_INVENTORY_COLLECTION")
+    inventoryMasterFilePath = "master"
     
-    collectionDemandInventory = environtmentValues.get("DATABASE_DEMAND_INVENTORY_COLLECTION")
-    demandInventoryFilePath = "demand"
+    collectionInventoryDemand = environtmentValues.get("DATABASE_DEMAND_INVENTORY_COLLECTION")
+    inventoryDemandFilePath = "demand"
     
-    collectionRequestInventory = environtmentValues.get("DATABASE_REQUEST_INVENTORY_COLLECTION")
-    requestInventoryFilePath = "request"
+    collectionInventoryRequest = environtmentValues.get("DATABASE_REQUEST_INVENTORY_COLLECTION")
+    inventoryRequestFilePath = "request"
 
     #endregion Inventory
 

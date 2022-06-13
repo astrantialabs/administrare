@@ -17,7 +17,7 @@
 """
 
 """
- # @fileoverview The MasterInventory file.
+ # @fileoverview The InventoryMaster file.
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
@@ -27,7 +27,7 @@ from database import Database
 from utility import Utility
 
 class InventoryMaster():
-    folderPath = f"./{Dependency.mainFilePath}/{Dependency.inventoryFilePath}/{Dependency.masterInventoryFilePath}"
+    folderPath = f"./{Dependency.mainFilePath}/{Dependency.inventoryFilePath}/{Dependency.inventoryMasterFilePath}"
 
     def main(currentDate):
         fileName = currentDate
@@ -37,11 +37,11 @@ class InventoryMaster():
         workbook = Excel(filePath)
         workbook.set_zoom(85)
 
-        collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionMasterInventory)
-        masterInventoryDocument = collection.find_one({"tahun": 2022})
+        collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
+        inventoryMasterDocument = collection.find_one({"tahun": 2022})
         
         InventoryMaster.writeHeader(workbook)
-        InventoryMaster.writeMain(workbook, masterInventoryDocument)
+        InventoryMaster.writeMain(workbook, inventoryMasterDocument)
 
         workbook.save()
 
@@ -85,7 +85,7 @@ class InventoryMaster():
         workbook.border_multiple("A4", "O5", "all", style = "thin")
 
 
-    def writeMain(workbook, masterInventoryDocument): 
+    def writeMain(workbook, inventoryMasterDocument): 
         rowCount = 6
 
         footerString = "Total"
@@ -94,7 +94,7 @@ class InventoryMaster():
         mutasiBarangMasukJumlahTotal = 0
         mutasiBarangKeluarJumlahTotal = 0
         saldoAkhirJumlahTotal = 0
-        for categoryIndex, categoryObject in enumerate(masterInventoryDocument.get("kategori")):
+        for categoryIndex, categoryObject in enumerate(inventoryMasterDocument.get("kategori")):
             romanNumeral = Utility.romanNumeral(categoryIndex + 1)
             workbook.write_value_singular(["A", rowCount], f"{romanNumeral}.")
             workbook.write_value_singular(["B", rowCount], categoryObject.get("kategori"))
