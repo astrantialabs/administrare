@@ -43,7 +43,7 @@ export class MasterInventoryService {
      */
     constructor(
         @InjectModel(MasterInventoryData.name)
-        private readonly masterInventoryDataModel: Model<MasterInventoryDataDocument>,
+        private readonly masterInventoryDataModel: Model<MasterInventoryDataDocument>
     ) {}
 
     /* ---------------------------------- MAIN ---------------------------------- */
@@ -202,6 +202,32 @@ export class MasterInventoryService {
         });
 
         this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+    }
+
+    /**
+     * @description Search all items
+     * @param {Number} year - The year
+     * @returns {Promise<ItemSearchData[]>} Return all items
+     */
+    public async masterSearchBarangAll(year: number): Promise<ItemSearchData[]> {
+        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+        let item_search_data: ItemSearchData[] = [];
+
+        master_inventory_data.kategori.forEach((category_object) => {
+            category_object.barang.forEach((item_object) => {
+                item_search_data.push({
+                    category_id: category_object.id,
+                    category_name: category_object.kategori,
+                    item_id: item_object.id,
+                    item_name: item_object.nama,
+                    total_match: 1,
+                });
+            });
+        });
+
+        item_search_data.sort((a: ItemSearchData, b: ItemSearchData) => b.total_match - a.total_match);
+
+        return item_search_data;
     }
 
     /**

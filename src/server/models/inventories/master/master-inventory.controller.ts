@@ -61,6 +61,15 @@ export class MasterInventoryController {
     /* --------------------------------- UTILITY -------------------------------- */
 
     /**
+     * @description Search all items
+     * @returns {Promise<ItemSearchData[]>} Return all items
+     */
+    @Get("search/barang/all")
+    public async masterSearchBarangAll(): Promise<ItemSearchData[]> {
+        return await this.masterInventoryService.masterSearchBarangAll(2022);
+    }
+
+    /**
      * @description Search items based on name
      * @param {String} name - The name
      * @returns {Promise<ItemSearchData[]>} Return filtered items
