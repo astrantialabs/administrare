@@ -23,7 +23,10 @@
 
 import { JumlahData } from "@/shared/typings/types/inventory";
 import { currentDate } from "@/shared/utils/util";
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
+import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
+import { createReadStream } from "fs";
+import { join } from "path";
 import { MasterInventoryService } from "../master/master-inventory.service";
 import { ParameterRequestCreateItemDto } from "./dto/item.schema";
 import { RequestInventoryService } from "./request-inventory.service";
@@ -42,10 +45,7 @@ export class RequestInventoryController {
      * @description Creates a new request inventory controller.
      * @param {RequestInventoryService} requestInventoryService - The request inventory service.
      */
-    constructor(
-        private readonly requestInventoryService: RequestInventoryService,
-        private readonly masterInventoryService: MasterInventoryService
-    ) {}
+    constructor(private readonly requestInventoryService: RequestInventoryService, private readonly masterInventoryService: MasterInventoryService) {}
 
     /**
      * @description Get every request barang object
@@ -126,5 +126,22 @@ export class RequestInventoryController {
         @Param("status", new ParseIntPipe()) status: number
     ): Promise<RequestBarang | HttpException> {
         return await this.requestInventoryService.requestResponseBarangById(2022, id, status);
+    }
+
+    /* -------------------------------- DOWNLOAD -------------------------------- */
+
+    @Get("download/latest")
+    public async masterDownloadLatest(@Response({ passthrough: true }) res: any): Promise<StreamableFile> {
+        const current_date = currentDate();
+        const response = await pythonAxiosInstance.post(`__api/inventory/request/download/${current_date}`);
+
+        if (response.data.success) {
+            const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${current_date}.xlsx`));
+            res.set({
+                "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Content-Disposition": `attachment; filename="${current_date}.xlsx"`,
+            });
+            return new StreamableFile(file);
+        }
     }
 }

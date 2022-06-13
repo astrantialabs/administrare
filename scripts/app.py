@@ -24,7 +24,6 @@
 from fastapi import FastAPI
 from inventories.master.inventoryMaster import InventoryMaster
 from inventories.request.inventoryRequest import InventoryRequest
-from utility import Utility
 
 app = FastAPI()
 
@@ -36,6 +35,14 @@ def inventoryMasterDownload(currentDate: str):
 
     except:
         return {"success": False}
-    
 
-InventoryRequest.main(Utility.currentDate())
+
+@app.post("/__api/inventory/request/download/{currentDate}")
+def inventoryRequestDownload(currentDate: str):
+    try:
+        InventoryRequest.main(currentDate)
+        return {"success": True}
+
+    except:
+        return {"success": False}
+    

@@ -24,7 +24,6 @@
 from dependency import Dependency
 from excel import Excel
 from database import Database
-from utility import Utility
 
 class InventoryRequest():
     folderPath = f"./{Dependency.mainFilePath}/{Dependency.inventoryFilePath}/{Dependency.inventoryRequestFilePath}"
