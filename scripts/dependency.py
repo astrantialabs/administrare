@@ -35,29 +35,36 @@ class Dependency():
     #region Finance
     databaseFinance = environtmentValues.get("DATABASE_FINANCE")
     financeFilePath = "finances"
+    financeFolderPath = f"{mainFilePath}/{financeFilePath}"
 
     collectionFinanceMaster = environtmentValues.get("DATABASE_MASTER_FINANCE_COLLECTION")
     financeMasterFilePath = "master"
+    financeMasterFolderPath = f"{financeFolderPath}/{financeMasterFilePath}"
 
     #endregion Finance
 
     #region Inventory
     databaseInventory = environtmentValues.get("DATABASE_INVENTORY")
     inventoryFilePath = "inventories"
+    inventoryFolderPath = f"{mainFilePath}/{inventoryFilePath}"
     
     collectionInventoryMaster = environtmentValues.get("DATABASE_MASTER_INVENTORY_COLLECTION")
     inventoryMasterFilePath = "master"
+    inventoryMasterFolderPath = f"{inventoryFolderPath}/{inventoryMasterFilePath}"
     
     collectionInventoryDemand = environtmentValues.get("DATABASE_DEMAND_INVENTORY_COLLECTION")
     inventoryDemandFilePath = "demand"
+    inventoryDemandFolderPath = f"{inventoryFolderPath}/{inventoryDemandFilePath}"
     
     collectionInventoryRequest = environtmentValues.get("DATABASE_REQUEST_INVENTORY_COLLECTION")
     inventoryRequestFilePath = "request"
+    inventoryRequestFolderPath = f"{inventoryFolderPath}/{inventoryRequestFilePath}"
 
     #endregion Inventory
 
     #region Archive
     databaseArchive = environtmentValues.get("DATABASE_ARCHIVE")
     archiveFilePath = "archives"
+    archiveFolderPath = f"{mainFilePath}/{archiveFilePath}"
 
     #endregion Archive

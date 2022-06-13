@@ -26,11 +26,8 @@ from excel import Excel
 from database import Database
 
 class InventoryRequest():
-    folderPath = f"./{Dependency.mainFilePath}/{Dependency.inventoryFilePath}/{Dependency.inventoryRequestFilePath}"
-
     def main(currentDate):
-        fileName = currentDate
-        filePath = f"../{InventoryRequest.folderPath}/{fileName}.xlsx"
+        filePath = f"../{Dependency.inventoryRequestFolderPath}/{currentDate}.xlsx"
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)
