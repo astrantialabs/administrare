@@ -21,12 +21,10 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { DemandInventoryData, DemandInventoryDataSchema } from "./schema/demand-inventory.schema";
 import { DemandInventoryController } from "./demand-inventory.controller";
 import { DemandInventoryService } from "./demand-inventory.service";
-import { UtilsModule } from "@/server/utils/utils.module";
 import { MasterInventoryModule } from "../master/master-inventory.module";
 
 @Module({
     imports: [
-        UtilsModule,
         MasterInventoryModule,
         MongooseModule.forFeature(
             [

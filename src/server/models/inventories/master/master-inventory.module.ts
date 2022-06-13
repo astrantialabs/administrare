@@ -19,14 +19,12 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
-import { UtilsModule } from "../../../utils/utils.module";
 import { MasterInventoryController } from "./master-inventory.controller";
 import { MasterInventoryService } from "./master-inventory.service";
 import { MasterInventoryData, MasterInventoryDataSchema } from "./schema/master-inventory.schema";
 
 @Module({
     imports: [
-        UtilsModule,
         MongooseModule.forFeature(
             [
                 {
