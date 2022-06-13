@@ -21,13 +21,11 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { UtilsService } from "@/server/utils/utils.service";
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { currentDate } from "@/shared/utils/util";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { request } from "http";
 import { Model } from "mongoose";
 import { MasterInventoryService } from "../master/master-inventory.service";
-import { MasterInventoryDataDocument } from "../master/schema/master-inventory.schema";
 import { RequestBarang, RequestInventoryData, RequestInventoryDataDocument } from "./schema/request-inventory.schema";
 
 /**
@@ -44,7 +42,6 @@ export class RequestInventoryService {
     constructor(
         @InjectModel(RequestInventoryData.name)
         private readonly requestInventoryDataModel: Model<RequestInventoryDataDocument>,
-        private readonly utilsService: UtilsService,
         private readonly masterInventoryService: MasterInventoryService
     ) {}
 
@@ -169,7 +166,7 @@ export class RequestInventoryService {
             request_inventory_data.barang.forEach((request_item_object) => {
                 if (request_item_object.id == id) {
                     if (request_item_object.status == 0) {
-                        request_item_object.responded_at = this.utilsService.currentDate();
+                        request_item_object.responded_at = currentDate();
                         request_item_object.status = status;
 
                         responded_request_barang = request_item_object;

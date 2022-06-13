@@ -21,10 +21,9 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { UtilsService } from "@/server/utils/utils.service";
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { ItemSearchData, JumlahData } from "@/shared/typings/types/inventory";
-import { romanizeNumber } from "@/shared/utils/util";
+import { calculateSaldoAkhirJumlahSatuan, currentDate, romanizeNumber } from "@/shared/utils/util";
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -41,12 +40,10 @@ export class MasterInventoryService {
      * @constructor
      * @description Creates a new inventory data service.
      * @param {Model} masterInventoryDataModel - The data model.
-     * @param {UtilsService} utilsService - The utils service
      */
     constructor(
         @InjectModel(MasterInventoryData.name)
         private readonly masterInventoryDataModel: Model<MasterInventoryDataDocument>,
-        private readonly utilsService: UtilsService
     ) {}
 
     /* ---------------------------------- MAIN ---------------------------------- */
@@ -191,7 +188,7 @@ export class MasterInventoryService {
 
                             master_item_object.jumlah_permintaan -= total;
 
-                            master_item_object.saldo_akhir_jumlah_satuan = this.utilsService.calculateSaldoAkhirJumlahSatuan(
+                            master_item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
                                 master_item_object.saldo_jumlah_satuan,
                                 master_item_object.mutasi_barang_masuk_jumlah_satuan,
                                 master_item_object.mutasi_barang_keluar_jumlah_satuan
@@ -365,7 +362,7 @@ export class MasterInventoryService {
         master_inventory_data.kategori.forEach((category_object) => {
             if (category_object.id == category_id) {
                 category_object.kategori = category;
-                category_object.updated_at = this.utilsService.currentDate();
+                category_object.updated_at = currentDate();
 
                 updated_category_object = category_object;
             }
@@ -399,11 +396,11 @@ export class MasterInventoryService {
                     if (item_object.id == item_id) {
                         item_object.nama = barang.nama;
                         item_object.satuan = barang.satuan;
-                        item_object.updated_at = this.utilsService.currentDate();
+                        item_object.updated_at = currentDate();
                         item_object.saldo_jumlah_satuan = barang.saldo_jumlah_satuan;
                         item_object.mutasi_barang_masuk_jumlah_satuan = barang.mutasi_barang_masuk_jumlah_satuan;
                         item_object.mutasi_barang_keluar_jumlah_satuan = barang.mutasi_barang_keluar_jumlah_satuan;
-                        item_object.saldo_akhir_jumlah_satuan = this.utilsService.calculateSaldoAkhirJumlahSatuan(
+                        item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
                             barang.saldo_jumlah_satuan,
                             barang.mutasi_barang_masuk_jumlah_satuan,
                             barang.mutasi_barang_keluar_jumlah_satuan

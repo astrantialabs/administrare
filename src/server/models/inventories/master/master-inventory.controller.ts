@@ -22,7 +22,6 @@
  */
 
 import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
-import { UtilsService } from "../../../utils/utils.service";
 import { MasterInventoryService } from "./master-inventory.service";
 import { MasterBarang, MasterInventoryDataDocument, MasterKategori } from "./schema/master-inventory.schema";
 import { ParameterMasterCreateItemDto, ParameterMasterUpdateItemDto } from "./dto/item.schema";
@@ -31,6 +30,7 @@ import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payloa
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
 import { join } from "path";
+import { calculateSaldoAkhirJumlahSatuan, currentDate } from "@/shared/utils/util";
 
 /**
  * @class MasterInventoryDataController
@@ -44,9 +44,8 @@ export class MasterInventoryController {
      * @constructor
      * @description Creates a new master inventory controller.
      * @param {MasterInventoryService} masterInventoryService - The master inventory service.
-     * @param {UtilsService} utilsService  - The utils service.
      */
-    constructor(private readonly masterInventoryService: MasterInventoryService, private readonly utilsService: UtilsService) {}
+    constructor(private readonly masterInventoryService: MasterInventoryService) {}
 
     /* ---------------------------------- MAIN ---------------------------------- */
 
@@ -150,8 +149,8 @@ export class MasterInventoryController {
         let new_kategori: MasterKategori = {
             id: await this.masterInventoryService.masterGetNewKategoriId(2022),
             kategori: kategori,
-            created_at: this.utilsService.currentDate(),
-            updated_at: this.utilsService.currentDate(),
+            created_at: currentDate(),
+            updated_at: currentDate(),
             barang: [],
         };
 
@@ -171,12 +170,12 @@ export class MasterInventoryController {
             id: await this.masterInventoryService.masterGetNewBarangIdByKategoriId(2022, kategori_id),
             nama: body.nama,
             satuan: body.satuan,
-            created_at: this.utilsService.currentDate(),
-            updated_at: this.utilsService.currentDate(),
+            created_at: currentDate(),
+            updated_at: currentDate(),
             saldo_jumlah_satuan: body.saldo_jumlah_satuan,
             mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
             mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
-            saldo_akhir_jumlah_satuan: this.utilsService.calculateSaldoAkhirJumlahSatuan(
+            saldo_akhir_jumlah_satuan: calculateSaldoAkhirJumlahSatuan(
                 body.saldo_jumlah_satuan,
                 body.mutasi_barang_masuk_jumlah_satuan,
                 body.mutasi_barang_keluar_jumlah_satuan
@@ -268,7 +267,7 @@ export class MasterInventoryController {
 
     @Get("download/latest")
     public async masterDownloadLatest(@Response({ passthrough: true }) res: any): Promise<StreamableFile> {
-        const current_date = this.utilsService.currentDate();
+        const current_date = currentDate();
         const response = await pythonAxiosInstance.post(`__api/inventory/master/download/${current_date}`);
 
         if (response.data.success) {

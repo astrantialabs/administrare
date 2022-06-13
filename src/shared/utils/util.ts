@@ -59,3 +59,38 @@ export function slugify(text: string): string {
         .replace(/[^\w ]+/g, "")
         .replace(/ +/g, "-");
 }
+
+/**
+ * @description Get current date
+ * @returns {String} The current date
+ */
+export function currentDate(): string {
+    const current_date: string[] = new Date()
+        .toLocaleString("id-ID", { timeZone: "Asia/Hong_Kong" })
+        .replace(/\//, " ")
+        .replace(/\//, " ")
+        .replace(/\./, " ")
+        .replace(/\./, " ")
+        .split(" ");
+
+    const formated_current_date: string = `${current_date[2]}-${current_date[1]}-${current_date[0]}-${current_date[3]}-${current_date[4]}-${current_date[5]}`;
+
+    return formated_current_date;
+}
+
+/**
+ * @description calculate saldo_akhir_jumlah_satuan
+ * @param {Number} saldo_jumlah_satuan - The saldo_jumlah_satuan data
+ * @param {Number} mutasi_barang_masuk_jumlah_satuan - The mutasi_barang_masuk_jumlah_satuan data
+ * @param {Number} mutasi_barang_keluar_jumlah_satuan - The mutasi_barang_keluar_jumlah_satuan data
+ * @returns {Number} The calculated saldo_akhir_jumlah_satuan
+ */
+export function calculateSaldoAkhirJumlahSatuan(
+    saldo_jumlah_satuan: number,
+    mutasi_barang_masuk_jumlah_satuan: number,
+    mutasi_barang_keluar_jumlah_satuan: number
+): number {
+    const saldo_akhir_jumlah_satuan: number = saldo_jumlah_satuan + mutasi_barang_masuk_jumlah_satuan - mutasi_barang_keluar_jumlah_satuan;
+
+    return saldo_akhir_jumlah_satuan;
+}

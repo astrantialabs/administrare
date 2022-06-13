@@ -21,8 +21,8 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { UtilsService } from "@/server/utils/utils.service";
 import { JumlahData } from "@/shared/typings/types/inventory";
+import { currentDate } from "@/shared/utils/util";
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { MasterInventoryService } from "../master/master-inventory.service";
 import { ParameterRequestCreateItemDto } from "./dto/item.schema";
@@ -41,11 +41,9 @@ export class RequestInventoryController {
      * @constructor
      * @description Creates a new request inventory controller.
      * @param {RequestInventoryService} requestInventoryService - The request inventory service.
-     * @param {UtilsService} utilsService - The utils service.
      */
     constructor(
         private readonly requestInventoryService: RequestInventoryService,
-        private readonly utilsService: UtilsService,
         private readonly masterInventoryService: MasterInventoryService
     ) {}
 
@@ -100,7 +98,7 @@ export class RequestInventoryController {
                     username: body.username,
                     total: body.total,
                     deskripsi: body.deskripsi,
-                    created_at: this.utilsService.currentDate(),
+                    created_at: currentDate(),
                     responded_at: null,
                     status: 0,
                 };
