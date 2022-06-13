@@ -17,12 +17,13 @@
  */
 
 import { NextPage } from "next";
-import { Stack, Heading, FormControl, FormLabel, Input, FormErrorMessage, Button, useToast } from "@chakra-ui/react";
+import { Stack, Heading, FormControl, FormLabel, Input, Box, List, ListItem, FormErrorMessage, Button, Text, useToast } from "@chakra-ui/react";
 import { FormikValidatorBase, IsNotEmpty } from "formik-class-validator";
 import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps, useFormikContext, useField, FieldHookConfig } from "formik";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 
 import Sidebar from "@/components/Sidebar";
+import { InputAutoComplete } from "@/components/InputAutoComplete";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useEffect } from "react";
 import { slugify } from "@/shared/utils/util";
@@ -63,6 +64,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
             setFieldValue,
         }: any = useFormikContext();
         const [field, meta] = useField(props);
+        let response_data: any[] = [];
 
         const debounced = useDebouncedCallback(() => {
             if (search) {
@@ -71,8 +73,8 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                 axiosInstance
                     .get(`/__api/data/inventory/master/search/barang/${slugify(search)}`)
                     .then((res) => {
-                        console.log(res.data);
                         setFieldValue(props.name, "test");
+                        response_data = res.data;
                     })
                     .catch((err) => {
                         setFieldValue(props.name, err.message);
@@ -86,11 +88,24 @@ const InventoryRequestManageCreateItem: NextPage = () => {
         }, [search]);
 
         return (
-            <FormControl mb={4} isInvalid={meta.touched && !!meta.error}>
-                <FormLabel htmlFor="result">Result</FormLabel>
-                <Input readOnly={true} {...field} {...props} />
-                <FormErrorMessage>{meta.error}</FormErrorMessage>
-            </FormControl>
+            <Box pb={4} mb={4}>
+                <List bg="white" borderRadius="4px" border="1px solid rgba(0,0,0,0.1)" boxShadow="6px 5px 8px rgba(0,50,30,0.02)">
+                    <ListItem>
+                        <Text padding={2}>Lorem ipsum dolor sit.</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Text padding={2}>Lorem ipsum dolor sit.</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Text padding={2}>Lorem ipsum dolor sit.</Text>
+                    </ListItem>
+                </List>
+            </Box>
+            // <FormControl mb={4} isInvalid={meta.touched && !!meta.error}>
+            //     <FormLabel htmlFor="result">Result</FormLabel>
+            //     <Input readOnly={true} {...field} {...props} />
+            //     <FormErrorMessage>{meta.error}</FormErrorMessage>
+            // </FormControl>
         );
     };
 
@@ -149,6 +164,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                 >
                     {(props: FormikProps<InventoryRequestManageCreateItemValidationModel>) => (
                         <Form>
+                            <InputAutoComplete />
                             <Field name="username">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl mb={4}>
@@ -160,7 +176,8 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                                     </FormControl>
                                 )}
                             </Field>
-                            <Field name="search">
+
+                            {/* <Field name="search">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl mb={4}>
                                         <FormLabel htmlFor="search" fontWeight={`medium`} color={`blackAlpha.700`}>
@@ -171,7 +188,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                                     </FormControl>
                                 )}
                             </Field>
-                            <MyField name="result" />
+                            <MyField name="result" /> */}
                             <Field name="total">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl mb={4}>
