@@ -32,7 +32,7 @@ export const axiosInstance = axios.create({
 });
 
 export const pythonAxiosInstance = axios.create({
-    baseURL: "http://localhost:8000/",
+    baseURL: "http://localhost:3001/",
     headers: {
         "Content-type": "application/json",
     },
