@@ -2445,6 +2445,7 @@ __metadata:
     formik-class-validator: ^0.0.1
     framer-motion: ^6
     helmet: ^5.1.0
+    match-sorter: ^6.3.1
     mongoose: ^6.3.3
     nest-next: "https://github.com/yakovlev-alexey/nest-next/tarball/base-path-dist"
     next: ^12.1.6
@@ -2453,6 +2454,7 @@ __metadata:
     prettier: ^2.3.2
     react: ^18.1.0
     react-dom: ^18.1.0
+    react-highlight-words: ^0.18.0
     react-icons: ^4.3.1
     react-query: ^3.39.1
     react-redux: ^8.0.2
@@ -5993,7 +5995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"match-sorter@npm:^6.0.2":
+"match-sorter@npm:^6.0.2, match-sorter@npm:^6.3.1":
   version: 6.3.1
   resolution: "match-sorter@npm:6.3.1"
   dependencies:
@@ -7302,6 +7304,19 @@ __metadata:
   peerDependencies:
     react: ^0.14.0 || ^15.0.0 || ^16.0.0-0 || ^17.0.0-0
   checksum: 41b3d0e4516cbc12fd4e0b620b72d309eaa3e207f1089a377d76040f99edb717b99a34e0bef5f83d7d28d408542f3138ca3a5c06e08359e4f13f241432327485
+  languageName: node
+  linkType: hard
+
+"react-highlight-words@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "react-highlight-words@npm:0.18.0"
+  dependencies:
+    highlight-words-core: ^1.2.0
+    memoize-one: ^4.0.0
+    prop-types: ^15.5.8
+  peerDependencies:
+    react: ^0.14.0 || ^15.0.0 || ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: ff9759e7ebeb140067854d8cad3021123ba0e3b78bda14d35d9b21dd7890986c858955885ddbcb537e9f88472aebe4a23a1841b7af190989efb0a8ecf7dc2a57
   languageName: node
   linkType: hard
 
