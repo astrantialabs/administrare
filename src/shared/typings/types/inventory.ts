@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { DemandBarang } from "@/server/models/inventories/demand/schema/demand-inventory.schema";
+
 export type JumlahData = {
     saldo_akhir: number;
     permintaan: number;
@@ -28,3 +30,5 @@ export type ItemSearchData = {
     item_name: string;
     total_match: number;
 };
+
+export type DemandBarangWithCategoryName = DemandBarang & { kategori_name: string };
