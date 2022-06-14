@@ -21,7 +21,11 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
+import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
+import { currentDate } from "@/shared/utils/util";
+import { createReadStream } from "fs";
+import { join } from "path";
 import { DemandInventoryService } from "./demand-inventory.service";
 import { DemandBarang, DemandKategori } from "./schema/demand-inventory.schema";
 
@@ -167,6 +171,23 @@ export class DemandInventoryController {
             return await this.demandInventoryService.demandResponseBarangById(2022, id, status);
         } catch (error) {
             this.logger.error(error);
+        }
+    }
+
+    /* -------------------------------- DOWNLOAD -------------------------------- */
+
+    @Get("download/latest")
+    public async masterDownloadLatest(@Response({ passthrough: true }) res: any): Promise<StreamableFile> {
+        const current_date = currentDate();
+        const response = await pythonAxiosInstance.post(`__api/inventory/demand/download/${current_date}`);
+
+        if (response.data.success) {
+            const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/demand/${current_date}.xlsx`));
+            res.set({
+                "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Content-Disposition": `attachment; filename="${current_date}.xlsx"`,
+            });
+            return new StreamableFile(file);
         }
     }
 }

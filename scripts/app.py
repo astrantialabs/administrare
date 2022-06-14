@@ -22,10 +22,10 @@
 """
 
 from fastapi import FastAPI
+
 from inventories.master.inventoryMaster import InventoryMaster
 from inventories.request.inventoryRequest import InventoryRequest
 from inventories.demand.inventoryDemand import InventoryDemand
-from utility import Utility
 
 app = FastAPI()
 
@@ -49,4 +49,12 @@ def inventoryRequestDownload(currentDate: str):
         return {"success": False}
     
 
-InventoryDemand.main(Utility.currentDate())
+@app.post("/__api/inventory/demand/download/{currentDate}")
+def inventoryDemandDownload(currentDate: str):
+    try:
+        InventoryDemand.main(currentDate)
+        return {"success": True}
+
+    except:
+        return {"success": False}
+ 
