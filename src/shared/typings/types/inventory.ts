@@ -17,7 +17,10 @@
  */
 
 import { DemandBarang } from "@/server/models/inventories/demand/schema/demand-inventory.schema";
+<<<<<<< HEAD
 import { RequestBarang } from "@/server/models/inventories/request/schema/request-inventory.schema";
+=======
+>>>>>>> 8f3de51 (feat: demand barang with category name type)
 
 export type JumlahData = {
     saldo_akhir: number;
@@ -33,34 +36,3 @@ export type ItemSearchData = {
 };
 
 export type DemandBarangWithCategoryName = DemandBarang & { kategori_name: string };
-
-export type DemandCreateKategori = {
-    username: string;
-    kategori: string;
-};
-
-export type DemandCreateBarang = {
-    kategori_id: number;
-    username: string;
-    barang: string;
-    satuan: string;
-};
-
-export type RequestBarangWithCategoryNameAndItemName = RequestBarang & { kategori_name: string; barang_name: string };
-
-export type RequestCreateBarang = {
-    kategori_id: number;
-    barang_id: number;
-    username: string;
-    total: number;
-    deskripsi: string | null;
-};
-
-export type MasterTotal = {
-    saldo: number;
-    mutasi_barang_masuk: number;
-    mutasi_barang_keluar: number;
-    saldo_akhir: number;
-};
-
-export type MasterSubTotal = { category_id: number } & MasterTotal;
