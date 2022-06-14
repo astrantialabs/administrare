@@ -534,6 +534,11 @@ export class MasterInventoryService {
 
         master_inventory_data.kategori.forEach(async (category_object, category_index) => {
             table_data.push({
+                actions: {
+                    category_id: category_object.id,
+                    item_id: "",
+                    isKategori: true,
+                },
                 id: await romanizeNumber(category_index + 1),
                 kategori: category_object.kategori,
                 nama: category_object.kategori,
@@ -546,12 +551,17 @@ export class MasterInventoryService {
                 keterangan: "",
                 saldo_jumlah_satuan_rp: "",
                 mutasi_barang_masuk_jumlah_satuan_rp: "",
-                mutasi_barang_keluar_jumlah_satuan_rp:"",
+                mutasi_barang_keluar_jumlah_satuan_rp: "",
                 saldo_akhir_jumlah_satuan_rp: "",
                 isKategori: true,
             });
             category_object.barang.forEach((item_object, item_index) => {
                 table_data.push({
+                    actions: {
+                        category_id: category_object.id,
+                        item_id: item_object.id,
+                        isKategori: false,
+                    },
                     id: item_index + 1,
                     kategori: category_object.kategori,
                     nama: item_object.nama,
