@@ -631,7 +631,6 @@ export class MasterInventoryService {
                     isKategori: false,
                 });
             });
-
             table_data.push({
                 actions: {
                     category_id: "",
