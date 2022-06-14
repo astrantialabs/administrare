@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
+
 /**
  * @description Roman number conversion.
  * @param {Number} number - The number to convert.
@@ -93,4 +95,13 @@ export function calculateSaldoAkhirJumlahSatuan(
     const saldo_akhir_jumlah_satuan: number = saldo_jumlah_satuan + mutasi_barang_masuk_jumlah_satuan - mutasi_barang_keluar_jumlah_satuan;
 
     return saldo_akhir_jumlah_satuan;
+}
+
+export function responseFormat<T>(success: boolean, statusCode: number, message: string, result: T): ResponseFormat<T> {
+    return {
+        success: success,
+        statusCode: statusCode,
+        message: message,
+        result: result,
+    };
 }
