@@ -173,7 +173,7 @@ export class MasterInventoryController {
      */
     @Post("new/barang")
     public async masterCreateBarang(@Body() body: ParameterMasterCreateItemDto): Promise<MasterBarang> {
-        let kategori_id = body.kategori_id;
+        let kategori_id = parseInt(body.kategori_id as unknown as string);
 
         let new_barang: MasterBarang = {
             id: await this.masterInventoryService.masterGetNewBarangIdByKategoriId(2022, kategori_id),
@@ -181,16 +181,16 @@ export class MasterInventoryController {
             satuan: body.satuan,
             created_at: currentDate(),
             updated_at: currentDate(),
-            saldo_jumlah_satuan: body.saldo_jumlah_satuan,
-            mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
-            mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
+            saldo_jumlah_satuan: parseInt(body.saldo_jumlah_satuan as unknown as string),
+            mutasi_barang_masuk_jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
+            mutasi_barang_keluar_jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string),
             saldo_akhir_jumlah_satuan: calculateSaldoAkhirJumlahSatuan(
-                body.saldo_jumlah_satuan,
-                body.mutasi_barang_masuk_jumlah_satuan,
-                body.mutasi_barang_keluar_jumlah_satuan
+                parseInt(body.saldo_jumlah_satuan as unknown as string),
+                parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
+                parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string)
             ),
             jumlah_permintaan: 0,
-            harga_satuan: body.harga_satuan,
+            harga_satuan: parseInt(body.harga_satuan as unknown as string),
             keterangan: body.keterangan,
         };
 

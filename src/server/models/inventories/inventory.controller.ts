@@ -30,9 +30,30 @@ export class InventoryController {
     constructor() {}
 
     @Get("")
-    @Render("inventory/master/main")
+    @Render("inventory/master/user/main")
     @UseInterceptors(ParamsInterceptor)
     public inventoryMasterMain(): {} {
+        return {};
+    }
+
+    @Get("manage")
+    @Render("inventory/master/manage/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterManageMain(): {} {
+        return {};
+    }
+
+    @Get("create/barang")
+    @Render("inventory/master/manage/create/item")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterCreateBarang(): {} {
+        return {};
+    }
+
+    @Get("create/kategori")
+    @Render("inventory/master/manage/create/category")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterCreateKategori(): {} {
         return {};
     }
 
