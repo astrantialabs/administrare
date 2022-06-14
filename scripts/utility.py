@@ -51,7 +51,22 @@ class Utility():
     
     def currentDate():
         return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    
+
+
+    def convertStatus(rawStatus):
+        status = None
+
+        if(rawStatus == 0):
+            status = "Belum direspon"
+
+        elif(rawStatus == 1):
+            status = "Diterima"
+
+        elif(rawStatus == 2):
+            status = "Ditolak"
+
+        return status
+
 
     def convertDateYYYYMMDDHHMMSS(rawDate):
         splittedDate = rawDate.split("-"),
