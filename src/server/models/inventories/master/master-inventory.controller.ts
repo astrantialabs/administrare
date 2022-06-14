@@ -272,6 +272,14 @@ export class MasterInventoryController {
         return await this.masterInventoryService.masterTableGetKategoriAll(2022);
     }
 
+    /**
+     * @description Get all formatted table data
+     */
+    @Get("table/all")
+    public async masterTableGetAll(): Promise<any> {
+        return await this.masterInventoryService.masterTableGetAll();
+    }
+
     /* -------------------------------- DOWNLOAD -------------------------------- */
 
     @Get("download/latest")
