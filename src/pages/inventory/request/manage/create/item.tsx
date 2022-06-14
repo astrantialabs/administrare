@@ -18,24 +18,25 @@
 
 import { NextPage } from "next";
 import { Stack, Heading, FormControl, FormLabel, Input, Box, List, ListItem, FormErrorMessage, Button, Text, useToast } from "@chakra-ui/react";
-import { FormikValidatorBase, IsNotEmpty } from "formik-class-validator";
-import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps, useFormikContext, useField, FieldHookConfig } from "formik";
+import { FormikValidatorBase, IsNotEmpty, IsEmpty } from "formik-class-validator";
+import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps, useFormikContext, useField, FieldHookConfig, FormikContext } from "formik";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
+import Downshift from "downshift";
 
 import Sidebar from "@/components/Sidebar";
 import { InputAutoComplete } from "@/components/InputAutoComplete";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
-import { useEffect } from "react";
+import { useEffect, useState, useContext, createContext } from "react";
 import { slugify } from "@/shared/utils/util";
-import { useMutation } from "react-query";
+import { useMutation, useQuery, UseQueryResult } from "react-query";
 import axios from "axios";
+import { matchSorter } from "match-sorter";
 
 export interface InventoryDemandManageItemParameter {
     username: string;
     total: number;
     deskripsi: string;
-    search?: string;
-    result?: string;
+    search: string;
 }
 
 export class InventoryRequestManageCreateItemValidationModel extends FormikValidatorBase implements InventoryDemandManageItemParameter {
@@ -48,64 +49,89 @@ export class InventoryRequestManageCreateItemValidationModel extends FormikValid
     @IsNotEmpty({ message: "Deskripsi barang tidak boleh kosong!" })
     deskripsi: string;
 
-    search: string;
-    result: string;
+    @IsEmpty({ message: "Search tidak boleh kosong!" })
+    search: string = "";
 }
 
 const InventoryRequestManageCreateItem: NextPage = () => {
     const toast = useToast();
 
-    const addComment = useMutation((newComment: string) => axiosInstance(`/__api/data/inventory/master/table/kategori/all`));
+    const [selection, setSelection] = useState<any>("n/a");
+    const [category_id, setCategoryId] = useState<any>("n/a");
+    const [item_id, setItem] = useState<any>("n/a");
 
-    const MyField = (props: any) => {
-        const {
-            values: { search },
-            touched,
-            setFieldValue,
-        }: any = useFormikContext();
-        const [field, meta] = useField(props);
-        let response_data: any[] = [];
+    const fetchInventoryBarangAll = async (): Promise<any> => {
+        const response = await axiosInstance.get("__api/data/inventory/master/search/barang/all");
+        return response.data;
+    };
+    const useInventoryBarangAll = () => useQuery(["inventory-barang-all"], () => fetchInventoryBarangAll());
 
-        const debounced = useDebouncedCallback(() => {
-            if (search) {
-                setFieldValue(props.name, "Mencari..");
+    const InputAutoComplete = ({ formikFields, formContext }: { formikFields: any; formContext: any }) => {
+        let items_query: UseQueryResult<any[], unknown> = useInventoryBarangAll();
+        let values: { value: string; item_name: string; category_name: string }[] = [];
 
-                axiosInstance
-                    .get(`/__api/data/inventory/master/search/barang/${slugify(search)}`)
-                    .then((res) => {
-                        setFieldValue(props.name, "test");
-                        response_data = res.data;
-                    })
-                    .catch((err) => {
-                        setFieldValue(props.name, err.message);
-                        console.log(err);
-                    });
-            }
-        }, 800);
-
-        useEffect(() => {
-            debounced();
-        }, [search]);
+        if (!items_query.isLoading) {
+            items_query.data.map((item) => {
+                values.push({
+                    value: `${item.item_name} - ${item.category_name}`,
+                    item_name: item.item_id,
+                    category_name: item.category_id,
+                });
+            });
+        }
 
         return (
-            <Box pb={4} mb={4}>
-                <List bg="white" borderRadius="4px" border="1px solid rgba(0,0,0,0.1)" boxShadow="6px 5px 8px rgba(0,50,30,0.02)">
-                    <ListItem>
-                        <Text padding={2}>Lorem ipsum dolor sit.</Text>
-                    </ListItem>
-                    <ListItem>
-                        <Text padding={2}>Lorem ipsum dolor sit.</Text>
-                    </ListItem>
-                    <ListItem>
-                        <Text padding={2}>Lorem ipsum dolor sit.</Text>
-                    </ListItem>
-                </List>
-            </Box>
-            // <FormControl mb={4} isInvalid={meta.touched && !!meta.error}>
-            //     <FormLabel htmlFor="result">Result</FormLabel>
-            //     <Input readOnly={true} {...field} {...props} />
-            //     <FormErrorMessage>{meta.error}</FormErrorMessage>
-            // </FormControl>
+            <Downshift
+                onChange={(selection: any) => {
+                    setSelection(selection.value), setCategoryId(selection.category_name), setItem(selection.item_name);
+                }}
+                itemToString={(item) => (item ? item.value : "")}
+            >
+                {({ getInputProps, getItemProps, getMenuProps, getLabelProps, getToggleButtonProps, inputValue, isOpen, getRootProps }: any) => (
+                    <FormControl mb={4}>
+                        <FormLabel {...getLabelProps()} fontWeight={`medium`} color={`blackAlpha.700`}>
+                            Search
+                        </FormLabel>
+                        <Stack
+                            direction="row"
+                            {...getRootProps(
+                                {
+                                    refKey: "",
+                                },
+                                { suppressRefError: true }
+                            )}
+                        >
+                            <Input {...getInputProps()} />
+                            <Button {...getToggleButtonProps()} aria-label={"toggle menu"}>
+                                &#8595;
+                            </Button>
+                        </Stack>
+                        <Box pb={4} mb={4}>
+                            <List {...getMenuProps()} bg="white">
+                                {items_query.isLoading ? (
+                                    <ListItem marginTop={2} borderTop="1px solid rgba(0,0,0,0.1)" borderBottom="1px solid rgba(0,0,0,0.1)">
+                                        <Text padding={2}>Loading</Text>
+                                    </ListItem>
+                                ) : (
+                                    isOpen &&
+                                    matchSorter(values, inputValue, {
+                                        keys: ["value", "item_name", "category_name"],
+                                    }).map((item, index) => (
+                                        <ListItem
+                                            key={index}
+                                            {...getItemProps({ item })}
+                                            borderTop="1px solid rgba(0,0,0,0.1)"
+                                            borderBottom="1px solid rgba(0,0,0,0.1)"
+                                        >
+                                            <Text padding={2}>{item.value}</Text>
+                                        </ListItem>
+                                    ))
+                                )}
+                            </List>
+                        </Box>
+                    </FormControl>
+                )}
+            </Downshift>
         );
     };
 
@@ -115,17 +141,20 @@ const InventoryRequestManageCreateItem: NextPage = () => {
     ) => {
         actions.setSubmitting(true);
 
-        const payload: InventoryDemandManageItemParameter = {
+        const payload = {
             username: values.username,
             total: values.total,
             deskripsi: values.deskripsi,
+            kategori_id: category_id,
+            barang_id: item_id,
         };
 
         new Promise<void>((resolve) => {
             setTimeout(() => {
                 axiosInstance
                     .post("__api/data/inventory/request/new/barang", payload)
-                    .then(() => {
+                    .then((response) => {
+                        console.log(response);
                         toast({
                             title: "Barang berhasil ditambahkan!",
                             description: "Barang baru berhasil ditambahkan ke dalam database.",
@@ -137,7 +166,8 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                         actions.setSubmitting(false);
                         resolve();
                     })
-                    .catch(() => {
+                    .catch((error) => {
+                        console.log(error);
                         toast({
                             title: "Barang gagal ditambahkan!",
                             description: "Barang baru gagal ditambahkan ke dalam database.",
@@ -161,10 +191,23 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                     initialValues={new InventoryRequestManageCreateItemValidationModel()}
                     validate={InventoryRequestManageCreateItemValidationModel.createValidator()}
                     onSubmit={InventoryRequestManageCreateItemSubmit}
+                    enableReinitialize={true}
                 >
                     {(props: FormikProps<InventoryRequestManageCreateItemValidationModel>) => (
                         <Form>
-                            <InputAutoComplete />
+                            <InputAutoComplete formikFields={undefined} formContext={undefined} />
+                            <Field name="search">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                    <FormControl mb={4}>
+                                        <FormLabel htmlFor="deskripsi" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Hasil Search
+                                        </FormLabel>
+                                        <Input {...field} disabled={props.isSubmitting} id="search" name="search" value={selection} />
+                                        <FormErrorMessage>{form.errors.deskripsi}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+
                             <Field name="username">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl mb={4}>
@@ -177,18 +220,6 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                                 )}
                             </Field>
 
-                            {/* <Field name="search">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl mb={4}>
-                                        <FormLabel htmlFor="search" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Search
-                                        </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="search" placeholder="Search barang disini.." />
-                                        <FormErrorMessage>{form.errors.search}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
-                            <MyField name="result" /> */}
                             <Field name="total">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl mb={4}>

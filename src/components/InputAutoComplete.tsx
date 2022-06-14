@@ -2,6 +2,7 @@ import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { FormControl, FormLabel, Input, Button, Box, List, ListItem, Text, Stack } from "@chakra-ui/react";
 import Downshift from "downshift";
 import { useQuery, UseQueryResult } from "react-query";
+import { matchSorter } from "match-sorter";
 
 const fetchInventoryBarangAll = async (): Promise<any> => {
     const response = await axiosInstance.get("__api/data/inventory/master/search/barang/all");
@@ -11,15 +12,16 @@ export const useInventoryBarangAll = () => useQuery(["inventory-barang-all"], ()
 
 const items = [{ value: "apple" }, { value: "pear" }, { value: "orange" }, { value: "grape" }, { value: "banana" }];
 
-export const InputAutoComplete = () => {
+export const InputAutoComplete = ({ formikFields }: { formikFields: any }) => {
     let items_query: UseQueryResult<any[], unknown> = useInventoryBarangAll();
-    let values: { value: string }[] = [];
+    let values: { value: string; item_name: string; category_name: string }[] = [];
 
     if (!items_query.isLoading) {
         items_query.data.map((item) => {
-            console.log(item.category_name);
             values.push({
-                value: item.category_name,
+                value: `${item.item_name} - ${item.category_name}`,
+                item_name: item.item_name,
+                category_name: item.category_name,
             });
         });
     }
@@ -32,7 +34,7 @@ export const InputAutoComplete = () => {
             {({ getInputProps, getItemProps, getMenuProps, getLabelProps, getToggleButtonProps, inputValue, isOpen, getRootProps }) => (
                 <FormControl mb={4}>
                     <FormLabel {...getLabelProps()} fontWeight={`medium`} color={`blackAlpha.700`}>
-                        Username
+                        Search
                     </FormLabel>
                     <Stack
                         direction="row"
@@ -51,26 +53,23 @@ export const InputAutoComplete = () => {
                     <Box pb={4} mb={4}>
                         <List {...getMenuProps()} bg="white">
                             {items_query.isLoading ? (
-                                <ListItem borderTop="1px solid rgba(0,0,0,0.1)" borderBottom="1px solid rgba(0,0,0,0.1)">
+                                <ListItem marginTop={2} borderTop="1px solid rgba(0,0,0,0.1)" borderBottom="1px solid rgba(0,0,0,0.1)">
                                     <Text padding={2}>Loading</Text>
                                 </ListItem>
                             ) : (
                                 isOpen &&
-                                values
-                                    .filter((item) => !inputValue || item.value.includes(inputValue))
-                                    .map((item, index) => (
-                                        <ListItem
-                                            borderTop="1px solid rgba(0,0,0,0.1)"
-                                            borderBottom="1px solid rgba(0,0,0,0.1)"
-                                            {...getItemProps({
-                                                key: `${item.value}${index}`,
-                                                item,
-                                                index,
-                                            })}
-                                        >
-                                            <Text padding={2}> {item.value}</Text>
-                                        </ListItem>
-                                    ))
+                                matchSorter(values, inputValue, {
+                                    keys: ["value"],
+                                }).map((item, index) => (
+                                    <ListItem
+                                        key={index}
+                                        {...getItemProps({ item })}
+                                        borderTop="1px solid rgba(0,0,0,0.1)"
+                                        borderBottom="1px solid rgba(0,0,0,0.1)"
+                                    >
+                                        <Text padding={2}>{item.value}</Text>
+                                    </ListItem>
+                                ))
                             )}
                         </List>
                     </Box>

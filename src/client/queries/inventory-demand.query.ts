@@ -23,7 +23,7 @@ export type InventoryDemandCategory = {
     id: number;
     username: string;
     kategori: string;
-    createad_at: string;
+    created_at: string;
     responded_at: string | null;
     status: number;
 };
@@ -35,7 +35,7 @@ export type InventoryDemandItem = {
     username: string;
     barang: string;
     satuan: string;
-    createad_at: string;
+    created_at: string;
     responded_at: string | null;
     status: number;
 };

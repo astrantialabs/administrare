@@ -89,7 +89,7 @@ const InventoryDemandMain: NextPage = () => {
                                     <Box flexGrow={1} marginRight={8}>
                                         <Heading fontSize="small">{category.username}</Heading>
                                         <Text fontSize={8} marginBottom={4}>
-                                            dibuat {convertDate(category.createad_at) === "Invalid Date" ? convertDate(category.createad_at) : "N/A"}- direspon{" "}
+                                            dibuat {convertDate(category.created_at) === "Invalid Date" ? convertDate(category.created_at) : "N/A"}- direspon{" "}
                                             {convertDate(category.responded_at) === "Invalid Date" ? convertDate(category.responded_at) : "N/A"}
                                         </Text>
                                         <StatGroup marginTop={2}>
@@ -119,7 +119,7 @@ const InventoryDemandMain: NextPage = () => {
                                             {item.username} dari kategori {item.kategori_name}
                                         </Heading>
                                         <Text fontSize={8} marginBottom={4}>
-                                            dibuat {convertDate(item.createad_at) === "Invalid Date" ? convertDate(item.createad_at) : "N/A"}- direspon{" "}
+                                            dibuat {convertDate(item.created_at) === "Invalid Date" ? convertDate(item.created_at) : "N/A"}- direspon{" "}
                                             {convertDate(item.responded_at) === "Invalid Date" ? convertDate(item.responded_at) : "N/A"}
                                         </Text>
                                         <StatGroup marginTop={2}>
