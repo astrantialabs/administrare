@@ -139,7 +139,7 @@ export class RequestInventoryController {
             const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${current_date}.xlsx`));
             res.set({
                 "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Content-Disposition": `attachment; filename="${current_date}.xlsx"`,
+                "Content-Disposition": `attachment; filename="Laporan Permintaan Barang.xlsx"`,
             });
             return new StreamableFile(file);
         }
