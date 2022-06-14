@@ -24,6 +24,8 @@
 from fastapi import FastAPI
 from inventories.master.inventoryMaster import InventoryMaster
 from inventories.request.inventoryRequest import InventoryRequest
+from inventories.demand.inventoryDemand import InventoryDemand
+from utility import Utility
 
 app = FastAPI()
 
@@ -46,3 +48,5 @@ def inventoryRequestDownload(currentDate: str):
     except:
         return {"success": False}
     
+
+InventoryDemand.main(Utility.currentDate())
