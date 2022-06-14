@@ -43,7 +43,7 @@ export class DemandBarang {
     satuan: string;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
-    createad_at: string;
+    created_at: string;
 
     @Prop({ type: MongooseSchema.Types.String, required: false })
     responded_at: string | null;
@@ -63,7 +63,7 @@ export class DemandKategori {
     kategori: string;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
-    createad_at: string;
+    created_at: string;
 
     @Prop({ type: MongooseSchema.Types.String, required: false })
     responded_at: string | null;

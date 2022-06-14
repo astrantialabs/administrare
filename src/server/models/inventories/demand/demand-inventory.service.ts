@@ -191,7 +191,7 @@ export class DemandInventoryService {
             id: demand_data.kategori.length + 1,
             username: username,
             kategori: category,
-            createad_at: currentDate(),
+            created_at: currentDate(),
             responded_at: null,
             status: 0,
         };
@@ -220,7 +220,7 @@ export class DemandInventoryService {
             username: username,
             barang: item,
             satuan: unit,
-            createad_at: currentDate(),
+            created_at: currentDate(),
             responded_at: null,
             status: 0,
         };
