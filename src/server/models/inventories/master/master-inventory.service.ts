@@ -588,7 +588,6 @@ export class MasterInventoryService {
                     isKategori: true,
                     isWhiteSpace: false,
                 },
-
                 id: await romanizeNumber(category_index + 1),
                 kategori: category_object.kategori,
                 nama: category_object.kategori,
