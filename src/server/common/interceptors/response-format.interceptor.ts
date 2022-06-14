@@ -28,7 +28,7 @@ import { map } from "rxjs/operators";
 export interface ResponseFormat<T> {
     success: boolean;
     statusCode: number;
-    message: string;
+    message: string | unknown;
     result: T;
 }
 

@@ -97,7 +97,7 @@ export function calculateSaldoAkhirJumlahSatuan(
     return saldo_akhir_jumlah_satuan;
 }
 
-export function responseFormat<T>(success: boolean, statusCode: number, message: string, result: T): ResponseFormat<T> {
+export function responseFormat<T>(success: boolean, statusCode: number, message: string | unknown, result: T): ResponseFormat<T> {
     return {
         success: success,
         statusCode: statusCode,
