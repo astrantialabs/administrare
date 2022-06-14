@@ -24,6 +24,7 @@
 from dependency import Dependency
 from excel import Excel
 from database import Database
+from utility import Utility
 
 class InventoryRequest():
     def main(currentDate):
@@ -59,20 +60,9 @@ class InventoryRequest():
                 if(requestItemObject.get("kategori_id") == masterCategoryObject.get("id")):
                     for masterItemObject in masterCategoryObject.get("barang"):
                         if(requestItemObject.get("barang_id") == masterItemObject.get("id")):
-                            if(requestItemObject.get("status") == 0):
-                                status = "Belum direspon"
-
-                            elif(requestItemObject.get("status") == 1):
-                                status = "Diterima"
-
-                            elif(requestItemObject.get("status") == 2):
-                                status = "Ditolak"
-
-                            rawCreatedAt = (requestItemObject.get("created_at")).split("-"),
-                            createdAt = f"{rawCreatedAt[0][0]}-{rawCreatedAt[0][1]}-{rawCreatedAt[0][2]} {rawCreatedAt[0][3]}:{rawCreatedAt[0][4]}:{rawCreatedAt[0][5]}"
-
-                            rawRespondedAt = (requestItemObject.get("responded_at")).split("-"),
-                            respondedAt = f"{rawRespondedAt[0][0]}-{rawRespondedAt[0][1]}-{rawRespondedAt[0][2]} {rawRespondedAt[0][3]}:{rawRespondedAt[0][4]}:{rawRespondedAt[0][5]}"
+                            createdAt = Utility.convertDateYYYYMMDDHHMMSS(requestItemObject.get("created_at"))
+                            respondedAt = Utility.convertDateYYYYMMDDHHMMSS(requestItemObject.get("responded_at"))
+                            status = Utility.convertStatus(requestItemObject.get("status"))
 
                             mainValue = [
                                 requestItemIndex + 1,
