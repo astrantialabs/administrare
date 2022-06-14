@@ -24,6 +24,7 @@
 from dependency import Dependency
 from excel import Excel
 from database import Database
+from utility import Utility
 
 class InventoryDemand():
     def main(currentDate):
@@ -36,14 +37,19 @@ class InventoryDemand():
 
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDemand)
         inventoryDemandDocument = collection.find_one({"tahun": 2022})
+
+        masterCollection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
+        inventoryMasterDocument = masterCollection.find_one({"tahun": 2022})
         
         InventoryDemand.writeCategoryHeader(workbook)
+        InventoryDemand.writeCategoryMain(workbook, inventoryDemandDocument)
 
         workbook.create_sheet("Barang")
         workbook.change_sheet("Barang")
         workbook.set_zoom(85)
 
         InventoryDemand.writeItemHeader(workbook)
+        InventoryDemand.writeItemMain(workbook, inventoryDemandDocument, inventoryMasterDocument)
 
         workbook.save()
 
@@ -54,9 +60,68 @@ class InventoryDemand():
         workbook.alignment_multiple("A1", "F1", vertical="center", horizontal="center")
         workbook.border_multiple("A1", "F1", "all", style="thin")
 
-    
+
+    def writeCategoryMain(workbook, inventoryDemandDocument):
+        rowCount = 2
+        for categoryIndex, categoryObject in enumerate(inventoryDemandDocument.get("kategori")):
+            createdAt = Utility.convertDateYYYYMMDDHHMMSS(categoryObject.get("created_at"))
+            respondedAt = Utility.convertDateYYYYMMDDHHMMSS(categoryObject.get("responded_at"))
+            status = Utility.convertStatus(categoryObject.get("status"))
+
+            mainValue = [
+                categoryIndex + 1,
+                categoryObject.get("username"),
+                categoryObject.get("kategori"),
+                createdAt,
+                respondedAt,
+                status,
+            ]
+
+            workbook.write_value_multiple(["A", rowCount], ["F", rowCount], mainValue)
+            workbook.alignment_multiple(["A", rowCount], ["F", rowCount], vertical="center", horizontal="center")
+            workbook.alignment_multiple(["B", rowCount], ["E", rowCount], vertical="center", horizontal="left")
+            workbook.border_multiple(["A", rowCount], ["F", rowCount], "all", style="thin")
+
+            rowCount += 1
+
+        
+        workbook.adjust_width("A1", ["F", rowCount], extra_width=1)
+
+
     def writeItemHeader(workbook):
         workbook.write_value_multiple("A1", "H1", ["No.", "Peminta", "Kategori", "Barang", "Satuan", "Dibuat", "Direspon", "Status"])
         workbook.font_multiple("A1", "H1", size=12, bold=True)
         workbook.alignment_multiple("A1", "H1", vertical="center", horizontal="center")
         workbook.border_multiple("A1", "H1", "all", style="thin")
+
+
+    def writeItemMain(workbook, inventoryDemandDocument, inventoryMasterDocument):
+        rowCount = 2
+        for demandItemIndex, demandItemObject in enumerate(inventoryDemandDocument.get("barang")):
+            for masterCategoryObject in inventoryMasterDocument.get("kategori"):
+                if(masterCategoryObject.get("id") == demandItemObject.get("kategori_id")):
+                    createdAt = Utility.convertDateYYYYMMDDHHMMSS(demandItemObject.get("created_at"))
+                    respondedAt = Utility.convertDateYYYYMMDDHHMMSS(demandItemObject.get("responded_at"))
+                    status = Utility.convertStatus(demandItemObject.get("status"))
+
+                    mainValue = [
+                        demandItemIndex + 1,
+                        demandItemObject.get("username"),
+                        masterCategoryObject.get("kategori"),
+                        demandItemObject.get("barang"),
+                        demandItemObject.get("satuan"),
+                        createdAt,
+                        respondedAt,
+                        status
+                    ]
+    
+                    workbook.write_value_multiple(["A", rowCount], ["H", rowCount], mainValue)
+                    workbook.alignment_multiple(["A", rowCount], ["H", rowCount], vertical="center", horizontal="center")
+                    workbook.alignment_multiple(["B", rowCount], ["D", rowCount], vertical="center", horizontal="left")
+                    workbook.alignment_multiple(["F", rowCount], ["G", rowCount], vertical="center", horizontal="left")
+                    workbook.border_multiple(["A", rowCount], ["H", rowCount], "all", style="thin")
+
+                    rowCount += 1
+
+
+        workbook.adjust_width("A1", ["H", rowCount], extra_width=1)
