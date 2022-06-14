@@ -527,4 +527,51 @@ export class MasterInventoryService {
 
         return categories;
     }
+
+    public async masterTableGetAll(): Promise<any> {
+        const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(2022);
+        let table_data: any[] = [];
+
+        master_inventory_data.kategori.forEach(async (category_object, category_index) => {
+            table_data.push({
+                id: await romanizeNumber(category_index + 1),
+                kategori: category_object.kategori,
+                nama: category_object.kategori,
+                satuan: "",
+                saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_jumlah_satuan: "",
+                mutasi_barang_keluar_jumlah_satuan: "",
+                saldo_akhir_jumlah_satuan: "",
+                harga_satuan: "",
+                keterangan: "",
+                saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_jumlah_satuan_rp: "",
+                mutasi_barang_keluar_jumlah_satuan_rp:"",
+                saldo_akhir_jumlah_satuan_rp: "",
+                isKategori: true,
+            });
+            category_object.barang.forEach((item_object, item_index) => {
+                table_data.push({
+                    id: item_index + 1,
+                    kategori: category_object.kategori,
+                    nama: item_object.nama,
+                    satuan: item_object.satuan,
+                    saldo_jumlah_satuan: item_object.saldo_jumlah_satuan,
+                    mutasi_barang_masuk_jumlah_satuan: item_object.mutasi_barang_masuk_jumlah_satuan,
+                    mutasi_barang_keluar_jumlah_satuan: item_object.mutasi_barang_keluar_jumlah_satuan,
+                    saldo_akhir_jumlah_satuan: item_object.saldo_akhir_jumlah_satuan,
+                    jumlah_permintaan: item_object.jumlah_permintaan,
+                    harga_satuan: item_object.harga_satuan,
+                    keterangan: item_object.keterangan,
+                    saldo_jumlah_satuan_rp: item_object.saldo_jumlah_satuan * item_object.harga_satuan,
+                    mutasi_barang_masuk_jumlah_satuan_rp: item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan,
+                    mutasi_barang_keluar_jumlah_satuan_rp: item_object.mutasi_barang_keluar_jumlah_satuan * item_object.harga_satuan,
+                    saldo_akhir_jumlah_satuan_rp: item_object.saldo_akhir_jumlah_satuan * item_object.harga_satuan,
+                    isKategori: false,
+                });
+            });
+        });
+
+        return table_data;
+    }
 }

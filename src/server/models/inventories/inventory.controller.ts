@@ -29,6 +29,13 @@ import { ParamsInterceptor } from "@/server/common/interceptors/params.intercept
 export class InventoryController {
     constructor() {}
 
+    @Get("")
+    @Render("inventory/master/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterMain(): {} {
+        return {};
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */
