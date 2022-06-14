@@ -754,7 +754,6 @@ export class MasterInventoryService {
                 isKategori: true,
                 isWhiteSpace: true,
             });
-
             table_data.push({
                 actions: {
                     category_id: "",
