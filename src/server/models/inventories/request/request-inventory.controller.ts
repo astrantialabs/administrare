@@ -21,16 +21,17 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { JumlahData } from "@/shared/typings/types/inventory";
 import { currentDate, slugifyDate } from "@/shared/utils/util";
+import { JumlahData, RequestBarangWithCategoryNameAndItemName, RequestCreateBarang } from "@/shared/typings/types/inventory";
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
 import { join } from "path";
 import { MasterInventoryService } from "../master/master-inventory.service";
-import { ParameterRequestCreateItemDto } from "./dto/item.schema";
 import { RequestInventoryService } from "./request-inventory.service";
 import { RequestBarang } from "./schema/request-inventory.schema";
+import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
+import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 
 /**
  * @class RequestInventoryDataController
@@ -52,7 +53,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang[]>} The request barang object
      */
     @Get("barang/all")
-    public async requestGetBarangAll(): Promise<any> {
+    public async requestGetBarangAll(): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
         return await this.requestInventoryService.requestGetBarangAll(2022);
     }
 
@@ -62,7 +63,9 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} The request barang object
      */
     @Get("barang/:id")
-    public async requestGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<any> {
+    public async requestGetBarangById(
+        @Param("id", new ParseIntPipe()) id: number
+    ): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>> {
         return await this.requestInventoryService.requestGetBarangById(2022, id);
     }
 
@@ -72,7 +75,9 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang[]>} The request barang object
      */
     @Get("barang/status/:status")
-    public async requestGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<any> {
+    public async requestGetBarangByStatus(
+        @Param("status", new ParseIntPipe()) status: number
+    ): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
         return await this.requestInventoryService.requestGetBarangByStatus(2022, status);
     }
 
@@ -82,36 +87,8 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} The new request barang object
      */
     @Post("new/barang")
-    public async requestCreateBarang(@Body() body: ParameterRequestCreateItemDto): Promise<RequestBarang | HttpException> {
-        if (body.total > 0) {
-            let jumlah_data: JumlahData = await this.masterInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
-                2022,
-                body.kategori_id,
-                body.barang_id
-            );
-
-            if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + body.total) {
-                let item: RequestBarang = {
-                    id: (await this.requestGetBarangAll()).length + 1,
-                    kategori_id: body.kategori_id,
-                    barang_id: body.barang_id,
-                    username: body.username,
-                    total: body.total,
-                    deskripsi: body.deskripsi,
-                    created_at: currentDate(),
-                    responded_at: null,
-                    status: 0,
-                };
-
-                this.masterInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(2022, item.kategori_id, item.barang_id, item.total);
-
-                return await this.requestInventoryService.requestCreateBarang(2022, item);
-            } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + body.total) {
-                return new HttpException("saldo_akhir not enough", HttpStatus.BAD_GATEWAY);
-            }
-        } else if (body.total <= 0) {
-            return new HttpException("total needs to be more than 0", HttpStatus.BAD_GATEWAY);
-        }
+    public async requestCreateBarang(@Body() body: RequestCreateBarang): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
+        return await this.requestInventoryService.requestCreateBarang(2022, body);
     }
 
     /**
@@ -124,7 +101,7 @@ export class RequestInventoryController {
     public async requestResponseBarangById(
         @Param("id", new ParseIntPipe()) id: number,
         @Param("status", new ParseIntPipe()) status: number
-    ): Promise<RequestBarang | HttpException> {
+    ): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
         return await this.requestInventoryService.requestResponseBarangById(2022, id, status);
     }
 
