@@ -21,7 +21,10 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { currentDate } from "@/shared/utils/util";
+import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
+import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
+import { JumlahData, RequestBarangWithCategoryNameAndItemName, RequestCreateBarang } from "@/shared/typings/types/inventory";
+import { currentDate, responseFormat } from "@/shared/utils/util";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -60,9 +63,9 @@ export class RequestInventoryService {
 
     //#region utility
 
-    public async requestBarangWithCategoryAndItemName(request_barang_data: any) {
-        let request_barang_data_with_category_and_item_name = await Promise.all(
-            request_barang_data.map(async (item_object: any) => {
+    public async requestBarangWithCategoryAndItemName(request_barang_data: RequestBarang[]): Promise<RequestBarangWithCategoryNameAndItemName[]> {
+        let request_barang_data_with_category_and_item_name: RequestBarangWithCategoryNameAndItemName[] = await Promise.all(
+            request_barang_data.map(async (item_object: RequestBarang) => {
                 return {
                     ...item_object,
                     kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id),
@@ -87,12 +90,20 @@ export class RequestInventoryService {
      * @param {Number} year - The year
      * @returns {Promise<RequestBarang[]>} The request item object
      */
-    public async requestGetBarangAll(year: number): Promise<any> {
-        let request_barang_data: RequestBarang[] = (await this.requestFindOne(year)).barang;
+    public async requestGetBarangAll(year: number): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
+        try {
+            const request_barang_data: RequestBarang[] = (await this.requestFindOne(year)).barang;
 
-        let request_barang_data_with_category_and_item_name = await this.requestBarangWithCategoryAndItemName(request_barang_data);
+            const request_barang_data_with_category_and_item_name: RequestBarangWithCategoryNameAndItemName[] = await this.requestBarangWithCategoryAndItemName(
+                request_barang_data
+            );
 
-        return request_barang_data_with_category_and_item_name;
+            return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(true, 200, "Request item object found", {
+                request_item: request_barang_data_with_category_and_item_name,
+            });
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -101,17 +112,27 @@ export class RequestInventoryService {
      * @param {Number} id - The id
      * @returns {Promise<RequestBarang>} The request item object
      */
-    public async requestGetBarangById(year: number, id: number): Promise<any> {
-        const request_barang_data: any = await this.requestGetBarangAll(year);
-        let request_barang: any;
+    public async requestGetBarangById(year: number, id: number): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>> {
+        try {
+            const request_barang_data: RequestBarangWithCategoryNameAndItemName[] = (await this.requestGetBarangAll(year)).result.request_item;
+            let request_barang: RequestBarangWithCategoryNameAndItemName;
 
-        request_barang_data.forEach((item_object: any) => {
-            if (item_object.id == id) {
-                request_barang = item_object;
+            request_barang_data.forEach((item_object: RequestBarangWithCategoryNameAndItemName) => {
+                if (item_object.id == id) {
+                    request_barang = item_object;
+                }
+            });
+
+            if (request_barang == undefined) {
+                return responseFormat<null>(false, 400, `Request item object id ${id} not found`, null);
+            } else if (request_barang != undefined) {
+                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>(true, 200, `Request item object id ${id} found`, {
+                    request_item: request_barang,
+                });
             }
-        });
-
-        return request_barang;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -120,17 +141,29 @@ export class RequestInventoryService {
      * @param {Number} status - The status
      * @returns {Promise<RequestBarang[]>} The request item object
      */
-    public async requestGetBarangByStatus(year: number, status: number): Promise<any> {
-        const request_barang_data: any = await this.requestGetBarangAll(year);
-        let request_barang: any = [];
+    public async requestGetBarangByStatus(year: number, status: number): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
+        try {
+            const status_list: number[] = [0, 1, 2];
 
-        request_barang_data.forEach((item_object: any) => {
-            if (item_object.status == status) {
-                request_barang.push(item_object);
+            if (status_list.includes(status)) {
+                const request_barang_data: RequestBarangWithCategoryNameAndItemName[] = (await this.requestGetBarangAll(year)).result.request_item;
+                let request_barang: RequestBarangWithCategoryNameAndItemName[] = [];
+
+                request_barang_data.forEach((item_object: RequestBarangWithCategoryNameAndItemName) => {
+                    if (item_object.status == status) {
+                        request_barang.push(item_object);
+                    }
+                });
+
+                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(true, 200, `Request item object status ${status} found`, {
+                    request_item: request_barang,
+                });
+            } else if (!status_list.includes(status)) {
+                return responseFormat<null>(false, 400, `Status is invalid`, null);
             }
-        });
-
-        return request_barang;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -139,14 +172,46 @@ export class RequestInventoryService {
      * @param {RequestBarang} item - The new request barang object
      * @returns {Promise<RequestBarang>} The new request barang object
      */
-    public async requestCreateBarang(year: number, item: RequestBarang): Promise<RequestBarang> {
-        let request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
+    public async requestCreateBarang(year: number, item: RequestCreateBarang): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
+        try {
+            if (item.total > 0) {
+                const jumlah_data: JumlahData = await this.masterInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
+                    2022,
+                    item.kategori_id,
+                    item.barang_id
+                );
 
-        request_inventory_data.barang.push(item);
+                if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + item.total) {
+                    const request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
 
-        this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
+                    const new_item: RequestBarang = {
+                        id: (await this.requestGetBarangAll(2022)).result.request_item.length + 1,
+                        kategori_id: item.kategori_id,
+                        barang_id: item.barang_id,
+                        username: item.username,
+                        total: item.total,
+                        deskripsi: item.deskripsi,
+                        created_at: currentDate(),
+                        responded_at: null,
+                        status: 0,
+                    };
 
-        return item;
+                    request_inventory_data.barang.push(new_item);
+
+                    this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
+
+                    return responseFormat<ResponseObject<RequestBarang>>(true, 201, `Request item created`, {
+                        request_item: new_item,
+                    });
+                } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + item.total) {
+                    return responseFormat<null>(false, 400, `Saldo akhir tidak cukup`, null);
+                }
+            } else if (item.total <= 0) {
+                return responseFormat<null>(false, 400, `Total needs to be more than 0`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -156,39 +221,48 @@ export class RequestInventoryService {
      * @param {Number} status - The status
      * @returns {Promise<RequestBarang>} Return the responded barang object
      */
-    public async requestResponseBarangById(year: number, id: number, status: number): Promise<RequestBarang | HttpException> {
-        let status_list = [1, 2];
+    public async requestResponseBarangById(year: number, id: number, status: number): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
+        try {
+            const status_list = [1, 2];
 
-        if (status_list.includes(status)) {
-            let request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
-            let responded_request_barang: RequestBarang;
+            if (status_list.includes(status)) {
+                const request_data: RequestInventoryDataDocument = await this.requestFindOne(year);
+                let responded_request_barang: RequestBarang;
 
-            request_inventory_data.barang.forEach((request_item_object) => {
-                if (request_item_object.id == id) {
-                    if (request_item_object.status == 0) {
-                        request_item_object.responded_at = currentDate();
-                        request_item_object.status = status;
+                let status_is_valid: boolean = false;
+                request_data.barang.forEach((request_item_object) => {
+                    if (request_item_object.id == id) {
+                        if (request_item_object.status == 0) {
+                            request_item_object.responded_at = currentDate();
+                            request_item_object.status = status;
+                            this.masterInventoryService.masterResponseJumlahPermintaanByKategoriIdAndBarangId(
+                                2022,
+                                request_item_object.kategori_id,
+                                request_item_object.barang_id,
+                                request_item_object.total,
+                                request_item_object.status
+                            );
 
-                        responded_request_barang = request_item_object;
-
-                        this.masterInventoryService.masterResponseJumlahPermintaanByKategoriIdAndBarangId(
-                            2022,
-                            request_item_object.kategori_id,
-                            request_item_object.barang_id,
-                            request_item_object.total,
-                            request_item_object.status
-                        );
-                    } else if (status_list.includes(request_item_object.status)) {
-                        return new HttpException("already responded", HttpStatus.BAD_GATEWAY);
+                            responded_request_barang = request_item_object;
+                            status_is_valid = true;
+                        }
                     }
+                });
+
+                if (status_is_valid) {
+                    this.requestInventoryDataModel.replaceOne({ tahun: year }, request_data, { upsert: true }).exec();
+
+                    return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Request item id ${id} responded`, {
+                        request_item: responded_request_barang,
+                    });
+                } else if (!status_is_valid) {
+                    return responseFormat<null>(false, 400, `Request item id ${id} already responded`, null);
                 }
-            });
-
-            this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
-
-            return responded_request_barang;
-        } else if (!status_list.includes(status)) {
-            return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
+            } else if (!status_list.includes(status)) {
+                return responseFormat<null>(false, 400, `Status is invalid`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
         }
     }
 

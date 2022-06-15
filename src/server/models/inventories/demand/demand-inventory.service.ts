@@ -394,7 +394,7 @@ export class DemandInventoryService {
                     this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
                     return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Demand item id ${id} responded`, {
-                        demand_itemm: responded_demand_barang,
+                        demand_item: responded_demand_barang,
                     });
                 } else if (!status_is_valid) {
                     return responseFormat<null>(false, 400, `Demand item id ${id} already responded`, null);
