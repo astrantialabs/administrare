@@ -212,6 +212,37 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                             </>
                         );
                     }
+                    return (
+                        <>
+                            <Popover>
+                                <PopoverTrigger>
+                                    <Button zIndex={1}>Actions</Button>
+                                </PopoverTrigger>
+                                <Portal>
+                                    <PopoverContent>
+                                        <PopoverArrow />
+                                        <PopoverCloseButton />
+                                        <PopoverBody>
+                                            <Button mx={2} colorScheme="teal">
+                                                <LinkOverlay href={`/inventory/update/kategori/${value.category_id}/barang/${value.item_id}`}>
+                                                    Update
+                                                </LinkOverlay>
+                                            </Button>
+                                            <Button
+                                                mx={2}
+                                                colorScheme="red"
+                                                isLoading={loading}
+                                                disabled={loading}
+                                                onClick={() => deleteKategori("barang", value.category_id, value.item_id)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </Portal>
+                            </Popover>
+                        </>
+                    );
                 },
             },
             {
