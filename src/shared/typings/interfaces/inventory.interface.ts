@@ -17,31 +17,14 @@
  */
 
 /**
- * @fileoverview The response format interceptor.
+ * @fileoverview The inventory type interface.
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-
-export interface ResponseFormat<T> {
-    success: boolean;
-    statusCode: number;
-    message: string
-    result: T;
-}
-
-@Injectable()
-export class ResponseFormatInterceptor<T> implements NestInterceptor<T, ResponseFormat<T>> {
-    intercept(context: ExecutionContext, next: CallHandler): Observable<ResponseFormat<T>> {
-        return next.handle().pipe(
-            map((data) => ({
-                success: data.success,
-                statusCode: data.statusCode,
-                message: data.message,
-                result: data.result,
-            }))
-        );
-    }
+/**
+ * @interface ResponseObject
+ * @description The response object type interface.
+ */
+export interface ResponseObject<T> {
+    [key: string]: T;
 }
