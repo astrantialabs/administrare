@@ -262,21 +262,21 @@ export class RequestInventoryService {
         try {
             const request_data: RequestInventoryDataDocument = await this.requestFindOne(year);
 
-            let request_id_is_valid = false;
-            request_data.barang.forEach((request_item_object) => {
+            let request_id_is_valid: boolean = false;
+            request_data.barang.forEach((request_item_object: RequestBarang) => {
                 if (request_item_object.id == id) {
                     request_id_is_valid = true;
                 }
             });
 
             if (request_id_is_valid) {
-                const status_list = [1, 2];
+                const status_list: number[] = [1, 2];
 
                 if (status_list.includes(status)) {
                     let responded_request_barang: RequestBarang;
 
                     let status_is_valid: boolean = false;
-                    request_data.barang.forEach((request_item_object) => {
+                    request_data.barang.forEach((request_item_object: RequestBarang) => {
                         if (request_item_object.id == id) {
                             if (request_item_object.status == 0) {
                                 request_item_object.responded_at = currentDate();
