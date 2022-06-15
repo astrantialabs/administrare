@@ -21,11 +21,15 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { currentDate } from "@/shared/utils/util";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
+import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
+import { DemandBarangWithCategoryName, DemandCreateBarang, DemandCreateKategori } from "@/shared/typings/types/inventory";
+import { currentDate, responseFormat } from "@/shared/utils/util";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { MasterInventoryService } from "../master/master-inventory.service";
+import { MasterInventoryDataDocument, MasterKategori } from "../master/schema/master-inventory.schema";
 import { DemandBarang, DemandInventoryData, DemandInventoryDataDocument, DemandKategori } from "./schema/demand-inventory.schema";
 
 /**
@@ -60,9 +64,9 @@ export class DemandInventoryService {
 
     //#region utility
 
-    public async demandBarangWithCategoryName(demand_barang_data: any) {
-        let demand_barang_data_with_category_name = await Promise.all(
-            demand_barang_data.map(async (item_object: any) => {
+    public async demandBarangWithCategoryName(demand_barang_data: DemandBarang[]): Promise<DemandBarangWithCategoryName[]> {
+        let demand_barang_data_with_category_name: DemandBarangWithCategoryName[] = await Promise.all(
+            demand_barang_data.map(async (item_object: DemandBarang) => {
                 return {
                     ...item_object,
                     kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id),
@@ -82,8 +86,14 @@ export class DemandInventoryService {
      * @param {Number} year - The year data
      * @returns {Promise<DemandKategori[]>} - The category demand object
      */
-    public async demandGetKategoriAll(year: number): Promise<DemandKategori[]> {
-        return (await this.demandFindOne(year)).kategori;
+    public async demandGetKategoriAll(year: number): Promise<ResponseFormat<ResponseObject<DemandKategori[]>>> {
+        try {
+            const category_data: DemandKategori[] = (await this.demandFindOne(year)).kategori;
+
+            return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, "Demand category object found", { demand_category: category_data });
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -91,12 +101,18 @@ export class DemandInventoryService {
      * @param {Number} year - The year data
      * @returns {Promise<DemandBarang[]>} The item demand object
      */
-    public async demandGetBarangAll(year: number): Promise<any> {
-        let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
+    public async demandGetBarangAll(year: number): Promise<ResponseFormat<ResponseObject<DemandBarangWithCategoryName[]>>> {
+        try {
+            let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
 
-        let demand_barang_data_with_category_name = await this.demandBarangWithCategoryName(demand_barang_data);
+            let demand_barang_data_with_category_name: DemandBarangWithCategoryName[] = await this.demandBarangWithCategoryName(demand_barang_data);
 
-        return demand_barang_data_with_category_name;
+            return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(true, 200, "Demand item object found", {
+                demand_item: demand_barang_data_with_category_name,
+            });
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -105,17 +121,25 @@ export class DemandInventoryService {
      * @param {Number} id - The category demand id
      * @returns {Promise<DemandKategori>} The category demand object
      */
-    public async demandGetKategoriById(year: number, id: number): Promise<DemandKategori> {
-        let demand_kategori_data: DemandKategori[] = (await this.demandFindOne(year)).kategori;
-        let demand_kategori: DemandKategori;
+    public async demandGetKategoriById(year: number, id: number): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
+        try {
+            let demand_kategori_data: DemandKategori[] = (await this.demandFindOne(year)).kategori;
+            let demand_kategori: DemandKategori;
 
-        demand_kategori_data.forEach((demand_kategori_object) => {
-            if (demand_kategori_object.id == id) {
-                demand_kategori = demand_kategori_object;
+            demand_kategori_data.forEach((demand_kategori_object: DemandKategori) => {
+                if (demand_kategori_object.id == id) {
+                    demand_kategori = demand_kategori_object;
+                }
+            });
+
+            if (demand_kategori == undefined) {
+                return responseFormat<null>(false, 400, `Demand category object id ${id} not found`, null);
+            } else if (demand_kategori != undefined) {
+                return responseFormat<ResponseObject<DemandKategori>>(true, 200, `Demand category object id ${id} found`, { demand_category: demand_kategori });
             }
-        });
-
-        return demand_kategori;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -124,19 +148,32 @@ export class DemandInventoryService {
      * @param {Number} id - The item demand id
      * @returns {Promise<DemandBarang>} The item demand object
      */
-    public async demandGetBarangById(year: number, id: number): Promise<any> {
-        let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
-        let demand_barang: any;
+    public async demandGetBarangById(year: number, id: number): Promise<ResponseFormat<ResponseObject<DemandBarangWithCategoryName>>> {
+        try {
+            let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
+            let demand_barang: DemandBarang;
 
-        demand_barang_data.forEach((demand_barang_object: any) => {
-            if (demand_barang_object.id == id) {
-                demand_barang = demand_barang_object;
+            demand_barang_data.forEach((demand_barang_object: DemandBarang) => {
+                if (demand_barang_object.id == id) {
+                    demand_barang = demand_barang_object;
+                }
+            });
+
+            if (demand_barang == undefined) {
+                return responseFormat<null>(false, 400, `Demand item object id ${id} not found`, null);
+            } else if (demand_barang != undefined) {
+                let demand_barang_with_category_name: DemandBarangWithCategoryName = {
+                    ...demand_barang,
+                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id),
+                };
+
+                return responseFormat<ResponseObject<DemandBarangWithCategoryName>>(true, 200, `Demand item object id ${id} found`, {
+                    demand_item: demand_barang_with_category_name,
+                });
             }
-        });
-
-        demand_barang["kategori_name"] = await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id);
-
-        return demand_barang;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -145,16 +182,28 @@ export class DemandInventoryService {
      * @param {Number} status - The status
      * @returns {Promise<DemandKategori[]>} The filtered category demand object
      */
-    public async demandGetKategoriByStatus(year: number, status: number): Promise<DemandKategori[]> {
-        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+    public async demandGetKategoriByStatus(year: number, status: number): Promise<ResponseFormat<ResponseObject<DemandKategori[]>>> {
+        try {
+            const status_list: number[] = [0, 1, 2];
 
-        let filtered_category_demand_data: DemandKategori[] = demand_data.kategori.filter((category_object) => {
-            if (category_object.status == status) {
-                return category_object;
+            if (status_list.includes(status)) {
+                let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+
+                let filtered_category_demand_data: DemandKategori[] = demand_data.kategori.filter((category_object) => {
+                    if (category_object.status == status) {
+                        return category_object;
+                    }
+                });
+
+                return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, `Demand category object status ${status} found`, {
+                    demand_category: filtered_category_demand_data,
+                });
+            } else if (!status_list.includes(status)) {
+                return responseFormat<null>(false, 400, `Status is invalid`, null);
             }
-        });
-
-        return filtered_category_demand_data;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -163,18 +212,30 @@ export class DemandInventoryService {
      * @param {Number} status - The status
      * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
-    public async demandGetBarangByStatus(year: number, status: number): Promise<DemandBarang[]> {
-        let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
+    public async demandGetBarangByStatus(year: number, status: number): Promise<ResponseFormat<ResponseObject<DemandBarang[]>>> {
+        try {
+            const status_list: number[] = [0, 1, 2];
 
-        let filtered_item_demand_data: any = demand_barang_data.filter((item_object: any) => {
-            if (item_object.status == status) {
-                return item_object;
+            if (status_list.includes(status)) {
+                let demand_barang_data: DemandBarang[] = (await this.demandFindOne(year)).barang;
+
+                let filtered_item_demand_data: DemandBarang[] = demand_barang_data.filter((item_object: DemandBarang) => {
+                    if (item_object.status == status) {
+                        return item_object;
+                    }
+                });
+
+                let demand_barang_data_with_category_name: DemandBarangWithCategoryName[] = await this.demandBarangWithCategoryName(filtered_item_demand_data);
+
+                return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(true, 200, `Demand item object status ${status} found`, {
+                    demand_item: demand_barang_data_with_category_name,
+                });
+            } else if (!status_list.includes(status)) {
+                return responseFormat<null>(false, 400, `Status is invalid`, null);
             }
-        });
-
-        let demand_barang_data_with_category_name: any = await this.demandBarangWithCategoryName(filtered_item_demand_data);
-
-        return demand_barang_data_with_category_name;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -184,23 +245,29 @@ export class DemandInventoryService {
      * @param {String} category - The new demanded category name
      * @returns {Promise<DemandKategori>} The new demanded category object
      */
-    public async demandCreateKategori(year: number, username: string, category: string): Promise<DemandKategori> {
-        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+    public async demandCreateKategori(year: number, category: DemandCreateKategori): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
+        try {
+            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
-        let new_category_demand: DemandKategori = {
-            id: demand_data.kategori.length + 1,
-            username: username,
-            kategori: category,
-            created_at: currentDate(),
-            responded_at: null,
-            status: 0,
-        };
+            let new_category_demand: DemandKategori = {
+                id: demand_data.kategori.length + 1,
+                username: category.username,
+                kategori: category.kategori,
+                created_at: currentDate(),
+                responded_at: null,
+                status: 0,
+            };
 
-        demand_data.kategori.push(new_category_demand);
+            demand_data.kategori.push(new_category_demand);
 
-        this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+            this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-        return new_category_demand;
+            return responseFormat<ResponseObject<DemandKategori>>(true, 201, `Demand category created`, {
+                demand_category: new_category_demand,
+            });
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -211,25 +278,43 @@ export class DemandInventoryService {
      * @param {String} item - The new demanded item name
      * @returns {DemandBarang} The new demanded item object
      */
-    public async demandCreateBarang(year: number, category_id: number, username: string, item: string, unit: string): Promise<DemandBarang> {
-        let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+    public async demandCreateBarang(year: number, item: DemandCreateBarang): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
+        try {
+            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+            let master_data: MasterInventoryDataDocument = await this.masterInventoryService.masterFindOne(year);
 
-        let new_item_demand: DemandBarang = {
-            id: demand_data.barang.length + 1,
-            kategori_id: category_id,
-            username: username,
-            barang: item,
-            satuan: unit,
-            created_at: currentDate(),
-            responded_at: null,
-            status: 0,
-        };
+            let category_id_is_valid: boolean = false;
+            master_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == item.kategori_id) {
+                    category_id_is_valid = true;
+                }
+            });
 
-        demand_data.barang.push(new_item_demand);
+            if (category_id_is_valid) {
+                let new_item_demand: DemandBarang = {
+                    id: demand_data.barang.length + 1,
+                    kategori_id: item.kategori_id,
+                    username: item.username,
+                    barang: item.barang,
+                    satuan: item.satuan,
+                    created_at: currentDate(),
+                    responded_at: null,
+                    status: 0,
+                };
 
-        this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+                demand_data.barang.push(new_item_demand);
 
-        return new_item_demand;
+                this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                return responseFormat<ResponseObject<DemandBarang>>(true, 201, `Demand item created`, {
+                    demand_item: new_item_demand,
+                });
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Master category object id ${item.kategori_id} doesn't exist`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -239,31 +324,41 @@ export class DemandInventoryService {
      * @param {Number} status - The new status
      * @returns {Promise<DemandKategori>} The updated status of category demand object
      */
-    public async demandResponseKategoriById(year: number, id: number, status: number): Promise<DemandKategori | HttpException> {
-        let status_list = [1, 2];
+    public async demandResponseKategoriById(year: number, id: number, status: number): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
+        try {
+            const status_list: number[] = [1, 2];
 
-        if (status_list.includes(status)) {
-            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
-            let responded_demand_kategori: DemandKategori;
+            if (status_list.includes(status)) {
+                let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+                let responded_demand_kategori: DemandKategori;
 
-            demand_data.kategori.forEach((demand_kategori_object) => {
-                if (demand_kategori_object.id == id) {
-                    if (demand_kategori_object.status == 0) {
-                        demand_kategori_object.responded_at = currentDate();
-                        demand_kategori_object.status = status;
+                let status_is_valid: boolean = false;
+                demand_data.kategori.forEach((demand_kategori_object: DemandKategori) => {
+                    if (demand_kategori_object.id == id) {
+                        if (demand_kategori_object.status == 0) {
+                            demand_kategori_object.responded_at = currentDate();
+                            demand_kategori_object.status = status;
 
-                        responded_demand_kategori = demand_kategori_object;
-                    } else if (status_list.includes(demand_kategori_object.status)) {
-                        return new HttpException("already responded", HttpStatus.BAD_GATEWAY);
+                            responded_demand_kategori = demand_kategori_object;
+                            status_is_valid = true;
+                        }
                     }
+                });
+
+                if (status_is_valid) {
+                    this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                    return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Demand category id ${id} responded`, {
+                        demand_category: responded_demand_kategori,
+                    });
+                } else if (!status_is_valid) {
+                    return responseFormat<null>(false, 400, `Demand category id ${id} already responded`, null);
                 }
-            });
-
-            this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
-
-            return responded_demand_kategori;
-        } else if (!status_list.includes(status)) {
-            return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
+            } else if (!status_list.includes(status)) {
+                return responseFormat<null>(false, 400, `Status is invalid`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
         }
     }
 
@@ -274,31 +369,41 @@ export class DemandInventoryService {
      * @param {Number} status - The new status
      * @returns {DemandBarang} The updated status of item demand object
      */
-    public async demandResponseBarangById(year: number, id: number, status: number): Promise<DemandBarang | HttpException> {
-        let status_list = [1, 2];
+    public async demandResponseBarangById(year: number, id: number, status: number): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
+        try {
+            const status_list: number[] = [1, 2];
 
-        if (status_list.includes(status)) {
-            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
-            let responded_demand_barang: DemandBarang;
+            if (status_list.includes(status)) {
+                let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+                let responded_demand_barang: DemandBarang;
 
-            demand_data.barang.forEach((demand_barang_object) => {
-                if (demand_barang_object.id == id) {
-                    if (demand_barang_object.status == 0) {
-                        demand_barang_object.responded_at = currentDate();
-                        demand_barang_object.status = status;
+                let status_is_valid: boolean = false;
+                demand_data.barang.forEach((demand_barang_object) => {
+                    if (demand_barang_object.id == id) {
+                        if (demand_barang_object.status == 0) {
+                            demand_barang_object.responded_at = currentDate();
+                            demand_barang_object.status = status;
 
-                        responded_demand_barang = demand_barang_object;
-                    } else if (status_list.includes(demand_barang_object.status)) {
-                        return new HttpException("already responded", HttpStatus.BAD_GATEWAY);
+                            responded_demand_barang = demand_barang_object;
+                            status_is_valid = true;
+                        }
                     }
+                });
+
+                if (status_is_valid) {
+                    this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                    return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Demand item id ${id} responded`, {
+                        demand_itemm: responded_demand_barang,
+                    });
+                } else if (!status_is_valid) {
+                    return responseFormat<null>(false, 400, `Demand item id ${id} already responded`, null);
                 }
-            });
-
-            this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
-
-            return responded_demand_barang;
-        } else if (!status_list.includes(status)) {
-            return new HttpException("response status is invalid", HttpStatus.BAD_GATEWAY);
+            } else if (!status_list.includes(status)) {
+                return responseFormat<null>(false, 400, `Status is invalid`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
         }
     }
 

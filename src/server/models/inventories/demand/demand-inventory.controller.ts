@@ -21,13 +21,16 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile, UseInterceptors } from "@nestjs/common";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { currentDate } from "@/shared/utils/util";
 import { createReadStream } from "fs";
 import { join } from "path";
 import { DemandInventoryService } from "./demand-inventory.service";
 import { DemandBarang, DemandKategori } from "./schema/demand-inventory.schema";
+import { ResponseFormat, ResponseFormatInterceptor } from "@/server/common/interceptors/response-format.interceptor";
+import { DemandBarangWithCategoryName, DemandCreateBarang, DemandCreateKategori } from "@/shared/typings/types/inventory";
+import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 
 /**
  * @class DemandInventoryController
@@ -49,7 +52,8 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori[]>} The category demand object
      */
     @Get("kategori/all")
-    public async demandGetKategoriAll(): Promise<DemandKategori[]> {
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async demandGetKategoriAll(): Promise<ResponseFormat<ResponseObject<DemandKategori[]>>> {
         return await this.demandInventoryService.demandGetKategoriAll(2022);
     }
 
@@ -58,7 +62,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang[]>} The item demand object
      */
     @Get("barang/all")
-    public async demandGetBarangAll(): Promise<any> {
+    public async demandGetBarangAll(): Promise<ResponseFormat<ResponseObject<DemandBarangWithCategoryName[]>>> {
         return await this.demandInventoryService.demandGetBarangAll(2022);
     }
 
@@ -68,7 +72,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori>} The category demand object
      */
     @Get("kategori/:id")
-    public async demandGetKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<DemandKategori> {
+    public async demandGetKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
         return await this.demandInventoryService.demandGetKategoriById(2022, id);
     }
 
@@ -78,7 +82,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang>} The item demand object
      */
     @Get("barang/:id")
-    public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<any> {
+    public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<DemandBarangWithCategoryName>>> {
         return await this.demandInventoryService.demandGetBarangById(2022, id);
     }
 
@@ -88,7 +92,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori[]>} The filtered category demand object
      */
     @Get("kategori/status/:status")
-    public async demandGetKategoriByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<DemandKategori[]> {
+    public async demandGetKategoriByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<ResponseFormat<ResponseObject<DemandKategori[]>>> {
         return await this.demandInventoryService.demandGetKategoriByStatus(2022, status);
     }
 
@@ -98,7 +102,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
     @Get("barang/status/:status")
-    public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<any> {
+    public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<ResponseFormat<ResponseObject<DemandBarang[]>>> {
         return await this.demandInventoryService.demandGetBarangByStatus(2022, status);
     }
 
@@ -109,12 +113,8 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori>} The new demanded category object
      */
     @Post("new/kategori")
-    public async demandCreateKategori(@Body("username") username: string, @Body("kategori") category: string): Promise<DemandKategori> {
-        try {
-            return await this.demandInventoryService.demandCreateKategori(2022, username, category);
-        } catch (error) {
-            this.logger.error(error);
-        }
+    public async demandCreateKategori(@Body() body: DemandCreateKategori): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
+        return await this.demandInventoryService.demandCreateKategori(2022, body);
     }
 
     /**
@@ -125,17 +125,8 @@ export class DemandInventoryController {
      * @returns {DemandBarang} The new demanded item object
      */
     @Post("new/barang")
-    public async demandCreateBarang(
-        @Body("kategori_id", new ParseIntPipe()) category_id: number,
-        @Body("username") username: string,
-        @Body("barang") barang: string,
-        @Body("satuan") satuan: string
-    ): Promise<DemandBarang> {
-        try {
-            return await this.demandInventoryService.demandCreateBarang(2022, category_id, username, barang, satuan);
-        } catch (error) {
-            this.logger.error(error);
-        }
+    public async demandCreateBarang(@Body() body: DemandCreateBarang): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
+        return await this.demandInventoryService.demandCreateBarang(2022, body);
     }
 
     /**
@@ -148,12 +139,8 @@ export class DemandInventoryController {
     public async demandResponseKategoriById(
         @Param("id", new ParseIntPipe()) id: number,
         @Param("status", new ParseIntPipe()) status: number
-    ): Promise<DemandKategori | HttpException> {
-        try {
-            return await this.demandInventoryService.demandResponseKategoriById(2022, id, status);
-        } catch (error) {
-            this.logger.error(error);
-        }
+    ): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
+        return await this.demandInventoryService.demandResponseKategoriById(2022, id, status);
     }
 
     /**
@@ -166,12 +153,8 @@ export class DemandInventoryController {
     public async demandResponseBarangById(
         @Param("id", new ParseIntPipe()) id: number,
         @Param("status", new ParseIntPipe()) status: number
-    ): Promise<DemandBarang | HttpException> {
-        try {
-            return await this.demandInventoryService.demandResponseBarangById(2022, id, status);
-        } catch (error) {
-            this.logger.error(error);
-        }
+    ): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
+        return await this.demandInventoryService.demandResponseBarangById(2022, id, status);
     }
 
     /* -------------------------------- DOWNLOAD -------------------------------- */

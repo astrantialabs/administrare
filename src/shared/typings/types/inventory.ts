@@ -32,3 +32,15 @@ export type ItemSearchData = {
 };
 
 export type DemandBarangWithCategoryName = DemandBarang & { kategori_name: string };
+
+export type DemandCreateKategori = {
+    username: string;
+    kategori: string;
+};
+
+export type DemandCreateBarang = {
+    kategori_id: number;
+    username: string;
+    barang: string;
+    satuan: string;
+};
