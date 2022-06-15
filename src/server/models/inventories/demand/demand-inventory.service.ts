@@ -326,36 +326,48 @@ export class DemandInventoryService {
      */
     public async demandResponseKategoriById(year: number, id: number, status: number): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
         try {
-            const status_list: number[] = [1, 2];
+            const demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
-            if (status_list.includes(status)) {
-                let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
-                let responded_demand_kategori: DemandKategori;
-
-                let status_is_valid: boolean = false;
-                demand_data.kategori.forEach((demand_kategori_object: DemandKategori) => {
-                    if (demand_kategori_object.id == id) {
-                        if (demand_kategori_object.status == 0) {
-                            demand_kategori_object.responded_at = currentDate();
-                            demand_kategori_object.status = status;
-
-                            responded_demand_kategori = demand_kategori_object;
-                            status_is_valid = true;
-                        }
-                    }
-                });
-
-                if (status_is_valid) {
-                    this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
-
-                    return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Demand category id ${id} responded`, {
-                        demand_category: responded_demand_kategori,
-                    });
-                } else if (!status_is_valid) {
-                    return responseFormat<null>(false, 400, `Demand category id ${id} already responded`, null);
+            let demand_category_id_is_valud: boolean = false;
+            demand_data.kategori.forEach((demand_category_object: DemandKategori) => {
+                if (demand_category_object.id == id) {
+                    demand_category_id_is_valud = true;
                 }
-            } else if (!status_list.includes(status)) {
-                return responseFormat<null>(false, 400, `Status is invalid`, null);
+            });
+
+            if (demand_category_id_is_valud) {
+                const status_list: number[] = [1, 2];
+
+                if (status_list.includes(status)) {
+                    let responded_demand_kategori: DemandKategori;
+
+                    let status_is_valid: boolean = false;
+                    demand_data.kategori.forEach((demand_kategori_object: DemandKategori) => {
+                        if (demand_kategori_object.id == id) {
+                            if (demand_kategori_object.status == 0) {
+                                demand_kategori_object.responded_at = currentDate();
+                                demand_kategori_object.status = status;
+
+                                responded_demand_kategori = demand_kategori_object;
+                                status_is_valid = true;
+                            }
+                        }
+                    });
+
+                    if (status_is_valid) {
+                        this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                        return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Demand category id ${id} responded`, {
+                            demand_category: responded_demand_kategori,
+                        });
+                    } else if (!status_is_valid) {
+                        return responseFormat<null>(false, 400, `Demand category id ${id} already responded`, null);
+                    }
+                } else if (!status_list.includes(status)) {
+                    return responseFormat<null>(false, 400, `Status is invalid`, null);
+                }
+            } else if (!demand_category_id_is_valud) {
+                return responseFormat<null>(false, 400, `Demand category object id ${id} not found`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -371,36 +383,48 @@ export class DemandInventoryService {
      */
     public async demandResponseBarangById(year: number, id: number, status: number): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
         try {
-            const status_list: number[] = [1, 2];
+            const demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
-            if (status_list.includes(status)) {
-                let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
-                let responded_demand_barang: DemandBarang;
-
-                let status_is_valid: boolean = false;
-                demand_data.barang.forEach((demand_barang_object) => {
-                    if (demand_barang_object.id == id) {
-                        if (demand_barang_object.status == 0) {
-                            demand_barang_object.responded_at = currentDate();
-                            demand_barang_object.status = status;
-
-                            responded_demand_barang = demand_barang_object;
-                            status_is_valid = true;
-                        }
-                    }
-                });
-
-                if (status_is_valid) {
-                    this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
-
-                    return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Demand item id ${id} responded`, {
-                        demand_item: responded_demand_barang,
-                    });
-                } else if (!status_is_valid) {
-                    return responseFormat<null>(false, 400, `Demand item id ${id} already responded`, null);
+            let demand_item_id_is_valud: boolean = false;
+            demand_data.barang.forEach((demand_item_object: DemandBarang) => {
+                if (demand_item_object.id == id) {
+                    demand_item_id_is_valud = true;
                 }
-            } else if (!status_list.includes(status)) {
-                return responseFormat<null>(false, 400, `Status is invalid`, null);
+            });
+
+            if (demand_item_id_is_valud) {
+                const status_list: number[] = [1, 2];
+
+                if (status_list.includes(status)) {
+                    let responded_demand_barang: DemandBarang;
+
+                    let status_is_valid: boolean = false;
+                    demand_data.barang.forEach((demand_barang_object: DemandBarang) => {
+                        if (demand_barang_object.id == id) {
+                            if (demand_barang_object.status == 0) {
+                                demand_barang_object.responded_at = currentDate();
+                                demand_barang_object.status = status;
+
+                                responded_demand_barang = demand_barang_object;
+                                status_is_valid = true;
+                            }
+                        }
+                    });
+
+                    if (status_is_valid) {
+                        this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                        return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Demand item id ${id} responded`, {
+                            demand_item: responded_demand_barang,
+                        });
+                    } else if (!status_is_valid) {
+                        return responseFormat<null>(false, 400, `Demand item id ${id} already responded`, null);
+                    }
+                } else if (!status_list.includes(status)) {
+                    return responseFormat<null>(false, 400, `Status is invalid`, null);
+                }
+            } else if (!demand_item_id_is_valud) {
+                return responseFormat<null>(false, 400, `Demand item object id ${id} not found`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
