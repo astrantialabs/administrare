@@ -538,6 +538,7 @@ export class MasterInventoryService {
                     category_id: category_object.id,
                     item_id: "",
                     isKategori: true,
+                    isWhiteSpace: false,
                 },
                 id: await romanizeNumber(category_index + 1),
                 kategori: category_object.kategori,
@@ -554,7 +555,9 @@ export class MasterInventoryService {
                 mutasi_barang_keluar_jumlah_satuan_rp: "",
                 saldo_akhir_jumlah_satuan_rp: "",
                 isKategori: true,
+                isWhiteSpace: false,
             });
+
             category_object.barang.forEach((item_object, item_index) => {
                 table_data.push({
                     actions: {
@@ -579,6 +582,79 @@ export class MasterInventoryService {
                     saldo_akhir_jumlah_satuan_rp: item_object.saldo_akhir_jumlah_satuan * item_object.harga_satuan,
                     isKategori: false,
                 });
+            });
+
+            table_data.push({
+                actions: {
+                    category_id: "",
+                    item_id: "",
+                    isKategori: false,
+                    isWhiteSpace: true,
+                },
+                id: "",
+                kategori: "",
+                nama: "",
+                satuan: "",
+                saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_jumlah_satuan: "",
+                mutasi_barang_keluar_jumlah_satuan: "",
+                saldo_akhir_jumlah_satuan: "",
+                harga_satuan: "",
+                keterangan: "",
+                saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_jumlah_satuan_rp: "",
+                mutasi_barang_keluar_jumlah_satuan_rp: "",
+                saldo_akhir_jumlah_satuan_rp: "",
+                isKategori: true,
+                isWhiteSpace: false,
+            });
+            table_data.push({
+                actions: {
+                    category_id: category_object.id,
+                    item_id: "",
+                    isKategori: false,
+                    isWhiteSpace: true,
+                },
+                id: "",
+                kategori: category_object.kategori,
+                nama: `SUB TOTAL ${category_object.kategori}`,
+                satuan: "",
+                saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_jumlah_satuan: "",
+                mutasi_barang_keluar_jumlah_satuan: "",
+                saldo_akhir_jumlah_satuan: "",
+                harga_satuan: "",
+                keterangan: "",
+                saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_jumlah_satuan_rp: "",
+                mutasi_barang_keluar_jumlah_satuan_rp: "",
+                saldo_akhir_jumlah_satuan_rp: "",
+                isKategori: true,
+                isWhiteSpace: false,
+            });
+            table_data.push({
+                actions: {
+                    category_id: "",
+                    item_id: "",
+                    isKategori: false,
+                    isWhiteSpace: true,
+                },
+                id: "",
+                kategori: "",
+                nama: "",
+                satuan: "",
+                saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_jumlah_satuan: "",
+                mutasi_barang_keluar_jumlah_satuan: "",
+                saldo_akhir_jumlah_satuan: "",
+                harga_satuan: "",
+                keterangan: "",
+                saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_jumlah_satuan_rp: "",
+                mutasi_barang_keluar_jumlah_satuan_rp: "",
+                saldo_akhir_jumlah_satuan_rp: "",
+                isKategori: true,
+                isWhiteSpace: true,
             });
         });
 

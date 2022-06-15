@@ -16,33 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Table as ChakraTable, Thead, Tbody, Tr, Th, Td, chakra } from "@chakra-ui/react";
+import { Table as ChakraTable, TableContainer, Thead, Tbody, Tr, Th, Td, chakra } from "@chakra-ui/react";
 import React from "react";
 import { UseTableInstanceProps } from "react-table";
 
 export interface TableNewProps<T extends object>
-    extends Pick<
-        UseTableInstanceProps<T>,
-        "getTableProps" | "headerGroups" | "getTableBodyProps" | "prepareRow" | "rows"
-    > {}
+    extends Pick<UseTableInstanceProps<T>, "getTableProps" | "headerGroups" | "getTableBodyProps" | "prepareRow" | "rows"> {}
 
 export function Table<T extends object>(props: TableNewProps<T>) {
     const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } = props;
 
     return (
-        <ChakraTable
-            {...getTableProps()}
-            borderTopWidth="1px"
-            borderTopColor={`gray.200`}
-            variant={`simple`}
-            colorScheme={`cyan`}
-        >
+        <ChakraTable {...getTableProps()} borderTopWidth="1px" borderTopColor={`gray.200`} variant={`simple`} size={"sm"} colorScheme={`cyan`}>
             <Thead>
                 {headerGroups.map((headerGroup) => (
                     <Tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map((column) => (
                             <Th
                                 {...column.getHeaderProps()}
+                                whiteSpace="nowrap"
                                 borderLeftWidth="1px"
                                 borderLeftColor={`gray.200`}
                                 borderRightWidth="1px"
@@ -62,6 +54,9 @@ export function Table<T extends object>(props: TableNewProps<T>) {
                             {row.cells.map((cell) => {
                                 return (
                                     <Td
+                                        fontSize={14}
+                                        width="40px"
+                                        whiteSpace="nowrap"
                                         borderLeftWidth="1px"
                                         borderLeftColor={`gray.200`}
                                         borderRightWidth="1px"
