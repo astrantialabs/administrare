@@ -42,6 +42,7 @@ interface PayloadTest {
         category_id: string;
         item_id: string;
         isKategori: boolean;
+        isWhiteSpace: boolean;
     };
     id: number;
     kategori: string;
@@ -58,6 +59,7 @@ interface PayloadTest {
     mutasi_barang_masuk_jumlah_satuan_rp: string | number;
     mutasi_barang_keluar_jumlah_satuan_rp: string | number;
     saldo_akhir_jumlah_satuan_rp: string | number;
+    isWhiteSpace: boolean;
 }
 
 const createArr = (n: number, tableData: any): PayloadTest[] => {
@@ -69,6 +71,7 @@ const createArr = (n: number, tableData: any): PayloadTest[] => {
                     category_id: item.actions.category_id,
                     item_id: item.actions.item_id,
                     isKategori: item.actions.isKategori,
+                    isWhiteSpace: item.actions.isWhiteSpace,
                 },
                 id: item.id,
                 kategori: item.kategori,
@@ -140,7 +143,40 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                 Header: "Actions",
                 accessor: "actions",
                 Cell: ({ value }) => {
-                    if (value.isKategori) {
+                    if (value.isWhiteSpace === true) {
+                        return <span></span>;
+                    }
+
+                    if (value.isKategori === true) {
+                        return (
+                            <Popover>
+                                <PopoverTrigger>
+                                    <Button zIndex={1}>Actions</Button>
+                                </PopoverTrigger>
+                                <Portal>
+                                    <PopoverContent>
+                                        <PopoverArrow />
+                                        <PopoverCloseButton />
+                                        <PopoverBody>
+                                            <Button mx={2} colorScheme="teal" onClick={onOpen}>
+                                                <LinkOverlay href={`/inventory/update/kategori/${value.category_id}`}>Update</LinkOverlay>
+                                            </Button>
+
+                                            <Button
+                                                mx={2}
+                                                colorScheme="red"
+                                                isLoading={loading}
+                                                disabled={loading}
+                                                onClick={() => deleteKategori("kategori", value.category_id, value.item_id)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </Portal>
+                            </Popover>
+                        );
+                    } else {
                         return (
                             <>
                                 <Popover>
@@ -152,16 +188,17 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                             <PopoverArrow />
                                             <PopoverCloseButton />
                                             <PopoverBody>
-                                                <Button mx={2} colorScheme="teal" onClick={onOpen}>
-                                                    <LinkOverlay href={`/inventory/update/kategori/${value.category_id}`}>Update</LinkOverlay>
+                                                <Button mx={2} colorScheme="teal">
+                                                    <LinkOverlay href={`/inventory/update/kategori/${value.category_id}/barang/${value.item_id}`}>
+                                                        Update
+                                                    </LinkOverlay>
                                                 </Button>
-
                                                 <Button
                                                     mx={2}
                                                     colorScheme="red"
                                                     isLoading={loading}
                                                     disabled={loading}
-                                                    onClick={() => deleteKategori("kategori", value.category_id, value.item_id)}
+                                                    onClick={() => deleteKategori("barang", value.category_id, value.item_id)}
                                                 >
                                                     Delete
                                                 </Button>
@@ -172,37 +209,6 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                             </>
                         );
                     }
-                    return (
-                        <>
-                            <Popover>
-                                <PopoverTrigger>
-                                    <Button zIndex={1}>Actions</Button>
-                                </PopoverTrigger>
-                                <Portal>
-                                    <PopoverContent>
-                                        <PopoverArrow />
-                                        <PopoverCloseButton />
-                                        <PopoverBody>
-                                            <Button mx={2} colorScheme="teal">
-                                                <LinkOverlay href={`/inventory/update/kategori/${value.category_id}/barang/${value.item_id}`}>
-                                                    Update
-                                                </LinkOverlay>
-                                            </Button>
-                                            <Button
-                                                mx={2}
-                                                colorScheme="red"
-                                                isLoading={loading}
-                                                disabled={loading}
-                                                onClick={() => deleteKategori("barang", value.category_id, value.item_id)}
-                                            >
-                                                Delete
-                                            </Button>
-                                        </PopoverBody>
-                                    </PopoverContent>
-                                </Portal>
-                            </Popover>
-                        </>
-                    );
                 },
             },
             {
