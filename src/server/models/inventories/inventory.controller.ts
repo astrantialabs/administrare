@@ -57,6 +57,20 @@ export class InventoryController {
         return {};
     }
 
+    @Get("update/kategori/:category_id")
+    @Render("inventory/master/manage/update/category")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterUpdateKategori(): {} {
+        return {};
+    }
+
+    @Get("update/kategori/:category_id/barang/:item_id")
+    @Render("inventory/master/manage/update/item")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterUpdateBarang(): {} {
+        return {};
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */

@@ -38,8 +38,12 @@ const getFetchUrl = (url: string) => {
     return url.startsWith("/") ? context.basePath + url : url;
 };
 
-const envAwareFetch = (url: string, options?: Partial<RequestInit>) => {
+const envAwareFetch = (url: string, options?: Partial<RequestInit>, text?: boolean) => {
     const fetchUrl = getFetchUrl(url);
+
+    if (text) {
+        return fetch(fetchUrl, options).then((response) => response.text());
+    }
 
     return fetch(fetchUrl, options).then((res) => res.json());
 };
