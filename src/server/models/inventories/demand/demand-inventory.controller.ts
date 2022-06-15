@@ -21,7 +21,7 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { Body, Controller, Get, HttpException, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile, UseInterceptors } from "@nestjs/common";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { currentDate, slugifyDate } from "@/shared/utils/util";
 import { createReadStream } from "fs";
