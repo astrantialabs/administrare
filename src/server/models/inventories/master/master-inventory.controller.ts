@@ -79,6 +79,11 @@ export class MasterInventoryController {
         return await this.masterInventoryService.masterSearchBarangByName(2022, name);
     }
 
+    @Get("subtotal/kategori/:category_id")
+    public async masterGetKategoriSubTotalByCategoryId(@Param("category_id") category_id: number) {
+        return await this.masterInventoryService.masterGetKategoriSubTotalByCategoryId(2022, category_id);
+    }
+
     /* ---------------------------------- CRUD ---------------------------------- */
 
     /**

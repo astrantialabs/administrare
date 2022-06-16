@@ -267,6 +267,23 @@ export class MasterInventoryService {
         return item_search_data;
     }
 
+    public async masterGetKategoriSubTotalByCategoryId(year: number, category_id: number) {
+        const category_object = await this.masterGetKategoriByKategoriId(year, category_id);
+
+        let saldo = 0;
+        let mutasi_barang_masuk = 0;
+        let mutasi_barang_keluar = 0;
+        let saldo_akhir = 0;
+        category_object.barang.forEach((item_object) => {
+            saldo += item_object.saldo_jumlah_satuan * item_object.harga_satuan;
+            mutasi_barang_masuk += item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan;
+            mutasi_barang_keluar += item_object.mutasi_barang_keluar_jumlah_satuan * item_object.harga_satuan;
+            saldo_akhir += item_object.saldo_akhir_jumlah_satuan * item_object.harga_satuan;
+        });
+
+        return { category_id, saldo, mutasi_barang_masuk, mutasi_barang_keluar, saldo_akhir };
+    }
+
     /* ---------------------------------- CRUD ---------------------------------- */
 
     /**
