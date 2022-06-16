@@ -40,4 +40,11 @@ export class AppController {
     public index() {
         return {};
     }
+
+    @Get("/login")
+    @Render("authentication/login")
+    @UseInterceptors(ParamsInterceptor)
+    public authenticationLogin() {
+        return {};
+    }
 }
