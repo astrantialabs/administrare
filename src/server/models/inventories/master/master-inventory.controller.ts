@@ -80,8 +80,13 @@ export class MasterInventoryController {
     }
 
     @Get("subtotal/kategori/:category_id")
-    public async masterGetKategoriSubTotalByCategoryId(@Param("category_id") category_id: number) {
-        return await this.masterInventoryService.masterGetKategoriSubTotalByCategoryId(2022, category_id);
+    public async masterGetSubTotal(@Param("category_id") category_id: number) {
+        return await this.masterInventoryService.masterGetSubTotal(2022, category_id);
+    }
+
+    @Get("total")
+    public async masterGetTotal() {
+        return await this.masterInventoryService.masterGetTotal(2022);
     }
 
     /* ---------------------------------- CRUD ---------------------------------- */
