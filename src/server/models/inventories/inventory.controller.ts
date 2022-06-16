@@ -21,14 +21,18 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Controller, Get, Render, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Render, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 
 import { ParamsInterceptor } from "@/server/common/interceptors/params.interceptor";
+import { ViewAuthFilter } from "@/server/authentication/filters/view-auth.filter";
 
 @Controller("inventory")
 export class InventoryController {
     constructor() {}
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("")
     @Render("inventory/master/user/main")
     @UseInterceptors(ParamsInterceptor)
@@ -36,6 +40,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("manage")
     @Render("inventory/master/manage/main")
     @UseInterceptors(ParamsInterceptor)
@@ -43,6 +49,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("create/barang")
     @Render("inventory/master/manage/create/item")
     @UseInterceptors(ParamsInterceptor)
@@ -50,6 +58,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("create/kategori")
     @Render("inventory/master/manage/create/category")
     @UseInterceptors(ParamsInterceptor)
@@ -57,6 +67,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("update/kategori/:category_id")
     @Render("inventory/master/manage/update/category")
     @UseInterceptors(ParamsInterceptor)
@@ -75,6 +87,8 @@ export class InventoryController {
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("request")
     @Render("inventory/request/user/main")
     @UseInterceptors(ParamsInterceptor)
@@ -82,6 +96,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("request/manage")
     @Render("inventory/request/manage/main")
     @UseInterceptors(ParamsInterceptor)
@@ -89,6 +105,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("request/create/barang")
     @Render("inventory/request/manage/create/item")
     @UseInterceptors(ParamsInterceptor)
@@ -100,6 +118,8 @@ export class InventoryController {
     /*                              INVENTORY DEMAND                              */
     /* -------------------------------------------------------------------------- */
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("demand")
     @Render("inventory/demand/user/main")
     @UseInterceptors(ParamsInterceptor)
@@ -107,6 +127,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("demand/create/kategori")
     @Render("inventory/demand/manage/create/category")
     @UseInterceptors(ParamsInterceptor)
@@ -114,6 +136,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("demand/create/barang")
     @Render("inventory/demand/manage/create/item")
     @UseInterceptors(ParamsInterceptor)
@@ -121,6 +145,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("demand/manage")
     @Render("inventory/demand/manage/main")
     @UseInterceptors(ParamsInterceptor)
@@ -128,6 +154,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("demand/manage/create/kategori")
     @Render("inventory/demand/manage/create/category")
     @UseInterceptors(ParamsInterceptor)
@@ -135,6 +163,8 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
     @Get("demand/manage/create/barang")
     @Render("inventory/demand/manage/create/item")
     @UseInterceptors(ParamsInterceptor)
