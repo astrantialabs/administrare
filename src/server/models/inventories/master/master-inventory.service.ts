@@ -267,7 +267,7 @@ export class MasterInventoryService {
         return item_search_data;
     }
 
-    public async masterGetKategoriSubTotalByCategoryId(year: number, category_id: number) {
+    public async masterGetSubTotal(year: number, category_id: number) {
         const category_object = await this.masterGetKategoriByKategoriId(year, category_id);
 
         let saldo = 0;
@@ -282,6 +282,37 @@ export class MasterInventoryService {
         });
 
         return { category_id, saldo, mutasi_barang_masuk, mutasi_barang_keluar, saldo_akhir };
+    }
+
+    public async masterGetTotal(year: number) {
+        const category_data = await this.masterGetKategoriAll(year);
+
+        let sub_totals = await Promise.all(
+            category_data.map(async (category_object) => {
+                const sub_total = await this.masterGetSubTotal(year, category_object.id);
+
+                let saldo = sub_total.saldo;
+                let mutasi_barang_masuk = sub_total.mutasi_barang_masuk;
+                let mutasi_barang_keluar = sub_total.mutasi_barang_keluar;
+                let saldo_akhir = sub_total.saldo_akhir;
+
+                return { saldo, mutasi_barang_masuk, mutasi_barang_keluar, saldo_akhir };
+            })
+        );
+
+        let saldo = 0;
+        let mutasi_barang_masuk = 0;
+        let mutasi_barang_keluar = 0;
+        let saldo_akhir = 0;
+
+        sub_totals.forEach((sub_total) => {
+            saldo += sub_total.saldo;
+            mutasi_barang_masuk += sub_total.mutasi_barang_masuk;
+            mutasi_barang_keluar += sub_total.mutasi_barang_keluar;
+            saldo_akhir += sub_total.saldo_akhir;
+        });
+
+        return { saldo, mutasi_barang_masuk, mutasi_barang_keluar, saldo_akhir };
     }
 
     /* ---------------------------------- CRUD ---------------------------------- */
