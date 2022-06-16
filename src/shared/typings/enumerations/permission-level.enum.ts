@@ -27,7 +27,6 @@
  */
 export enum PermissionLevel {
     USER = "USER",
-    SUPERUSER = "SUPERUSER",
     ADMINISTRATOR = "ADMINISTRATOR",
     SUPERADMINISTRATOR = "SUPERADMINISTRATOR",
 }
