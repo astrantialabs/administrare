@@ -25,14 +25,19 @@ import { Controller, Get, Render, UseFilters, UseGuards, UseInterceptors } from 
 import { AuthGuard } from "@nestjs/passport";
 
 import { ParamsInterceptor } from "@/server/common/interceptors/params.interceptor";
+import { PermissionAuthFilter } from "@/server/authentication/filters/permission-auth.filter";
 import { ViewAuthFilter } from "@/server/authentication/filters/view-auth.filter";
+import { Permission } from "@/server/authentication/decorators/permission.decorator";
+import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.enum";
 
 @Controller("inventory")
 export class InventoryController {
     constructor() {}
 
+    @Permission(PermissionLevel.USER)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("")
     @Render("inventory/master/user/main")
     @UseInterceptors(ParamsInterceptor)
@@ -40,8 +45,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("manage")
     @Render("inventory/master/manage/main")
     @UseInterceptors(ParamsInterceptor)
@@ -49,8 +56,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("create/barang")
     @Render("inventory/master/manage/create/item")
     @UseInterceptors(ParamsInterceptor)
@@ -58,8 +67,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("create/kategori")
     @Render("inventory/master/manage/create/category")
     @UseInterceptors(ParamsInterceptor)
@@ -67,8 +78,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("update/kategori/:category_id")
     @Render("inventory/master/manage/update/category")
     @UseInterceptors(ParamsInterceptor)
@@ -76,6 +89,7 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @Get("update/kategori/:category_id/barang/:item_id")
     @Render("inventory/master/manage/update/item")
     @UseInterceptors(ParamsInterceptor)
@@ -87,8 +101,10 @@ export class InventoryController {
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */
 
+    @Permission(PermissionLevel.USER)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("request")
     @Render("inventory/request/user/main")
     @UseInterceptors(ParamsInterceptor)
@@ -96,8 +112,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("request/manage")
     @Render("inventory/request/manage/main")
     @UseInterceptors(ParamsInterceptor)
@@ -105,8 +123,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.USER)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("request/create/barang")
     @Render("inventory/request/manage/create/item")
     @UseInterceptors(ParamsInterceptor)
@@ -118,8 +138,10 @@ export class InventoryController {
     /*                              INVENTORY DEMAND                              */
     /* -------------------------------------------------------------------------- */
 
+    @Permission(PermissionLevel.USER)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("demand")
     @Render("inventory/demand/user/main")
     @UseInterceptors(ParamsInterceptor)
@@ -127,8 +149,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.USER)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("demand/create/kategori")
     @Render("inventory/demand/manage/create/category")
     @UseInterceptors(ParamsInterceptor)
@@ -136,8 +160,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.USER)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("demand/create/barang")
     @Render("inventory/demand/manage/create/item")
     @UseInterceptors(ParamsInterceptor)
@@ -145,8 +171,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("demand/manage")
     @Render("inventory/demand/manage/main")
     @UseInterceptors(ParamsInterceptor)
@@ -154,8 +182,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("demand/manage/create/kategori")
     @Render("inventory/demand/manage/create/category")
     @UseInterceptors(ParamsInterceptor)
@@ -163,8 +193,10 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
+    @UseFilters(PermissionAuthFilter)
     @Get("demand/manage/create/barang")
     @Render("inventory/demand/manage/create/item")
     @UseInterceptors(ParamsInterceptor)

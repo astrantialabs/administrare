@@ -22,6 +22,7 @@ import { Reflector } from "@nestjs/core";
 import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.enum";
 
 import { UserService } from "../../models/users/user.service";
+import { Request } from "express";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -34,8 +35,8 @@ export class RolesGuard implements CanActivate {
             return true;
         }
 
-        const request = context.switchToHttp().getRequest();
-        const userId = request.cookie["_user_id"];
+        const request: Request = context.switchToHttp().getRequest();
+        const userId = request.cookies["_user_id"];
 
         const user = await this.userService.findOneById(userId);
 

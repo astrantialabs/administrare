@@ -73,7 +73,7 @@ const AuthenticationLogin: NextPage<PageProps> = () => {
                                         .post("/__api/auth/user/login", payload, { withCredentials: true })
                                         .then((response) => {
                                             action.setSubmitting(false);
-                                            Router.push("/dashboard");
+                                            Router.push("/");
                                         })
                                         .catch((error) => {
                                             action.setSubmitting(false);

@@ -23,11 +23,13 @@
 
 import { DynamicModule, Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { APP_GUARD } from "@nestjs/core";
 import { RenderModule } from "nest-next";
 import Next from "next";
 
 import { AppController } from "./app.controller";
 import { AuthModule } from "./authentication/auth.module";
+import { RolesGuard } from "./authentication/guards/permission.guard";
 import { ConfigModule } from "./config/config.module";
 import { FinanceModule } from "./models/finances/finance.module";
 import { InventoryModule } from "./models/inventories/inventory.module";
@@ -56,7 +58,13 @@ export class AppModule {
             imports: [renderModule, ConfigModule, MongoDBProviderModule, UserModule, AuthModule, FinanceModule, InventoryModule],
             exports: [ConfigService],
             controllers: [AppController],
-            providers: [ConfigService],
+            providers: [
+                ConfigService,
+                {
+                    provide: APP_GUARD,
+                    useClass: RolesGuard,
+                },
+            ],
         };
     }
 }
