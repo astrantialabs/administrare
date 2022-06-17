@@ -25,11 +25,13 @@ import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 import { Table } from "@/components/Table";
 import { fetch } from "@/shared/utils/fetch";
 import Sidebar from "@/components/Sidebar";
+import { MasterTotal } from "@/shared/typings/types/inventory";
 
 type PageProps = {
     tableData: any;
     categories: any[];
     categories_roman: string[];
+    total: MasterTotal;
 };
 
 interface PayloadTest {
@@ -76,7 +78,7 @@ const createArr = (n: number, tableData: any): PayloadTest[] => {
     return data;
 };
 
-const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories_roman }) => {
+const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories_roman, total }) => {
     const data = React.useMemo<PayloadTest[]>(() => createArr(1, tableData), []);
 
     const columns = React.useMemo<Column<PayloadTest>[]>(
@@ -90,6 +92,11 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                     }
                     return value;
                 },
+                Footer: (
+                    <span>
+                        <strong>Total</strong>
+                    </span>
+                ),
             },
             {
                 Header: "Uraian Barang",
@@ -206,8 +213,9 @@ export const getServerSideProps = buildServerSideProps<PageProps>(async () => {
     const tableData = await fetch("/__api/data/inventory/master/table/all");
     const categories = await fetch("/__api/data/inventory/master/table/kategori/all");
     const categories_roman = await fetch("/__api/data/inventory/master/table/kategori/all");
+    const total = await fetch("/__api/data/inventory/master/total");
 
-    return { tableData, categories, categories_roman };
+    return { tableData, categories, categories_roman, total: total };
 });
 
 export default InventoryIndex;

@@ -19,7 +19,7 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import { Stack, Heading, FormControl, FormLabel, Input, Box, List, ListItem, FormErrorMessage, Button, Text, useToast } from "@chakra-ui/react";
-import { FormikValidatorBase, IsNotEmpty, IsEmpty } from "formik-class-validator";
+import { FormikValidatorBase, IsNotEmpty, IsEmpty, IsOptional } from "formik-class-validator";
 import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps, useFormikContext, useField, FieldHookConfig, FormikContext } from "formik";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import Downshift from "downshift";
@@ -42,15 +42,14 @@ export interface InventoryDemandManageItemParameter {
 
 export class InventoryRequestManageCreateItemValidationModel extends FormikValidatorBase implements InventoryDemandManageItemParameter {
     @IsNotEmpty({ message: "Username tidak boleh kosong!" })
-    username: string;
+    username: string = "";
 
     @IsNotEmpty({ message: "Total barang tidak boleh kosong!" })
-    total: number;
+    total: number = 0;
 
-    @IsNotEmpty({ message: "Deskripsi barang tidak boleh kosong!" })
-    deskripsi: string;
+    @IsOptional()
+    deskripsi: string = "";
 
-    @IsEmpty({ message: "Search tidak boleh kosong!" })
     search: string = "";
 }
 
