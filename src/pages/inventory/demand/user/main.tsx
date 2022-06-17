@@ -18,7 +18,7 @@
 
 import { NextPage } from "next";
 import { Form, Formik } from "formik";
-import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer } from "@chakra-ui/react";
+import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer, LinkOverlay } from "@chakra-ui/react";
 import { UseQueryResult } from "react-query";
 import dayjs from "dayjs";
 import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup, Link } from "@chakra-ui/react";
@@ -157,6 +157,9 @@ const InventoryDemandMain: NextPage = () => {
                     </Button>
                     <Button>
                         <Link href="/inventory/demand/create/barang">Create Barang</Link>
+                    </Button>
+                    <Button marginTop={8}>
+                        <LinkOverlay href="__api/data/inventory/master/demand/latest">Download Excel</LinkOverlay>
                     </Button>
                 </VStack>
             </Stack>

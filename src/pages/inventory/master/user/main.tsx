@@ -19,9 +19,9 @@
 import { NextPage } from "next";
 import React from "react";
 import { Column, useTable } from "react-table";
+import { Button, LinkOverlay } from "@chakra-ui/react";
 
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
-import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
 import { Table } from "@/components/Table";
 import { fetch } from "@/shared/utils/fetch";
 import Sidebar from "@/components/Sidebar";
@@ -195,6 +195,9 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                 rows={rows}
                 prepareRow={prepareRow}
             />
+            <Button marginTop={8}>
+                <LinkOverlay href="__api/data/inventory/master/download/latest">Download Excel</LinkOverlay>
+            </Button>
         </Sidebar>
     );
 };
