@@ -41,6 +41,9 @@ async function boostrap() {
 
     middleware(app);
 
+    app.enableCors({
+        origin: ["http://localhost:3000", "http://localhost:3001", "http://setdisnakerbppn.com", "https://setdisnakerbppn.com"],
+    });
     await app.listen(configService.port).then(() => Logger.log(`Listening on http://localhost:${configService.port}`));
 
     renderService.setErrorHandler(async (error, request, response) => {
