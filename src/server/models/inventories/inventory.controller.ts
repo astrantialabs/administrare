@@ -34,7 +34,7 @@ import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.
 export class InventoryController {
     constructor() {}
 
-    @Permission(PermissionLevel.USER)
+    @Permission(PermissionLevel.USER, PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -45,7 +45,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -56,7 +56,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -67,7 +67,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -78,7 +78,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -89,7 +89,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @Get("update/kategori/:category_id/barang/:item_id")
     @Render("inventory/master/manage/update/item")
     @UseInterceptors(ParamsInterceptor)
@@ -101,7 +101,7 @@ export class InventoryController {
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */
 
-    @Permission(PermissionLevel.USER)
+    @Permission(PermissionLevel.USER, PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -112,7 +112,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -123,7 +123,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.USER)
+    @Permission(PermissionLevel.USER, PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -138,7 +138,7 @@ export class InventoryController {
     /*                              INVENTORY DEMAND                              */
     /* -------------------------------------------------------------------------- */
 
-    @Permission(PermissionLevel.USER)
+    @Permission(PermissionLevel.USER, PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -149,7 +149,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.USER)
+    @Permission(PermissionLevel.USER, PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -160,7 +160,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.USER)
+    @Permission(PermissionLevel.USER, PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -171,7 +171,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -182,7 +182,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
@@ -193,7 +193,7 @@ export class InventoryController {
         return {};
     }
 
-    @Permission(PermissionLevel.ADMINISTRATOR)
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @UseFilters(PermissionAuthFilter)
