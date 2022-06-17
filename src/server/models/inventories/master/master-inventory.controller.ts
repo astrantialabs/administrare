@@ -25,7 +25,7 @@ import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put, 
 import { MasterInventoryService } from "./master-inventory.service";
 import { MasterBarang, MasterInventoryDataDocument, MasterKategori } from "./schema/master-inventory.schema";
 import { ParameterMasterCreateItemDto, ParameterMasterUpdateItemDto } from "./dto/item.schema";
-import { ItemSearchData } from "@/shared/typings/types/inventory";
+import { ItemSearchData, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
@@ -80,12 +80,12 @@ export class MasterInventoryController {
     }
 
     @Get("subtotal/kategori/:category_id")
-    public async masterGetSubTotal(@Param("category_id") category_id: number) {
+    public async masterGetSubTotal(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<MasterSubTotal> {
         return await this.masterInventoryService.masterGetSubTotal(2022, category_id);
     }
 
     @Get("total")
-    public async masterGetTotal() {
+    public async masterGetTotal(): Promise<MasterTotal> {
         return await this.masterInventoryService.masterGetTotal(2022);
     }
 
