@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DemandBarang } from "dist/server/models/inventories/demand/schema/demand-inventory.schema";
-import { RequestBarang } from "dist/server/models/inventories/request/schema/request-inventory.schema";
+import { DemandBarang } from "@/server/models/inventories/demand/schema/demand-inventory.schema";
+import { RequestBarang } from "@/server/models/inventories/request/schema/request-inventory.schema";
 
 export type JumlahData = {
     saldo_akhir: number;

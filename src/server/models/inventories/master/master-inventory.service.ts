@@ -581,7 +581,19 @@ export class MasterInventoryService {
         const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(2022);
         let table_data: any[] = [];
 
+        const sub_totals: MasterSubTotal[] = await Promise.all(
+            master_inventory_data.kategori.map(async (category_object: MasterKategori) => {
+                const sub_total: MasterSubTotal = await this.masterGetSubTotal(2022, category_object.id);
+
+                return sub_total;
+            })
+        );
+
+        const set_sub_totals: Set<MasterSubTotal> = new Set(sub_totals);
+
         master_inventory_data.kategori.forEach(async (category_object, category_index) => {
+            const sub_total = Array.from(set_sub_totals).find((sub_total) => sub_total.category_id === category_object.id);
+
             table_data.push({
                 actions: {
                     category_id: category_object.id,
@@ -674,10 +686,10 @@ export class MasterInventoryService {
                 saldo_akhir_jumlah_satuan: "",
                 harga_satuan: "",
                 keterangan: "",
-                saldo_jumlah_satuan_rp: "",
-                mutasi_barang_masuk_jumlah_satuan_rp: "",
-                mutasi_barang_keluar_jumlah_satuan_rp: "",
-                saldo_akhir_jumlah_satuan_rp: "",
+                saldo_jumlah_satuan_rp: sub_total.saldo,
+                mutasi_barang_masuk_jumlah_satuan_rp: sub_total.mutasi_barang_masuk,
+                mutasi_barang_keluar_jumlah_satuan_rp: sub_total.mutasi_barang_keluar,
+                saldo_akhir_jumlah_satuan_rp: sub_total.saldo_akhir,
                 isKategori: true,
                 isWhiteSpace: false,
             });
