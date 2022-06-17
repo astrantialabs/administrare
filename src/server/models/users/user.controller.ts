@@ -21,9 +21,10 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Controller, Get, Logger, Param, UseGuards } from "@nestjs/common";
+import { Controller, Get, Logger, Param, Req, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { Request as ExpressRequest } from "express";
 
-import { JwtAuthGuard } from "../../authentication/guards/jwt-auth.guard";
 import { UserService } from "./user.service";
 
 /**
@@ -41,19 +42,25 @@ export class UserController {
      */
     constructor(private userService: UserService) {}
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard("jwt"))
     @Get("")
     public async findAll() {
         return this.userService.findAll();
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard("jwt"))
     @Get("id/:id")
     public async findOneById(@Param("id") id: string) {
         return this.userService.findOneById(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard("jwt"))
+    @Get("me")
+    public async me(@Req() request: ExpressRequest) {
+        return this.userService.findOne(request.cookies["_user_username"]);
+    }
+
+    @UseGuards(AuthGuard("jwt"))
     @Get("username/:username")
     public async findOneByUsername(@Param("username") username: string) {
         return this.userService.findOne(username);

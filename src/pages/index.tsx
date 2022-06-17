@@ -19,10 +19,18 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import { Button, Flex, Heading, Image, Stack, Text, LinkOverlay } from "@chakra-ui/react";
+import axios from "axios";
+import { useQuery } from "react-query";
 
 import Footer from "@/components/Footer";
 
 const Home: NextPage = () => {
+    const userQuery = useQuery("userQuery", () => axios.get("http://localhost:3000/__api/user/me", { withCredentials: true }).then((res) => res.data), {
+        refetchOnMount: false,
+        retry: false,
+        retryDelay: 10000,
+    });
+
     return (
         <>
             <Head>
@@ -39,21 +47,44 @@ const Home: NextPage = () => {
                         <Text fontSize={{ base: "md", lg: "lg" }} color={"gray.500"}>
                             Aplikasi berbasis website yang bertujuan untuk mempermudah pengelolaan data internal sebuah organisasi.
                         </Text>
-                        <Stack direction={{ base: "column", md: "row" }} spacing={4}>
-                            <Button
-                                rounded="md"
-                                bg={"blue.400"}
-                                color={"white"}
-                                _hover={{
-                                    bg: "blue.500",
-                                }}
-                            >
-                                <LinkOverlay href="/login">Login</LinkOverlay>
-                            </Button>
-                            <Button rounded={"md"}>
-                                <LinkOverlay href="/inventory">Inventory</LinkOverlay>
-                            </Button>
-                        </Stack>
+                        <>
+                            <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+                                {userQuery.isLoading ? (
+                                    <Text>Loading user data...</Text>
+                                ) : (
+                                    <>
+                                        {userQuery.isError ? (
+                                            <Button
+                                                rounded="md"
+                                                bg={"blue.400"}
+                                                color={"white"}
+                                                _hover={{
+                                                    bg: "blue.500",
+                                                }}
+                                            >
+                                                <LinkOverlay href="/login">Login</LinkOverlay>
+                                            </Button>
+                                        ) : (
+                                            <>
+                                                <Button rounded={"md"}>
+                                                    <LinkOverlay href="/inventory">Inventory</LinkOverlay>
+                                                </Button>
+                                                <Button
+                                                    rounded="md"
+                                                    bg={"blue.400"}
+                                                    color={"white"}
+                                                    _hover={{
+                                                        bg: "blue.500",
+                                                    }}
+                                                >
+                                                    <LinkOverlay href="/__api/auth/user/logout">Logout</LinkOverlay>
+                                                </Button>
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </Stack>
+                        </>
                     </Stack>
                 </Flex>
                 <Flex flex={1}>

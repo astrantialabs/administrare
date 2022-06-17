@@ -83,6 +83,7 @@ export class AuthService {
             request.logout();
             response.clearCookie("_user_username");
             response.clearCookie("_user_id");
+            response.clearCookie("connect.sid");
             response.redirect("/");
         });
         return "Successfully logged out.";
