@@ -47,4 +47,11 @@ export class AppController {
     public authenticationLogin() {
         return {};
     }
+
+    @Get("logout")
+    @Render("authentication/logout")
+    @UseInterceptors(ParamsInterceptor)
+    public authenticationLogout() {
+        return {};
+    }
 }

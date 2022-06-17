@@ -17,14 +17,48 @@
  */
 
 import { NextPage } from "next";
+import { Button, Flex, Heading, Image, Stack, Text, LinkOverlay } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
     return (
-        <div>
-            <>
-                <h1 className="title">Home</h1>
-            </>
-        </div>
+        <Stack minHeight="100vh" direction={{ base: "column", md: "row" }}>
+            <Flex padding={8} flex={1} align="center" justify="center">
+                <Stack spacing={6} width="full" maxWidth="lg">
+                    <Heading fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }} fontWeight="bold">
+                        <Text as="span" position="relative">
+                            administrare
+                        </Text>
+                    </Heading>
+                    <Text fontSize={{ base: "md", lg: "lg" }} color={"gray.500"}>
+                        Aplikasi berbasis website yang bertujuan untuk mempermudah pengelolaan data internal sebuah organisasi.
+                    </Text>
+                    <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+                        <Button
+                            rounded="md"
+                            bg={"blue.400"}
+                            color={"white"}
+                            _hover={{
+                                bg: "blue.500",
+                            }}
+                        >
+                            <LinkOverlay href="/login">Login</LinkOverlay>
+                        </Button>
+                        <Button rounded={"md"}>
+                            <LinkOverlay href="/inventory">Inventory</LinkOverlay>
+                        </Button>
+                    </Stack>
+                </Stack>
+            </Flex>
+            <Flex flex={1}>
+                <Image
+                    alt={"Login Image"}
+                    objectFit={"cover"}
+                    src={
+                        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8aW52ZW50b3J5fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
+                    }
+                />
+            </Flex>
+        </Stack>
     );
 };
 

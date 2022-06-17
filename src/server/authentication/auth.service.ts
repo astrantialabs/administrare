@@ -80,8 +80,10 @@ export class AuthService {
      */
     public async logout(response: ExpressResponse, request: ExpressRequest): Promise<string> {
         request.session.destroy(() => {
+            request.logout();
             response.clearCookie("_user_username");
             response.clearCookie("_user_id");
+            response.redirect("/");
         });
         return "Successfully logged out.";
     }
