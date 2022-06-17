@@ -592,7 +592,8 @@ export class MasterInventoryService {
         const set_sub_totals: Set<MasterSubTotal> = new Set(sub_totals);
 
         master_inventory_data.kategori.forEach(async (category_object, category_index) => {
-            const sub_total = Array.from(set_sub_totals).find((sub_total) => sub_total.category_id === category_object.id);
+            const sub_total: MasterSubTotal = Array.from(set_sub_totals).find((sub_total) => sub_total.category_id === category_object.id);
+            let item_count: number = 0;
 
             table_data.push({
                 actions: {
@@ -643,32 +644,37 @@ export class MasterInventoryService {
                     saldo_akhir_jumlah_satuan_rp: item_object.saldo_akhir_jumlah_satuan * item_object.harga_satuan,
                     isKategori: false,
                 });
+
+                item_count += 1;
             });
 
-            table_data.push({
-                actions: {
-                    category_id: "",
-                    item_id: "",
-                    isKategori: false,
-                    isWhiteSpace: true,
-                },
-                id: "",
-                kategori: "",
-                nama: "",
-                satuan: "",
-                saldo_jumlah_satuan: "",
-                mutasi_barang_masuk_jumlah_satuan: "",
-                mutasi_barang_keluar_jumlah_satuan: "",
-                saldo_akhir_jumlah_satuan: "",
-                harga_satuan: "",
-                keterangan: "",
-                saldo_jumlah_satuan_rp: "",
-                mutasi_barang_masuk_jumlah_satuan_rp: "",
-                mutasi_barang_keluar_jumlah_satuan_rp: "",
-                saldo_akhir_jumlah_satuan_rp: "",
-                isKategori: true,
-                isWhiteSpace: false,
-            });
+            if (item_count > 0) {
+                table_data.push({
+                    actions: {
+                        category_id: "",
+                        item_id: "",
+                        isKategori: false,
+                        isWhiteSpace: true,
+                    },
+                    id: "",
+                    kategori: "",
+                    nama: "",
+                    satuan: "",
+                    saldo_jumlah_satuan: "",
+                    mutasi_barang_masuk_jumlah_satuan: "",
+                    mutasi_barang_keluar_jumlah_satuan: "",
+                    saldo_akhir_jumlah_satuan: "",
+                    harga_satuan: "",
+                    keterangan: "",
+                    saldo_jumlah_satuan_rp: "",
+                    mutasi_barang_masuk_jumlah_satuan_rp: "",
+                    mutasi_barang_keluar_jumlah_satuan_rp: "",
+                    saldo_akhir_jumlah_satuan_rp: "",
+                    isKategori: true,
+                    isWhiteSpace: false,
+                });
+            }
+
             table_data.push({
                 actions: {
                     category_id: category_object.id,
