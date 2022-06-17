@@ -57,8 +57,8 @@ export class InventoryMasterManageCreateItemValidationModel extends FormikValida
     @IsNotEmpty({ message: "Harga satuan barang tidak boleh kosong!" })
     harga_satuan: string;
 
-    @IsNotEmpty({ message: "Satuan barang tidak boleh kosong!" })
-    keterangan: string;
+    @IsOptional()
+    keterangan: string = "";
 }
 
 const InventoryMasterManageCreateItem: NextPage = () => {
