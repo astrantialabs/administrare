@@ -48,10 +48,19 @@ export type DemandCreateBarang = {
 
 export type RequestBarangWithCategoryNameAndItemName = RequestBarang & { kategori_name: string; barang_name: string };
 
-export class RequestCreateBarang {
+export type RequestCreateBarang = {
     kategori_id: number;
     barang_id: number;
     username: string;
     total: number;
     deskripsi: string | null;
-}
+};
+
+export type MasterTotal = {
+    saldo: number;
+    mutasi_barang_masuk: number;
+    mutasi_barang_keluar: number;
+    saldo_akhir: number;
+};
+
+export type MasterSubTotal = { category_id: number } & MasterTotal;
