@@ -41,6 +41,10 @@ export class RolesGuard implements CanActivate {
 
         const user = await this.userService.findOneById(userId);
 
+        if (!user.permissionLevel) {
+            return false;
+        }
+
         return roles.some((role) => user.permissionLevel.includes(role));
     }
 }

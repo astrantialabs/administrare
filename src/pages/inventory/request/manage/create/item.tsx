@@ -164,6 +164,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                             isClosable: true,
                         });
                         actions.setSubmitting(false);
+                        actions.resetForm();
                         resolve();
                     })
                     .catch((error) => {
