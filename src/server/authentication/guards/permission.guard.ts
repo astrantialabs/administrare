@@ -23,13 +23,14 @@ import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.
 
 import { UserService } from "../../models/users/user.service";
 import { Request } from "express";
+import { PERMISSION_KEY } from "../decorators/permission.decorator";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector, @Inject(UserService) private userService: UserService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const roles = this.reflector.get<PermissionLevel[]>("permissions", context.getHandler());
+        const roles = this.reflector.get<string[]>(PERMISSION_KEY, context.getHandler());
 
         if (!roles) {
             return true;
