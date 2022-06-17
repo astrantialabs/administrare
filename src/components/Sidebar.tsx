@@ -131,6 +131,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                     <NavigationItem link={`/inventory/demand`} icon={FiPieChart}>
                         Inventory Demand
                     </NavigationItem>
+                    <NavigationItem link={`/inventory/request`} icon={FiPieChart}>
+                        Inventory Request
+                    </NavigationItem>
                 </>
             )}
         </Box>

@@ -17,6 +17,7 @@
  */
 
 import { NextPage } from "next";
+import Head from "next/head";
 import { Stack, Heading, FormControl, FormLabel, Input, Box, List, ListItem, FormErrorMessage, Button, Text, useToast } from "@chakra-ui/react";
 import { FormikValidatorBase, IsNotEmpty, IsEmpty } from "formik-class-validator";
 import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps, useFormikContext, useField, FieldHookConfig, FormikContext } from "formik";
@@ -110,7 +111,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                             <List {...getMenuProps()} bg="white">
                                 {items_query.isLoading ? (
                                     <ListItem marginTop={2} borderTop="1px solid rgba(0,0,0,0.1)" borderBottom="1px solid rgba(0,0,0,0.1)">
-                                        <Text padding={2}>Loading</Text>
+                                        <Text padding={2}>Loading form data...</Text>
                                     </ListItem>
                                 ) : (
                                     isOpen &&
@@ -142,12 +143,15 @@ const InventoryRequestManageCreateItem: NextPage = () => {
         actions.setSubmitting(true);
 
         const payload = {
-            username: values.username,
-            total: values.total,
-            deskripsi: values.deskripsi,
             kategori_id: category_id,
             barang_id: item_id,
+            username: values.username,
+            total: parseInt(values.total as unknown as string),
+            deskripsi: values.deskripsi,
         };
+
+        alert(JSON.stringify(payload, null, 2));
+        console.log(payload);
 
         new Promise<void>((resolve) => {
             setTimeout(() => {
@@ -165,6 +169,10 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                         });
                         actions.setSubmitting(false);
                         actions.resetForm();
+                        setSelection("");
+                        setCategoryId("");
+                        setItem("");
+                        // window.location.reload();
                         resolve();
                     })
                     .catch((error) => {
@@ -185,73 +193,80 @@ const InventoryRequestManageCreateItem: NextPage = () => {
     };
 
     return (
-        <Sidebar type="inventory">
-            <Stack spacing={8} marginY={8} marginX={8}>
-                <Heading fontSize="xl">Barang</Heading>
-                <Formik
-                    initialValues={new InventoryRequestManageCreateItemValidationModel()}
-                    validate={InventoryRequestManageCreateItemValidationModel.createValidator()}
-                    onSubmit={InventoryRequestManageCreateItemSubmit}
-                    enableReinitialize={true}
-                >
-                    {(props: FormikProps<InventoryRequestManageCreateItemValidationModel>) => (
-                        <Form>
-                            <InputAutoComplete formikFields={undefined} formContext={undefined} />
-                            <Field name="search">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl mb={4}>
-                                        <FormLabel htmlFor="deskripsi" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Hasil Search
-                                        </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="search" name="search" value={selection} />
-                                        <FormErrorMessage>{form.errors.deskripsi}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
+        <>
+            <Head>
+                <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+                <meta http-equiv="Pragma" content="no-cache" />
+                <meta http-equiv="Expires" content="-1" />
+            </Head>
+            <Sidebar type="inventory">
+                <Stack spacing={8} marginY={8} marginX={8}>
+                    <Heading fontSize="xl">Barang</Heading>
+                    <Formik
+                        initialValues={new InventoryRequestManageCreateItemValidationModel()}
+                        validate={InventoryRequestManageCreateItemValidationModel.createValidator()}
+                        onSubmit={InventoryRequestManageCreateItemSubmit}
+                        enableReinitialize={true}
+                    >
+                        {(props: FormikProps<InventoryRequestManageCreateItemValidationModel>) => (
+                            <Form>
+                                <InputAutoComplete formikFields={undefined} formContext={undefined} />
+                                <Field name="search">
+                                    {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                        <FormControl mb={4}>
+                                            <FormLabel htmlFor="deskripsi" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                                Hasil Search
+                                            </FormLabel>
+                                            <Input {...field} disabled={props.isSubmitting} id="search" name="search" value={selection} />
+                                            <FormErrorMessage>{form.errors.deskripsi}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
 
-                            <Field name="username">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl mb={4}>
-                                        <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Username
-                                        </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Username disini.." />
-                                        <FormErrorMessage>{form.errors.username}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
+                                <Field name="username">
+                                    {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                        <FormControl mb={4}>
+                                            <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                                Username
+                                            </FormLabel>
+                                            <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Username disini.." />
+                                            <FormErrorMessage>{form.errors.username}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
 
-                            <Field name="total">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl mb={4}>
-                                        <FormLabel htmlFor="total" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Total
-                                        </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="total" placeholder="Total barang disini.." />
-                                        <FormErrorMessage>{form.errors.total}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
-                            <Field name="deskripsi">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl mb={4}>
-                                        <FormLabel htmlFor="deskripsi" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Deskripsi
-                                        </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="deskripsi" placeholder="Deskripsi barang disini.." />
-                                        <FormErrorMessage>{form.errors.deskripsi}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
+                                <Field name="total">
+                                    {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                        <FormControl mb={4}>
+                                            <FormLabel htmlFor="total" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                                Total
+                                            </FormLabel>
+                                            <Input {...field} disabled={props.isSubmitting} id="total" placeholder="Total barang disini.." />
+                                            <FormErrorMessage>{form.errors.total}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Field name="deskripsi">
+                                    {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                        <FormControl mb={4}>
+                                            <FormLabel htmlFor="deskripsi" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                                Deskripsi
+                                            </FormLabel>
+                                            <Input {...field} disabled={props.isSubmitting} id="deskripsi" placeholder="Deskripsi barang disini.." />
+                                            <FormErrorMessage>{form.errors.deskripsi}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
 
-                            <Button mt={8} colorScheme="teal" isLoading={props.isSubmitting} disabled={props.isSubmitting} type="submit">
-                                Kirimkan
-                            </Button>
-                        </Form>
-                    )}
-                </Formik>
-            </Stack>
-        </Sidebar>
+                                <Button mt={8} colorScheme="teal" isLoading={props.isSubmitting} disabled={props.isSubmitting} type="submit">
+                                    Kirimkan
+                                </Button>
+                            </Form>
+                        )}
+                    </Formik>
+                </Stack>
+            </Sidebar>
+        </>
     );
 };
 
