@@ -16,6 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { DemandBarang } from "dist/server/models/inventories/demand/schema/demand-inventory.schema";
+import { RequestBarang } from "dist/server/models/inventories/request/schema/request-inventory.schema";
+
 export type JumlahData = {
     saldo_akhir: number;
     permintaan: number;
@@ -28,3 +31,36 @@ export type ItemSearchData = {
     item_name: string;
     total_match: number;
 };
+
+export type DemandBarangWithCategoryName = DemandBarang & { kategori_name: string };
+
+export type DemandCreateKategori = {
+    username: string;
+    kategori: string;
+};
+
+export type DemandCreateBarang = {
+    kategori_id: number;
+    username: string;
+    barang: string;
+    satuan: string;
+};
+
+export type RequestBarangWithCategoryNameAndItemName = RequestBarang & { kategori_name: string; barang_name: string };
+
+export type RequestCreateBarang = {
+    kategori_id: number;
+    barang_id: number;
+    username: string;
+    total: number;
+    deskripsi: string | null;
+};
+
+export type MasterTotal = {
+    saldo: number;
+    mutasi_barang_masuk: number;
+    mutasi_barang_keluar: number;
+    saldo_akhir: number;
+};
+
+export type MasterSubTotal = { category_id: number } & MasterTotal;
