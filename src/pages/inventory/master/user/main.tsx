@@ -86,110 +86,126 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
             {
                 Header: "No",
                 accessor: "id",
+                Footer: <strong>TOTAL</strong>,
                 Cell: ({ value }: any) => {
                     if (categories.filter((item: any) => item.roman === value)) {
                         return <strong>{value}</strong>;
                     }
                     return value;
                 },
-                Footer: (
-                    <span>
-                        <strong>Total</strong>
-                    </span>
-                ),
             },
             {
                 Header: "Uraian Barang",
                 accessor: "nama",
+                Footer: "",
             },
             {
                 Header: "Satuan",
                 accessor: "satuan",
+                Footer: "",
             },
             {
                 Header: "Saldo",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "saldo_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "harga_satuan_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_jumlah_satuan_rp",
+                        Footer: <strong>{total.saldo}</strong>,
                     },
                 ],
             },
             {
                 Header: "Mutasi Barang Masuk",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "mutasi_barang_masuk_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "mutasi_barang_masuk_jumlah_satuan_rp_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_masuk_jumlah_satuan_rp",
+                        Footer: <strong>{total.mutasi_barang_masuk}</strong>,
                     },
                 ],
             },
             {
                 Header: "Mutasi Barang Keluar",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "mutasi_barang_keluar_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "mutasi_barang_keluar_jumlah_satuan_rp_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_keluar_jumlah_satuan_rp",
+                        Footer: <strong>{total.mutasi_barang_keluar}</strong>,
                     },
                 ],
             },
             {
                 Header: "Saldo Akhir",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "saldo_akhir_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "saldo_akhir_jumlah_satuan_rp_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_akhir_jumlah_satuan_rp",
+                        Footer: <strong>{total.saldo_akhir}</strong>,
                     },
                 ],
             },
             {
                 Header: "Jumlah Permintaan",
                 accessor: "jumlah_permintaan",
+                Footer: "",
             },
             {
                 Header: "Keterangan",
                 accessor: "keterangan",
+                Footer: "",
             },
         ],
         []
     );
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<PayloadTest>({
+    const { getTableProps, getTableBodyProps, headerGroups, footerGroups, rows, prepareRow } = useTable<PayloadTest>({
         columns,
         data,
     });
@@ -199,6 +215,7 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                 getTableProps={getTableProps}
                 getTableBodyProps={getTableBodyProps}
                 headerGroups={headerGroups}
+                footerGroups={footerGroups}
                 rows={rows}
                 prepareRow={prepareRow}
             />

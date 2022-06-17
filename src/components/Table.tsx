@@ -16,15 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Table as ChakraTable, TableContainer, Thead, Tbody, Tr, Th, Td, chakra } from "@chakra-ui/react";
+import { Table as ChakraTable, TableContainer, Thead, Tbody, Tfoot, Tr, Th, Td, chakra } from "@chakra-ui/react";
 import React from "react";
 import { UseTableInstanceProps } from "react-table";
 
 export interface TableNewProps<T extends object>
-    extends Pick<UseTableInstanceProps<T>, "getTableProps" | "headerGroups" | "getTableBodyProps" | "prepareRow" | "rows"> {}
+    extends Pick<UseTableInstanceProps<T>, "getTableProps" | "headerGroups" | "getTableBodyProps" | "prepareRow" | "rows" | "footerGroups"> {}
 
 export function Table<T extends object>(props: TableNewProps<T>) {
-    const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } = props;
+    const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow, footerGroups } = props;
 
     return (
         <ChakraTable {...getTableProps()} borderTopWidth="1px" borderTopColor={`gray.200`} variant={`simple`} size={"sm"} colorScheme={`cyan`}>
@@ -71,6 +71,24 @@ export function Table<T extends object>(props: TableNewProps<T>) {
                     );
                 })}
             </Tbody>
+            <Tfoot>
+                {footerGroups.map((footerGroup) => (
+                    <Tr {...footerGroup.getFooterGroupProps()}>
+                        {footerGroup.headers.map((column) => (
+                            <Td
+                                {...column.getFooterProps()}
+                                whiteSpace="nowrap"
+                                borderLeftWidth="1px"
+                                borderLeftColor={`gray.200`}
+                                borderRightWidth="1px"
+                                borderRightColor={`gray.200`}
+                            >
+                                {column.render("Footer") as any}
+                            </Td>
+                        ))}
+                    </Tr>
+                ))}
+            </Tfoot>
         </ChakraTable>
     );
 }

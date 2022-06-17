@@ -30,11 +30,13 @@ import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 
 import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody, PopoverArrow, PopoverCloseButton, Portal } from "@chakra-ui/react";
+import { MasterTotal } from "@/shared/typings/types/inventory";
 
 type PageProps = {
     tableData: any;
     categories: any[];
     categories_roman: string[];
+    total: MasterTotal;
 };
 
 interface PayloadTest {
@@ -94,7 +96,7 @@ const createArr = (n: number, tableData: any): PayloadTest[] => {
     return data;
 };
 
-const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, categories_roman }) => {
+const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, categories_roman, total }) => {
     const { onOpen } = useDisclosure();
     const [loading, setLoading] = useState(false);
 
@@ -142,6 +144,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
             {
                 Header: "Actions",
                 accessor: "actions",
+                Footer: "",
                 Cell: ({ value }) => {
                     if (value.isWhiteSpace === true) {
                         return <span></span>;
@@ -214,6 +217,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
             {
                 Header: "No",
                 accessor: "id",
+                Footer: <strong>TOTAL</strong>,
                 Cell: ({ value }: any) => {
                     if (categories.filter((item: any) => item.roman === value)) {
                         return <strong>{value}</strong>;
@@ -224,95 +228,115 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
             {
                 Header: "Uraian Barang",
                 accessor: "nama",
+                Footer: "",
             },
             {
                 Header: "Satuan",
                 accessor: "satuan",
+                Footer: "",
             },
             {
                 Header: "Saldo",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "saldo_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "harga_satuan_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_jumlah_satuan_rp",
+                        Footer: <strong>{total.saldo}</strong>,
                     },
                 ],
             },
             {
                 Header: "Mutasi Barang Masuk",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "mutasi_barang_masuk_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "mutasi_barang_masuk_jumlah_satuan_rp_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_masuk_jumlah_satuan_rp",
+                        Footer: <strong>{total.mutasi_barang_masuk}</strong>,
                     },
                 ],
             },
             {
                 Header: "Mutasi Barang Keluar",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "mutasi_barang_keluar_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "mutasi_barang_keluar_jumlah_satuan_rp_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_keluar_jumlah_satuan_rp",
+                        Footer: <strong>{total.mutasi_barang_keluar}</strong>,
                     },
                 ],
             },
             {
                 Header: "Saldo Akhir",
+                Footer: "",
                 columns: [
                     {
                         Header: "Jumlah Satuan",
                         accessor: "saldo_akhir_jumlah_satuan",
+                        Footer: "",
                     },
                     {
                         Header: "Harga Satuan (Rp)",
                         accessor: "harga_satuan",
                         id: "saldo_akhir_jumlah_satuan_rp_id",
+                        Footer: "",
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_akhir_jumlah_satuan_rp",
+                        Footer: <strong>{total.saldo_akhir}</strong>,
                     },
                 ],
             },
             {
                 Header: "Jumlah Permintaan",
                 accessor: "jumlah_permintaan",
+                Footer: "",
             },
             {
                 Header: "Keterangan",
                 accessor: "keterangan",
+                Footer: "",
             },
         ],
         []
     );
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<PayloadTest>({
+    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, footerGroups } = useTable<PayloadTest>({
         columns,
         data,
     });
@@ -322,6 +346,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                 getTableProps={getTableProps}
                 getTableBodyProps={getTableBodyProps}
                 headerGroups={headerGroups}
+                footerGroups={footerGroups}
                 rows={rows}
                 prepareRow={prepareRow}
             />
@@ -336,8 +361,9 @@ export const getServerSideProps = buildServerSideProps<PageProps>(async () => {
     const tableData = await fetch("/__api/data/inventory/master/table/all");
     const categories = await fetch("/__api/data/inventory/master/table/kategori/all");
     const categories_roman = await fetch("/__api/data/inventory/master/table/kategori/all");
+    const total = await fetch("/__api/data/inventory/master/total");
 
-    return { tableData, categories, categories_roman };
+    return { tableData, categories, categories_roman, total: total };
 });
 
 export default InventoryManageIndex;
