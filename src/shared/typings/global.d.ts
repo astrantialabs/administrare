@@ -30,6 +30,8 @@ export declare global {
             NODE_ENV: Environment;
             PORT: string;
             BASE_PATH: string;
+            BASE_DOMAIN: string;
+            PYTHON_BASE_DOMAIN: string;
 
             AUTHENTICATION_JWT_SECRET: string;
             AUTHENTICATION_JWT_EXPIRATION: string;

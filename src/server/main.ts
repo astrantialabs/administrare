@@ -50,16 +50,7 @@ async function boostrap() {
 
     app.enableCors({
         credentials: true,
-        origin: [
-            "http://localhost:3000",
-            "https://localhost:3000",
-            "http://localhost:3001",
-            "https://localhost:3001",
-            "http://setdisnakerbppn.com",
-            "https://setdisnakerbppn.com",
-            "http://inventory.setdisnakerbppn.com",
-            "https://inventory.setdisnakerbppn.com",
-        ],
+        origin: ["*"],
         allowedHeaders: "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe",
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     });

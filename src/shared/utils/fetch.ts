@@ -32,7 +32,7 @@ const initializeFetch = (basePath: string) => {
 
 const getFetchUrl = (url: string) => {
     if (isServer) {
-        return url.startsWith("/") ? `https://localhost:${PORT}${url}` : url;
+        return url.startsWith("/") ? `${process.env.BASE_DOMAIN}${url}` : url;
     }
 
     return url.startsWith("/") ? context.basePath + url : url;
