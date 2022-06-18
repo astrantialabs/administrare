@@ -161,7 +161,7 @@ const InventoryDemandMain: NextPage = () => {
                             <Link href="/inventory/demand/create/barang">Create Barang</Link>
                         </Button>
                         <Button marginTop={8}>
-                            <LinkOverlay href="/__api/data/inventory/master/demand/latest">Download Excel</LinkOverlay>
+                            <LinkOverlay href="/__api/data/inventory/demand/download/latest">Download Excel</LinkOverlay>
                         </Button>
                     </VStack>
                 </Stack>
