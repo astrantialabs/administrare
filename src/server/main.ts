@@ -41,8 +41,27 @@ async function boostrap() {
 
     middleware(app);
 
+    app.use((req: any, res: { header: (arg0: string, arg1: string) => void }, next: () => void) => {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+        res.header("Access-Control-Allow-Headers", "Content-Type, Accept");
+        next();
+    });
+
     app.enableCors({
-        origin: ["http://localhost:3000", "http://localhost:3001", "http://setdisnakerbppn.com", "https://setdisnakerbppn.com"],
+        credentials: true,
+        origin: [
+            "http://localhost:3000",
+            "https://localhost:3000",
+            "http://localhost:3001",
+            "https://localhost:3001",
+            "http://setdisnakerbppn.com",
+            "https://setdisnakerbppn.com",
+            "http://inventory.setdisnakerbppn.com",
+            "https://inventory.setdisnakerbppn.com",
+        ],
+        allowedHeaders: "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     });
     await app.listen(configService.port).then(() => Logger.log(`Listening on http://localhost:${configService.port}`));
 
