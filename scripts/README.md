@@ -15,5 +15,5 @@ cd scripts
 ```
 
 ```bash
-uvicorn app:app --reload --port 3001
+uvicorn app:app --reload --port 3001 --host 0.0.0.0
 ```
