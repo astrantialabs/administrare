@@ -316,34 +316,6 @@ export class MasterInventoryService {
         return total;
     }
 
-    public async masterGetTotal(year: number): Promise<MasterTotal> {
-        const category_data: MasterKategori[] = await this.masterGetKategoriAll(year);
-
-        const sub_totals: MasterSubTotal[] = await Promise.all(
-            category_data.map(async (category_object: MasterKategori) => {
-                const sub_total: MasterSubTotal = await this.masterGetSubTotal(year, category_object.id);
-
-                return sub_total;
-            })
-        );
-
-        const total: MasterTotal = {
-            saldo: 0,
-            mutasi_barang_masuk: 0,
-            mutasi_barang_keluar: 0,
-            saldo_akhir: 0,
-        };
-
-        sub_totals.forEach((sub_total: MasterSubTotal) => {
-            total.saldo += sub_total.saldo;
-            total.mutasi_barang_masuk += sub_total.mutasi_barang_masuk;
-            total.mutasi_barang_keluar += sub_total.mutasi_barang_keluar;
-            total.saldo_akhir += sub_total.saldo_akhir;
-        });
-
-        return total;
-    }
-
     /* ---------------------------------- CRUD ---------------------------------- */
 
     /**
