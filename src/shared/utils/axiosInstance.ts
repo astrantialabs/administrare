@@ -32,7 +32,7 @@ export const axiosInstance = axios.create({
 });
 
 export const pythonAxiosInstance = axios.create({
-    baseURL: "http://156.67.217.92:3001/",
+    baseURL: "https://156.67.217.92:3001/",
     headers: {
         "Content-type": "application/json",
     },
