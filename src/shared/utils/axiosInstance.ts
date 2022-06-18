@@ -34,10 +34,6 @@ export const axiosInstance = axios.create({
 
 export const pythonAxiosInstance = axios.create({
     baseURL: "https://156.67.217.92:3001/",
-    headers: {
-        "Content-type": "application/json",
-    },
-    withCredentials: true,
     httpAgent: new https.Agent({
         rejectUnauthorized: false,
     }),
