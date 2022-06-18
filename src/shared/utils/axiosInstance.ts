@@ -24,7 +24,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL: process.env.BASE_DOMAIN,
+    baseURL: "https://inventory.setdisnakerbppn.com/",
     headers: {
         "Content-type": "application/json",
     },
