@@ -22,6 +22,7 @@
  */
 
 import axios from "axios";
+import https from "https";
 
 export const axiosInstance = axios.create({
     baseURL: "https://inventory.setdisnakerbppn.com/",
@@ -37,4 +38,7 @@ export const pythonAxiosInstance = axios.create({
         "Content-type": "application/json",
     },
     withCredentials: true,
+    httpAgent: new https.Agent({
+        rejectUnauthorized: false,
+    }),
 });
