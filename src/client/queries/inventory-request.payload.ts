@@ -37,7 +37,7 @@ export type InventoryRequestItems = Array<InventoryRequestItem>;
 
 const fetchInventoryRequestItems = async (): Promise<InventoryRequestItems> => {
     const response = await axiosInstance.get("__api/data/inventory/request/barang/all");
-    return response.data;
+    return response.data.result.request_item;
 };
 
 export const useInventoryRequestItemsQuery = () => useQuery(["inventory-request-items"], () => fetchInventoryRequestItems());

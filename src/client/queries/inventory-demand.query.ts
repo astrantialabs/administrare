@@ -45,12 +45,12 @@ export type InventoryDemandItems = Array<InventoryDemandItem>;
 
 const fetchInventoryDemandCategories = async (): Promise<InventoryDemandCategories> => {
     const response = await axiosInstance.get("__api/data/inventory/demand/kategori/all");
-    return response.data;
+    return response.data.result.demand_category;
 };
 
 const fetchInventoryDemandItems = async (): Promise<InventoryDemandItems> => {
     const response = await axiosInstance.get("__api/data/inventory/demand/barang/all");
-    return response.data;
+    return response.data.result.demand_item;
 };
 
 export const useInventoryDemandCategoriesQuery = () => useQuery(["inventory-demand-categories"], () => fetchInventoryDemandCategories());
