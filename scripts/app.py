@@ -29,6 +29,14 @@ from inventories.demand.inventoryDemand import InventoryDemand
 
 app = FastAPI()
 
+@app.get("/test")
+def test():
+    try:
+        print("Test")
+
+    except:
+        print("Error")
+
 @app.post("/__api/inventory/master/download/{currentDate}")
 def inventoryMasterDownload(currentDate: str):
     try:
