@@ -25,7 +25,7 @@ import { useQuery } from "react-query";
 import Footer from "@/components/Footer";
 
 const Home: NextPage = () => {
-    const userQuery = useQuery("userQuery", () => axios.get("http://localhost:3000/__api/user/me", { withCredentials: true }).then((res) => res.data), {
+    const userQuery = useQuery("userQuery", () => axios.get("https://localhost:3000/__api/user/me", { withCredentials: true }).then((res) => res.data), {
         refetchOnMount: false,
         retry: false,
         retryDelay: 10000,

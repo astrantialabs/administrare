@@ -24,7 +24,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL: "http://localhost:3000/",
+    baseURL: "https://localhost:3000/",
     headers: {
         "Content-type": "application/json",
     },
@@ -32,7 +32,7 @@ export const axiosInstance = axios.create({
 });
 
 export const pythonAxiosInstance = axios.create({
-    baseURL: "http://localhost:3001/",
+    baseURL: "https://localhost:3001/",
     headers: {
         "Content-type": "application/json",
     },

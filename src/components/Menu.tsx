@@ -38,7 +38,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { useQuery } from "react-query";
 
 export function DashboardMenu() {
-    const userQuery = useQuery("userQuery", () => axios.get("http://localhost:3000/__api/user/me", { withCredentials: true }).then((res) => res.data), {
+    const userQuery = useQuery("userQuery", () => axios.get("https://localhost:3000/__api/user/me", { withCredentials: true }).then((res) => res.data), {
         refetchOnMount: false,
         retry: false,
         retryDelay: 10000,

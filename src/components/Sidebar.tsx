@@ -110,7 +110,7 @@ const SwitchTypePermission = (str: string | number) =>
     }[str] || "");
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-    const userQuery = useQuery("userQuery", () => axios.get("http://localhost:3000/__api/user/me", { withCredentials: true }).then((res) => res.data), {
+    const userQuery = useQuery("userQuery", () => axios.get("https://localhost:3000/__api/user/me", { withCredentials: true }).then((res) => res.data), {
         refetchOnMount: false,
         retry: false,
         retryDelay: 10000,
