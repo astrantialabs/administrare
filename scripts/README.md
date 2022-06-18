@@ -15,5 +15,5 @@ cd scripts
 ```
 
 ```bash
-uvicorn app:app --reload --port 3001 --host 0.0.0.0
+uvicorn app:app --reload --port 3001  --host 0.0.0.0 --ssl-keyfile /etc/ssl/certs/PYTHON.key --ssl-keyfile-password mirae --ssl-certfile /etc/ssl/certs/PYTHON.crt
 ```
