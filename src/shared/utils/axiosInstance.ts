@@ -23,6 +23,7 @@
 
 import axios from "axios";
 import https from "https";
+import fs from "fs";
 
 export const axiosInstance = axios.create({
     baseURL: "https://inventory.setdisnakerbppn.com/",
@@ -36,5 +37,8 @@ export const pythonAxiosInstance = axios.create({
     baseURL: "https://156.67.217.92:3001/",
     httpAgent: new https.Agent({
         rejectUnauthorized: false,
+        cert: fs.readFileSync("/etc/ssl/certs/PYTHON.crt"),
+        key: fs.readFileSync("/etc/ssl/certs/PYTHON.key"),
+        passphrase: "mirae",
     }),
 });
