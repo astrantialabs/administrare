@@ -110,11 +110,15 @@ const SwitchTypePermission = (str: string | number) =>
     }[str] || "");
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-    const userQuery = useQuery("userQuery", () => axios.get(`${process.env.BASE_DOMAIN}__api/user/me`, { withCredentials: true }).then((res) => res.data), {
-        refetchOnMount: false,
-        retry: false,
-        retryDelay: 10000,
-    });
+    const userQuery = useQuery(
+        "userQuery",
+        () => axios.get(`https://inventory.setdisnakerbppn.com/__api/user/me`, { withCredentials: true }).then((res) => res.data),
+        {
+            refetchOnMount: false,
+            retry: false,
+            retryDelay: 10000,
+        }
+    );
     return (
         <Box
             transition={`3s ease`}
