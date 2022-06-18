@@ -28,7 +28,7 @@ import Sidebar from "@/components/Sidebar";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 
-import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure } from "@chakra-ui/react";
+import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure, ButtonGroup } from "@chakra-ui/react";
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody, PopoverArrow, PopoverCloseButton, Portal } from "@chakra-ui/react";
 import { MasterTotal } from "@/shared/typings/types/inventory";
 
@@ -342,6 +342,15 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
     });
     return (
         <Sidebar type="inventory">
+            <ButtonGroup marginBottom={8}>
+                <Button>
+                    <LinkOverlay href="/inventory/create/kategori">Create Kategori</LinkOverlay>
+                </Button>
+                <Button>
+                    <LinkOverlay href="/inventory/create/barang">Create Barang</LinkOverlay>
+                </Button>
+            </ButtonGroup>
+
             <Table<PayloadTest>
                 getTableProps={getTableProps}
                 getTableBodyProps={getTableBodyProps}

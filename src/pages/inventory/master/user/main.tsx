@@ -211,6 +211,9 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
     });
     return (
         <Sidebar type="inventory">
+            <Button marginBottom={8}>
+                <LinkOverlay href="/inventory/manage">Management</LinkOverlay>
+            </Button>
             <Table<PayloadTest>
                 getTableProps={getTableProps}
                 getTableBodyProps={getTableBodyProps}
