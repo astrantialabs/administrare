@@ -73,9 +73,23 @@ export function currentDate(): string {
         .replace(/\./, " ")
         .split(" ");
 
-    const formated_current_date: string = `${current_date[2]}-${current_date[1]}-${current_date[0]}-${current_date[3]}-${current_date[4]}-${current_date[5]}`;
+    const consistent_date: string[] = current_date.map((date) => {
+        if (date.length < 2) {
+            return "0".concat(date);
+        } else if (date.length >= 2) {
+            return date;
+        }
+    });
 
-    return formated_current_date;
+    const converted_date: string = `${consistent_date[2]}-${consistent_date[1]}-${consistent_date[0]} ${consistent_date[3]}:${consistent_date[4]}:${consistent_date[5]}`;
+
+    return converted_date;
+}
+
+export function slugifyDate(raw_date: any) {
+    const slugified_date = raw_date.replace(" ", "-").replace(":", "-").replace(":", "-");
+
+    return slugified_date;
 }
 
 /**

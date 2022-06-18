@@ -22,7 +22,7 @@
  */
 
 import { JumlahData } from "@/shared/typings/types/inventory";
-import { currentDate } from "@/shared/utils/util";
+import { currentDate, slugifyDate } from "@/shared/utils/util";
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
@@ -132,7 +132,7 @@ export class RequestInventoryController {
 
     @Get("download/latest")
     public async masterDownloadLatest(@Response({ passthrough: true }) res: any): Promise<StreamableFile> {
-        const current_date = currentDate();
+        const current_date = slugifyDate(currentDate());
         const response = await pythonAxiosInstance.post(`__api/inventory/request/download/${current_date}`);
 
         if (response.data.success) {

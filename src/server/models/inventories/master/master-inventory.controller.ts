@@ -30,7 +30,7 @@ import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payloa
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
 import { join } from "path";
-import { calculateSaldoAkhirJumlahSatuan, currentDate } from "@/shared/utils/util";
+import { calculateSaldoAkhirJumlahSatuan, currentDate, slugifyDate } from "@/shared/utils/util";
 
 /**
  * @class MasterInventoryDataController
@@ -294,7 +294,7 @@ export class MasterInventoryController {
 
     @Get("download/latest")
     public async masterDownloadLatest(@Response({ passthrough: true }) res: any): Promise<StreamableFile> {
-        const current_date = currentDate();
+        const current_date = slugifyDate(currentDate());
         const response = await pythonAxiosInstance.post(`__api/inventory/master/download/${current_date}`);
 
         if (response.data.success) {
