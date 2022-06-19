@@ -23,12 +23,12 @@
 
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 
 export interface ResponseFormat<T> {
     success: boolean;
     statusCode: number;
-    message: string
+    message: string;
     result: T;
 }
 
@@ -36,6 +36,7 @@ export interface ResponseFormat<T> {
 export class ResponseFormatInterceptor<T> implements NestInterceptor<T, ResponseFormat<T>> {
     intercept(context: ExecutionContext, next: CallHandler): Observable<ResponseFormat<T>> {
         return next.handle().pipe(
+            tap((data) => context.switchToHttp().getResponse().status(data.statusCode)),
             map((data) => ({
                 success: data.success,
                 statusCode: data.statusCode,

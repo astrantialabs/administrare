@@ -22,15 +22,27 @@
  */
 
 import { currentDate, slugifyDate } from "@/shared/utils/util";
-import { JumlahData, RequestBarangWithCategoryNameAndItemName, RequestCreateBarang } from "@/shared/typings/types/inventory";
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
+import { RequestBarangWithCategoryNameAndItemName, RequestCreateBarang } from "@/shared/typings/types/inventory";
+import {
+    Body,
+    Controller,
+    Get,
+    Logger,
+    Param,
+    ParseIntPipe,
+    Post,
+    Put,
+    Response,
+    StreamableFile,
+    UseInterceptors,
+} from "@nestjs/common";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
 import { join } from "path";
 import { MasterInventoryService } from "../master/master-inventory.service";
 import { RequestInventoryService } from "./request-inventory.service";
 import { RequestBarang } from "./schema/request-inventory.schema";
-import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
+import { ResponseFormat, ResponseFormatInterceptor } from "@/server/common/interceptors/response-format.interceptor";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 
 /**
@@ -53,6 +65,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang[]>} The request barang object
      */
     @Get("barang/all")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async requestGetBarangAll(): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
         return await this.requestInventoryService.requestGetBarangAll(2022);
     }
@@ -63,6 +76,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} The request barang object
      */
     @Get("barang/:id")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async requestGetBarangById(
         @Param("id", new ParseIntPipe()) id: number
     ): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>> {
@@ -75,6 +89,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang[]>} The request barang object
      */
     @Get("barang/status/:status")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async requestGetBarangByStatus(
         @Param("status", new ParseIntPipe()) status: number
     ): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
@@ -87,6 +102,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} The new request barang object
      */
     @Post("new/barang")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async requestCreateBarang(@Body() body: RequestCreateBarang): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
         return await this.requestInventoryService.requestCreateBarang(2022, body);
     }
@@ -98,6 +114,7 @@ export class RequestInventoryController {
      * @returns {Promise<RequestBarang>} Return the responded barang object
      */
     @Put("response/barang/:id/status/:status")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async requestResponseBarangById(
         @Param("id", new ParseIntPipe()) id: number,
         @Param("status", new ParseIntPipe()) status: number

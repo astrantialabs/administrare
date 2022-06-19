@@ -62,6 +62,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang[]>} The item demand object
      */
     @Get("barang/all")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandGetBarangAll(): Promise<ResponseFormat<ResponseObject<DemandBarangWithCategoryName[]>>> {
         return await this.demandInventoryService.demandGetBarangAll(2022);
     }
@@ -72,6 +73,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori>} The category demand object
      */
     @Get("kategori/:id")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandGetKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
         return await this.demandInventoryService.demandGetKategoriById(2022, id);
     }
@@ -82,6 +84,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang>} The item demand object
      */
     @Get("barang/:id")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<DemandBarangWithCategoryName>>> {
         return await this.demandInventoryService.demandGetBarangById(2022, id);
     }
@@ -92,6 +95,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori[]>} The filtered category demand object
      */
     @Get("kategori/status/:status")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandGetKategoriByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<ResponseFormat<ResponseObject<DemandKategori[]>>> {
         return await this.demandInventoryService.demandGetKategoriByStatus(2022, status);
     }
@@ -102,6 +106,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandBarang[]>} The filtered item demand object
      */
     @Get("barang/status/:status")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandGetBarangByStatus(@Param("status", new ParseIntPipe()) status: number): Promise<ResponseFormat<ResponseObject<DemandBarang[]>>> {
         return await this.demandInventoryService.demandGetBarangByStatus(2022, status);
     }
@@ -113,6 +118,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori>} The new demanded category object
      */
     @Post("new/kategori")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandCreateKategori(@Body() body: DemandCreateKategori): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
         return await this.demandInventoryService.demandCreateKategori(2022, body);
     }
@@ -125,6 +131,7 @@ export class DemandInventoryController {
      * @returns {DemandBarang} The new demanded item object
      */
     @Post("new/barang")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandCreateBarang(@Body() body: DemandCreateBarang): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
         return await this.demandInventoryService.demandCreateBarang(2022, body);
     }
@@ -136,6 +143,7 @@ export class DemandInventoryController {
      * @returns {Promise<DemandKategori>} The updated status of category demand object
      */
     @Put("response/kategori/:id/status/:status")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandResponseKategoriById(
         @Param("id", new ParseIntPipe()) id: number,
         @Param("status", new ParseIntPipe()) status: number
@@ -150,6 +158,7 @@ export class DemandInventoryController {
      * @returns {DemandBarang} The updated status of item demand object
      */
     @Put("response/barang/:id/status/:status")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async demandResponseBarangById(
         @Param("id", new ParseIntPipe()) id: number,
         @Param("status", new ParseIntPipe()) status: number

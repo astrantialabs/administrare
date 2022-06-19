@@ -24,7 +24,7 @@
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { ItemSearchData, JumlahData, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
 import { calculateSaldoAkhirJumlahSatuan, currentDate, romanizeNumber } from "@/shared/utils/util";
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { ParameterMasterUpdateItemDto } from "./dto/item.schema";
@@ -214,7 +214,7 @@ export class MasterInventoryService {
         let item_search_data: ItemSearchData[] = [];
 
         master_inventory_data.kategori.forEach((category_object) => {
-            category_object.barang.forEach(async (item_object) => {
+            category_object.barang.forEach((item_object) => {
                 item_search_data.push({
                     category_id: category_object.id,
                     category_name: category_object.kategori,
