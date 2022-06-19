@@ -61,6 +61,10 @@ export const convertDate = (date: string) => {
     return dayjs(date).format("DD MMM HH:mm:ss");
 };
 
+export const ConvertDate = (date: string) => {
+    return dayjs(date).format("DD MMM HH:mm:ss");
+};
+
 const InventoryRequestUserMain: NextPage = () => {
     const status = useAppSelector((state: RootState) => state.status.value);
     const dispatch = useAppDispatch();
@@ -112,8 +116,7 @@ const InventoryRequestUserMain: NextPage = () => {
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{item.username}</Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {convertDate(item.created_at) === "Invalid Date" ? convertDate(item.created_at) : "N/A"}- direspon{" "}
-                                                {convertDate(item.responded_at) === "Invalid Date" ? convertDate(item.responded_at) : "N/A"}
+                                                dibuat {ConvertDate(item.created_at)} - direspon {ConvertDate(item.responded_at)}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>

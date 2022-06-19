@@ -90,6 +90,7 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
+            <Heading>Inventory Demand</Heading>
             <Stack spacing={8} marginY={8} marginX={8}>
                 <Heading fontSize="xl">Kategori</Heading>
                 <Formik
