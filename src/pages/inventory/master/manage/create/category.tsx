@@ -55,15 +55,28 @@ const InventoryMasterManageCreateCategory: NextPage = () => {
             setTimeout(() => {
                 axiosInstance
                     .post("__api/data/inventory/master/new/kategori", payload)
-                    .then(() => {
-                        toast({
-                            title: "Kategori berhasil ditambahkan!",
-                            description: "Kategori baru berhasil ditambahkan ke dalam database.",
-                            status: "success",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
+                    .then((response) => {
+                        if (response.data.success) {
+                            toast({
+                                title: "Kategori berhasil ditambahkan!",
+                                description: response.data.message,
+                                status: "success",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        } else {
+                            toast({
+                                title: "Kategori gagal ditambahkan!",
+                                description: response.data.message,
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
+
+                        actions.resetForm();
                         actions.setSubmitting(false);
                         resolve();
                     })

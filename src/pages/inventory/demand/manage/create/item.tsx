@@ -66,15 +66,27 @@ const InventoryDemandManageCreateItem: NextPage = () => {
             setTimeout(() => {
                 axiosInstance
                     .post("__api/data/inventory/demand/new/barang", payload)
-                    .then(() => {
-                        toast({
-                            title: "Barang berhasil ditambahkan!",
-                            description: "Barang baru berhasil ditambahkan ke dalam database.",
-                            status: "success",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
+                    .then((response) => {
+                        if (response.data.success) {
+                            toast({
+                                title: "Barang berhasil ditambahkan!",
+                                description: response.data.message,
+                                status: "success",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        } else {
+                            toast({
+                                title: "Barang gagal ditambahkan!",
+                                description: response.data.message,
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
+                        actions.resetForm();
                         actions.setSubmitting(false);
                         resolve();
                     })

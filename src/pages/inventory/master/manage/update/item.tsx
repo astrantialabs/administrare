@@ -111,15 +111,27 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
             setTimeout(() => {
                 axiosInstance
                     .put(`__api/data/inventory/master/kategori/${category_id}/barang/${item_id}`, payload)
-                    .then(() => {
-                        toast({
-                            title: "Barang berhasil diupdate!",
-                            description: "Barang baru berhasil diupdate ke dalam database.",
-                            status: "success",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
+                    .then((response) => {
+                        if (response.data.success) {
+                            toast({
+                                title: "Barang berhasil diupdate!",
+                                description: response.data.message,
+                                status: "success",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        } else {
+                            toast({
+                                title: "Barang gagal diupdate!",
+                                description: response.data.message,
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
+
                         actions.setSubmitting(false);
                         resolve();
                     })

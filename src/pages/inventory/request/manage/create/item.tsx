@@ -154,21 +154,30 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                 axiosInstance
                     .post("__api/data/inventory/request/new/barang", payload)
                     .then((response) => {
-                        console.log(response);
-                        toast({
-                            title: "Barang berhasil ditambahkan!",
-                            description: "Barang baru berhasil ditambahkan ke dalam database.",
-                            status: "success",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
+                        if (response.data.success) {
+                            toast({
+                                title: "Barang berhasil ditambahkan!",
+                                description: response.data.message,
+                                status: "success",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        } else {
+                            toast({
+                                title: "Barang gagal ditambahkan!",
+                                description: response.data.message,
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
                         actions.setSubmitting(false);
                         actions.resetForm();
                         setSelection("");
                         setCategoryId("");
                         setItem("");
-                        // window.location.reload();
                         resolve();
                     })
                     .catch((error) => {
