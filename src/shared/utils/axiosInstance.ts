@@ -22,7 +22,7 @@
  */
 
 import axios from "axios";
-import { BASE_DOMAIN } from "../typings/constants";
+import { BASE_DOMAIN, PYTHON_BASE_DOMAIN } from "../typings/constants";
 
 export const axiosInstance = axios.create({
     baseURL: BASE_DOMAIN,
@@ -33,5 +33,5 @@ export const axiosInstance = axios.create({
 });
 
 export const pythonAxiosInstance = axios.create({
-    baseURL: "http://156.67.217.92:3001/",
+    baseURL: PYTHON_BASE_DOMAIN,
 });
