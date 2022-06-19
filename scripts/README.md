@@ -1,13 +1,3 @@
-### SETUP SERVER
-
-```bash
-cd scripts
-```
-
-```bash
-pip install -r requirements.txt
-```
-
 ### RUN SERVER
 
 ```bash
