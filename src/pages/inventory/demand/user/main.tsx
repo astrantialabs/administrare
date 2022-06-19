@@ -71,6 +71,10 @@ export const convertDate = (date: string) => {
     return dayjs(date).format("DD MMM HH:mm:ss");
 };
 
+export const ConvertDate = (date: string) => {
+    return dayjs(date).format("DD MMM HH:mm:ss");
+};
+
 const InventoryDemandMain: NextPage = () => {
     const status = useAppSelector((state: RootState) => state.status.value);
     const dispatch = useAppDispatch();
@@ -123,8 +127,7 @@ const InventoryDemandMain: NextPage = () => {
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{category.username}</Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {convertDate(category.created_at) === "Invalid Date" ? convertDate(category.created_at) : "N/A"}-
-                                                direspon {convertDate(category.responded_at) === "Invalid Date" ? convertDate(category.responded_at) : "N/A"}
+                                                dibuat {ConvertDate(category.created_at)}- direspon {ConvertDate(category.responded_at)}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
@@ -153,8 +156,7 @@ const InventoryDemandMain: NextPage = () => {
                                                 {item.username} dari kategori {item.kategori_name}
                                             </Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {convertDate(item.created_at) === "Invalid Date" ? convertDate(item.created_at) : "N/A"}- direspon{" "}
-                                                {convertDate(item.responded_at) === "Invalid Date" ? convertDate(item.responded_at) : "N/A"}
+                                                dibuat {ConvertDate(item.created_at)}- direspon {ConvertDate(item.responded_at)}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
