@@ -23,17 +23,14 @@ import axios from "axios";
 import { useQuery } from "react-query";
 
 import Footer from "@/components/Footer";
+import { BASE_DOMAIN } from "@/shared/typings/constants";
 
 const Home: NextPage = () => {
-    const userQuery = useQuery(
-        "userQuery",
-        () => axios.get(`https://inventory.setdisnakerbppn.com/__api/user/me`, { withCredentials: true }).then((res) => res.data),
-        {
-            refetchOnMount: false,
-            retry: false,
-            retryDelay: 10000,
-        }
-    );
+    const userQuery = useQuery("userQuery", () => axios.get(`${BASE_DOMAIN}__api/user/me`, { withCredentials: true }).then((res) => res.data), {
+        refetchOnMount: false,
+        retry: false,
+        retryDelay: 10000,
+    });
 
     return (
         <>

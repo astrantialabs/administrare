@@ -49,6 +49,7 @@ import { ReactNode } from "react";
 import { FiBook, FiFolder, FiHome, FiMenu, FiPieChart } from "react-icons/fi";
 import { DashboardMenu } from "./Menu";
 import axios from "axios";
+import { BASE_DOMAIN } from "@/shared/typings/constants";
 
 interface NavigationItemProps extends FlexProps {
     icon: IconType;
@@ -110,15 +111,6 @@ const SwitchTypePermission = (str: string | number) =>
     }[str] || "");
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-    const userQuery = useQuery(
-        "userQuery",
-        () => axios.get(`https://inventory.setdisnakerbppn.com/__api/user/me`, { withCredentials: true }).then((res) => res.data),
-        {
-            refetchOnMount: false,
-            retry: false,
-            retryDelay: 10000,
-        }
-    );
     return (
         <Box
             transition={`3s ease`}

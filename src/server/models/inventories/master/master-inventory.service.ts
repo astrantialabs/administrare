@@ -626,6 +626,7 @@ export class MasterInventoryService {
                         category_id: category_object.id,
                         item_id: item_object.id,
                         isKategori: false,
+                        isWhiteSpace: false,
                     },
                     id: item_index + 1,
                     kategori: category_object.kategori,

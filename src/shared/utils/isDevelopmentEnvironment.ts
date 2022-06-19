@@ -16,11 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { isDevelopmentEnvironment } from "../utils/isDevelopmentEnvironment";
+import { Environment } from "../typings/enumerations/environment.enum";
 
-export const NODE_ENV = process.env.NODE_ENV;
-export const PORT = process.env.PORT || 3000;
-export const BASE_DOMAIN = isDevelopmentEnvironment ? "http://localhost:3000/" : "https://inventory.setdisnakerbppn.com/";
+let isDevelopmentEnvironment = false;
 
-export const isServer = typeof window === "undefined";
-export const isClient = !isServer;
+if (process && process.env.NODE_ENV === Environment.DEVELOPMENT) {
+    isDevelopmentEnvironment = true;
+}
+
+export { isDevelopmentEnvironment };

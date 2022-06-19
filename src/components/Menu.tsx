@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { BASE_DOMAIN } from "@/shared/typings/constants";
 import {
     Box,
     Heading,
@@ -38,15 +39,11 @@ import { FiChevronDown } from "react-icons/fi";
 import { useQuery } from "react-query";
 
 export function DashboardMenu() {
-    const userQuery = useQuery(
-        "userQuery",
-        () => axios.get(`https://inventory.setdisnakerbppn.com/__api/user/me`, { withCredentials: true }).then((res) => res.data),
-        {
-            refetchOnMount: false,
-            retry: false,
-            retryDelay: 10000,
-        }
-    );
+    const userQuery = useQuery("userQuery", () => axios.get(`${BASE_DOMAIN}__api/user/me`, { withCredentials: true }).then((res) => res.data), {
+        refetchOnMount: false,
+        retry: false,
+        retryDelay: 10000,
+    });
 
     return (
         <Menu>

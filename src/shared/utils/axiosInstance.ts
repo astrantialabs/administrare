@@ -22,10 +22,10 @@
  */
 
 import axios from "axios";
-import https from "https";
+import { BASE_DOMAIN } from "../typings/constants";
 
 export const axiosInstance = axios.create({
-    baseURL: "https://inventory.setdisnakerbppn.com/",
+    baseURL: BASE_DOMAIN,
     headers: {
         "Content-type": "application/json",
     },
@@ -33,11 +33,5 @@ export const axiosInstance = axios.create({
 });
 
 export const pythonAxiosInstance = axios.create({
-    baseURL: "https://156.67.217.92:3001/",
-    httpAgent: new https.Agent({
-        rejectUnauthorized: false,
-        cert: "/etc/ssl/certs/PYTHON.crt",
-        key: "/etc/ssl/certs/PYTHON.key",
-        passphrase: "mirae",
-    }),
+    baseURL: "http://156.67.217.92:3001/",
 });

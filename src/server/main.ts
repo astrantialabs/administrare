@@ -31,6 +31,7 @@ import { Environment } from "@/shared/typings/enumerations/environment.enum";
 import { AppModule } from "./app.module";
 import { middleware } from "./common/middlewares/app.middleware";
 import { ConfigService } from "./config/config.service";
+import { BASE_DOMAIN } from "@/shared/typings/constants";
 
 declare const module: any;
 
@@ -54,7 +55,7 @@ async function boostrap() {
         allowedHeaders: "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe",
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     });
-    await app.listen(configService.port).then(() => Logger.log(`Listening on http://localhost:${configService.port}`));
+    await app.listen(configService.port).then(() => Logger.log(`Listening on ${BASE_DOMAIN} with ${process.env.NODE_ENV} build.`));
 
     renderService.setErrorHandler(async (error, request, response) => {
         if (configService.env === Environment.DEVELOPMENT) Logger.debug(error);

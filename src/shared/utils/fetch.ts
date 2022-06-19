@@ -17,6 +17,7 @@
  */
 
 import { isServer, PORT } from "../typings/constants";
+import { isDevelopmentEnvironment } from "./isDevelopmentEnvironment";
 
 type FetchContext = {
     basePath: string;
@@ -32,7 +33,7 @@ const initializeFetch = (basePath: string) => {
 
 const getFetchUrl = (url: string) => {
     if (isServer) {
-        return url.startsWith("/") ? `https://inventory.setdisnakerbppn.com${url}` : url;
+        return url.startsWith("/") ? `${isDevelopmentEnvironment ? "http://localhost:3000" : "https://inventory.setdisnakerbppn.com/"}${url}` : url;
     }
 
     return url.startsWith("/") ? context.basePath + url : url;
