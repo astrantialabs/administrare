@@ -27,7 +27,7 @@ export function Table<T extends object>(props: TableNewProps<T>) {
     const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow, footerGroups } = props;
 
     return (
-        <ChakraTable {...getTableProps()} borderTopWidth="1px" borderTopColor={`gray.200`} variant={`simple`} size={"sm"} colorScheme={`cyan`}>
+        <ChakraTable {...getTableProps()} borderTopWidth="1px" borderTopColor={`gray.200`} variant="striped" size={"sm"} colorScheme={`cyan`}>
             <Thead>
                 {headerGroups.map((headerGroup) => (
                     <Tr {...headerGroup.getHeaderGroupProps()}>
