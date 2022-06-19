@@ -60,8 +60,6 @@ class InventoryRequest():
                 if(requestItemObject.get("kategori_id") == masterCategoryObject.get("id")):
                     for masterItemObject in masterCategoryObject.get("barang"):
                         if(requestItemObject.get("barang_id") == masterItemObject.get("id")):
-                            createdAt = Utility.convertDateYYYYMMDDHHMMSS(requestItemObject.get("created_at"))
-                            respondedAt = Utility.convertDateYYYYMMDDHHMMSS(requestItemObject.get("responded_at"))
                             status = Utility.convertStatus(requestItemObject.get("status"))
 
                             mainValue = [
@@ -72,8 +70,8 @@ class InventoryRequest():
                                 requestItemObject.get("total"),
                                 masterItemObject.get("satuan"),
                                 requestItemObject.get("deskripsi"),
-                                createdAt,
-                                respondedAt,
+                                requestItemObject.get("created_at"),
+                                requestItemObject.get("responded_at"),
                                 status
                             ]
             

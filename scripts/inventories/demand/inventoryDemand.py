@@ -64,16 +64,14 @@ class InventoryDemand():
     def writeCategoryMain(workbook, inventoryDemandDocument):
         rowCount = 2
         for categoryIndex, categoryObject in enumerate(inventoryDemandDocument.get("kategori")):
-            createdAt = Utility.convertDateYYYYMMDDHHMMSS(categoryObject.get("created_at"))
-            respondedAt = Utility.convertDateYYYYMMDDHHMMSS(categoryObject.get("responded_at"))
             status = Utility.convertStatus(categoryObject.get("status"))
 
             mainValue = [
                 categoryIndex + 1,
                 categoryObject.get("username"),
                 categoryObject.get("kategori"),
-                createdAt,
-                respondedAt,
+                categoryObject.get("created_at"),
+                categoryObject.get("responded_at"),
                 status,
             ]
 
@@ -100,8 +98,7 @@ class InventoryDemand():
         for demandItemIndex, demandItemObject in enumerate(inventoryDemandDocument.get("barang")):
             for masterCategoryObject in inventoryMasterDocument.get("kategori"):
                 if(masterCategoryObject.get("id") == demandItemObject.get("kategori_id")):
-                    createdAt = Utility.convertDateYYYYMMDDHHMMSS(demandItemObject.get("created_at"))
-                    respondedAt = Utility.convertDateYYYYMMDDHHMMSS(demandItemObject.get("responded_at"))
+                    print("test")
                     status = Utility.convertStatus(demandItemObject.get("status"))
 
                     mainValue = [
@@ -110,8 +107,8 @@ class InventoryDemand():
                         masterCategoryObject.get("kategori"),
                         demandItemObject.get("barang"),
                         demandItemObject.get("satuan"),
-                        createdAt,
-                        respondedAt,
+                        demandItemObject.get("created_at"),
+                        demandItemObject.get("responded_at"),
                         status
                     ]
     

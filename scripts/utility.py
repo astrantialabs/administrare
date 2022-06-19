@@ -67,11 +67,3 @@ class Utility():
 
         return status
 
-
-    def convertDateYYYYMMDDHHMMSS(rawDate):
-        if(type(rawDate) is str):
-            splittedDate = rawDate.split("-"),
-            return f"{splittedDate[0][0]}-{splittedDate[0][1]}-{splittedDate[0][2]} {splittedDate[0][3]}:{splittedDate[0][4]}:{splittedDate[0][5]}"
-
-        elif (type(rawDate) is not str):
-            return None
