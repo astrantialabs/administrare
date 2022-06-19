@@ -149,9 +149,6 @@ const InventoryRequestManageCreateItem: NextPage = () => {
             deskripsi: values.deskripsi,
         };
 
-        alert(JSON.stringify(payload, null, 2));
-        console.log(payload);
-
         new Promise<void>((resolve) => {
             setTimeout(() => {
                 axiosInstance

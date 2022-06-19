@@ -31,9 +31,13 @@ import { axiosInstance } from "@/shared/utils/axiosInstance";
 
 export interface InventoryDemandManageCreateCategoryParameter {
     kategori: string;
+    username: string;
 }
 
 export class InventoryDemandManageCreateCategoryValidationModel extends FormikValidatorBase implements InventoryDemandManageCreateCategoryParameter {
+    @IsNotEmpty({ message: "Username tidak boleh kosong!" })
+    username: string;
+
     @IsNotEmpty({ message: "Kategori tidak boleh kosong!" })
     kategori: string;
 }
@@ -48,6 +52,7 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
         actions.setSubmitting(true);
 
         const payload: InventoryDemandManageCreateCategoryParameter = {
+            username: values.username,
             kategori: values.kategori,
         };
 
@@ -94,9 +99,20 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
                 >
                     {(props: FormikProps<InventoryDemandManageCreateCategoryValidationModel>) => (
                         <Form>
-                            <Field name="kategori">
+                            <Field name="username">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageCreateCategoryParameter> }) => (
                                     <FormControl>
+                                        <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`} mb={4}>
+                                            Username
+                                        </FormLabel>
+                                        <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Nama username disini.." />
+                                        <FormErrorMessage>{form.errors.username}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name="kategori">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageCreateCategoryParameter> }) => (
+                                    <FormControl mt={4}>
                                         <FormLabel htmlFor="kategori" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Kategori
                                         </FormLabel>

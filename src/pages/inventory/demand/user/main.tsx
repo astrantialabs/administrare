@@ -86,6 +86,7 @@ const InventoryDemandMain: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
+            <Heading>Inventory Demand</Heading>
             {userQuery.isLoading ? (
                 <>
                     <Text fontSize="xs">Loading user data..</Text>
