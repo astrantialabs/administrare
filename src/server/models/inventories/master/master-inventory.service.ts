@@ -214,12 +214,14 @@ export class MasterInventoryService {
         let item_search_data: ItemSearchData[] = [];
 
         master_inventory_data.kategori.forEach((category_object) => {
-            category_object.barang.forEach((item_object) => {
+            category_object.barang.forEach(async (item_object) => {
                 item_search_data.push({
                     category_id: category_object.id,
                     category_name: category_object.kategori,
                     item_id: item_object.id,
                     item_name: item_object.nama,
+                    item_unit: item_object.satuan,
+                    item_saldo_remainder: item_object.saldo_akhir_jumlah_satuan - item_object.jumlah_permintaan,
                     total_match: 1,
                 });
             });
@@ -256,6 +258,8 @@ export class MasterInventoryService {
                         category_name: category_object.kategori,
                         item_id: item_object.id,
                         item_name: item_object.nama,
+                        item_unit: item_object.satuan,
+                        item_saldo_remainder: item_object.saldo_akhir_jumlah_satuan - item_object.jumlah_permintaan,
                         total_match: total_match,
                     });
                 }

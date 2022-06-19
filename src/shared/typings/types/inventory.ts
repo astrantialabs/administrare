@@ -29,6 +29,8 @@ export type ItemSearchData = {
     category_name: string;
     item_id: number;
     item_name: string;
+    item_unit: string;
+    item_saldo_remainder: number;
     total_match: number;
 };
 
