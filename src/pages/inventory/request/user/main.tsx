@@ -19,7 +19,7 @@
 import { NextPage } from "next";
 import { Form, Formik } from "formik";
 import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer, LinkOverlay } from "@chakra-ui/react";
-import { UseQueryResult } from "react-query";
+import { useQuery, UseQueryResult } from "react-query";
 import dayjs from "dayjs";
 import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup, Link } from "@chakra-ui/react";
 
@@ -31,6 +31,8 @@ import { setStatus } from "@/client/redux/features/statusSlice";
 import { useInventoryDemandCategoriesQuery } from "@/client/queries/inventory-demand.query";
 import { InventoryRequestItem, InventoryRequestItems, useInventoryRequestItemsQuery } from "@/client/queries/inventory-request.payload";
 import Sidebar from "@/components/Sidebar";
+import axios from "axios";
+import { BASE_DOMAIN } from "@/shared/typings/constants";
 
 export const BoxStatusBackgroundSwitch = (str: string | number): string =>
     ({
@@ -65,8 +67,37 @@ const InventoryRequestUserMain: NextPage = () => {
 
     const items = useInventoryRequestItemsQuery();
 
+    const userQuery = useQuery("userQuery", () => axios.get(`${BASE_DOMAIN}__api/user/me`, { withCredentials: true }).then((res) => res.data), {
+        refetchOnMount: false,
+        retry: false,
+        retryDelay: 10000,
+    });
+
     return (
         <Sidebar type="inventory">
+            {userQuery.isLoading ? (
+                <>
+                    <Text fontSize="xs">Loading user data..</Text>
+                </>
+            ) : (
+                <>
+                    {userQuery.isError ? (
+                        <></>
+                    ) : (
+                        <>
+                            {userQuery.data.permissionLevel === "ADMINISTRATOR" || userQuery.data.permissionLevel === "SUPERADMINISTRATOR" ? (
+                                <>
+                                    <Button marginBottom={8}>
+                                        <LinkOverlay href="/inventory/request/manage">Management</LinkOverlay>
+                                    </Button>
+                                </>
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    )}
+                </>
+            )}
             <Flex flexDirection={[`column`, `row`, `row`]}>
                 <Stack spacing={8} marginY={8} marginX={8}>
                     <Heading fontSize="xl">Barang</Heading>

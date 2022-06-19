@@ -19,13 +19,16 @@
 import { NextPage } from "next";
 import React from "react";
 import { Column, useTable } from "react-table";
-import { Button, LinkOverlay } from "@chakra-ui/react";
+import { Button, LinkOverlay, Text } from "@chakra-ui/react";
 
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 import { Table } from "@/components/Table";
 import { fetch } from "@/shared/utils/fetch";
 import Sidebar from "@/components/Sidebar";
 import { MasterTotal } from "@/shared/typings/types/inventory";
+import { useQuery } from "react-query";
+import axios from "axios";
+import { BASE_DOMAIN } from "@/shared/typings/constants";
 
 type PageProps = {
     tableData: any;
@@ -209,11 +212,38 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
         columns,
         data,
     });
+
+    const userQuery = useQuery("userQuery", () => axios.get(`${BASE_DOMAIN}__api/user/me`, { withCredentials: true }).then((res) => res.data), {
+        refetchOnMount: false,
+        retry: false,
+        retryDelay: 10000,
+    });
     return (
         <Sidebar type="inventory">
-            <Button marginBottom={8}>
-                <LinkOverlay href="/inventory/manage">Management</LinkOverlay>
-            </Button>
+            {userQuery.isLoading ? (
+                <>
+                    <Text fontSize="xs">Loading user data..</Text>
+                </>
+            ) : (
+                <>
+                    {userQuery.isError ? (
+                        <></>
+                    ) : (
+                        <>
+                            {userQuery.data.permissionLevel === "ADMINISTRATOR" || userQuery.data.permissionLevel === "SUPERADMINISTRATOR" ? (
+                                <>
+                                    <Button marginBottom={8}>
+                                        <LinkOverlay href="/inventory/manage">Management</LinkOverlay>
+                                    </Button>
+                                </>
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    )}
+                </>
+            )}
+
             <Table<PayloadTest>
                 getTableProps={getTableProps}
                 getTableBodyProps={getTableBodyProps}
