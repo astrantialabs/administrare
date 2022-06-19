@@ -56,7 +56,7 @@ const InventoryDemandManageCreateItem: NextPage = () => {
         actions.setSubmitting(true);
 
         const payload: InventoryDemandManageItemParameter = {
-            kategori_id: values.kategori_id,
+            kategori_id: parseInt(values.kategori_id) as unknown as string,
             username: values.username,
             barang: values.barang,
             satuan: values.satuan,
