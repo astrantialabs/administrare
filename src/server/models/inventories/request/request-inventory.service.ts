@@ -99,7 +99,7 @@ export class RequestInventoryService {
                 request_barang_data
             );
 
-            return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(true, 200, "Request item object found", {
+            return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(true, 200, "Permintaan barang berhasil ditemukan.", {
                 request_item: request_barang_data_with_category_and_item_name,
             });
         } catch (error: any) {
@@ -125,11 +125,16 @@ export class RequestInventoryService {
             });
 
             if (request_barang == undefined) {
-                return responseFormat<null>(false, 400, `Request item object id ${id} not found`, null);
+                return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} gagal ditemukan.`, null);
             } else if (request_barang != undefined) {
-                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>(true, 200, `Request item object id ${id} found`, {
-                    request_item: request_barang,
-                });
+                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>(
+                    true,
+                    200,
+                    `Permintaan barang dengan id ${id} berhasil ditemukan.`,
+                    {
+                        request_item: request_barang,
+                    }
+                );
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -156,11 +161,16 @@ export class RequestInventoryService {
                     }
                 });
 
-                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(true, 200, `Request item object status ${status} found`, {
-                    request_item: request_barang,
-                });
+                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(
+                    true,
+                    200,
+                    `Permintaan barang dengan status ${status} berhasil ditemukan.`,
+                    {
+                        request_item: request_barang,
+                    }
+                );
             } else if (!status_list.includes(status)) {
-                return responseFormat<null>(false, 400, `Status is invalid`, null);
+                return responseFormat<null>(false, 400, `Status tidak valid.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -226,25 +236,25 @@ export class RequestInventoryService {
 
                             this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
 
-                            return responseFormat<ResponseObject<RequestBarang>>(true, 201, `Request item created`, {
+                            return responseFormat<ResponseObject<RequestBarang>>(true, 201, `Permintaan barang berhasil dibuat.`, {
                                 request_item: new_item,
                             });
                         } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + item.total) {
-                            return responseFormat<null>(false, 400, `Saldo akhir tidak cukup`, null);
+                            return responseFormat<null>(false, 400, `Saldo tidak cukup.`, null);
                         }
                     } else if (item.total <= 0) {
-                        return responseFormat<null>(false, 400, `Total needs to be more than 0`, null);
+                        return responseFormat<null>(false, 400, `Total saldo barang yang diminta harus lebih dari 0.`, null);
                     }
                 } else if (!item_id_is_valid) {
                     return responseFormat<null>(
                         false,
                         400,
-                        `Master item object id ${item.barang_id} in category object id ${item.kategori_id} doesn't exist`,
+                        `Tidak ada barang dengan id ${item.barang_id} di dalam kategori dengan id ${item.kategori_id}.`,
                         null
                     );
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Master category object id ${item.kategori_id} doesn't exist`, null);
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -298,17 +308,17 @@ export class RequestInventoryService {
                     if (status_is_valid) {
                         this.requestInventoryDataModel.replaceOne({ tahun: year }, request_data, { upsert: true }).exec();
 
-                        return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Request item id ${id} responded`, {
+                        return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Permintaan barang dengan id ${id} berhasil direspon.`, {
                             request_item: responded_request_barang,
                         });
                     } else if (!status_is_valid) {
-                        return responseFormat<null>(false, 400, `Request item id ${id} already responded`, null);
+                        return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} sudah pernah direspon.`, null);
                     }
                 } else if (!status_list.includes(status)) {
-                    return responseFormat<null>(false, 400, `Status is invalid`, null);
+                    return responseFormat<null>(false, 400, `Status tidak valid.`, null);
                 }
             } else if (!request_id_is_valid) {
-                return responseFormat<null>(false, 400, `Request item object id ${id} not found`, null);
+                return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);

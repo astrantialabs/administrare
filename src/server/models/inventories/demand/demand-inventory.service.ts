@@ -90,7 +90,7 @@ export class DemandInventoryService {
         try {
             const category_data: DemandKategori[] = (await this.demandFindOne(year)).kategori;
 
-            return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, "Demand category object found", { demand_category: category_data });
+            return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, "Pengajuan kategori berhasil ditemukan.", { demand_category: category_data });
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
         }
@@ -107,7 +107,7 @@ export class DemandInventoryService {
 
             let demand_barang_data_with_category_name: DemandBarangWithCategoryName[] = await this.demandBarangWithCategoryName(demand_barang_data);
 
-            return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(true, 200, "Demand item object found", {
+            return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(true, 200, "Pengajuan barang berhasil ditemukan.", {
                 demand_item: demand_barang_data_with_category_name,
             });
         } catch (error: any) {
@@ -133,9 +133,11 @@ export class DemandInventoryService {
             });
 
             if (demand_kategori == undefined) {
-                return responseFormat<null>(false, 400, `Demand category object id ${id} not found`, null);
+                return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} gagal ditemukan.`, null);
             } else if (demand_kategori != undefined) {
-                return responseFormat<ResponseObject<DemandKategori>>(true, 200, `Demand category object id ${id} found`, { demand_category: demand_kategori });
+                return responseFormat<ResponseObject<DemandKategori>>(true, 200, `Pengajuan kategori dengan id ${id} berhasil ditemukan.`, {
+                    demand_category: demand_kategori,
+                });
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -160,14 +162,14 @@ export class DemandInventoryService {
             });
 
             if (demand_barang == undefined) {
-                return responseFormat<null>(false, 400, `Demand item object id ${id} not found`, null);
+                return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} gagal ditemukan.`, null);
             } else if (demand_barang != undefined) {
                 let demand_barang_with_category_name: DemandBarangWithCategoryName = {
                     ...demand_barang,
                     kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id),
                 };
 
-                return responseFormat<ResponseObject<DemandBarangWithCategoryName>>(true, 200, `Demand item object id ${id} found`, {
+                return responseFormat<ResponseObject<DemandBarangWithCategoryName>>(true, 200, `Pengajuan barang dengan id ${id} berhasil ditemukan.`, {
                     demand_item: demand_barang_with_category_name,
                 });
             }
@@ -195,11 +197,11 @@ export class DemandInventoryService {
                     }
                 });
 
-                return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, `Demand category object status ${status} found`, {
+                return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, `Pengajuan kategori dengan status ${status} berhasil ditemukan.`, {
                     demand_category: filtered_category_demand_data,
                 });
             } else if (!status_list.includes(status)) {
-                return responseFormat<null>(false, 400, `Status is invalid`, null);
+                return responseFormat<null>(false, 400, `Status tidak valid.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -227,11 +229,16 @@ export class DemandInventoryService {
 
                 let demand_barang_data_with_category_name: DemandBarangWithCategoryName[] = await this.demandBarangWithCategoryName(filtered_item_demand_data);
 
-                return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(true, 200, `Demand item object status ${status} found`, {
-                    demand_item: demand_barang_data_with_category_name,
-                });
+                return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(
+                    true,
+                    200,
+                    `Pengajuan barang dengan status ${status} berhasil ditemukan.`,
+                    {
+                        demand_item: demand_barang_data_with_category_name,
+                    }
+                );
             } else if (!status_list.includes(status)) {
-                return responseFormat<null>(false, 400, `Status is invalid`, null);
+                return responseFormat<null>(false, 400, `Status tidak valid.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -262,7 +269,7 @@ export class DemandInventoryService {
 
             this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-            return responseFormat<ResponseObject<DemandKategori>>(true, 201, `Demand category created`, {
+            return responseFormat<ResponseObject<DemandKategori>>(true, 201, `Pengajuan kategori berhasil dibuat.`, {
                 demand_category: new_category_demand,
             });
         } catch (error: any) {
@@ -306,11 +313,11 @@ export class DemandInventoryService {
 
                 this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-                return responseFormat<ResponseObject<DemandBarang>>(true, 201, `Demand item created`, {
+                return responseFormat<ResponseObject<DemandBarang>>(true, 201, `Pengajuan barang berhasil dibuat.`, {
                     demand_item: new_item_demand,
                 });
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Master category object id ${item.kategori_id} doesn't exist`, null);
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -357,17 +364,17 @@ export class DemandInventoryService {
                     if (status_is_valid) {
                         this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-                        return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Demand category id ${id} responded`, {
+                        return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Pengajuan kategori dengan id ${id} berhasil direspon.`, {
                             demand_category: responded_demand_kategori,
                         });
                     } else if (!status_is_valid) {
-                        return responseFormat<null>(false, 400, `Demand category id ${id} already responded`, null);
+                        return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} sudah pernah direspon.`, null);
                     }
                 } else if (!status_list.includes(status)) {
-                    return responseFormat<null>(false, 400, `Status is invalid`, null);
+                    return responseFormat<null>(false, 400, `Status tidak valid.`, null);
                 }
             } else if (!demand_category_id_is_valud) {
-                return responseFormat<null>(false, 400, `Demand category object id ${id} not found`, null);
+                return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -414,17 +421,17 @@ export class DemandInventoryService {
                     if (status_is_valid) {
                         this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-                        return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Demand item id ${id} responded`, {
+                        return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Pengajuan barang dengan id ${id} berhasil direspon.`, {
                             demand_item: responded_demand_barang,
                         });
                     } else if (!status_is_valid) {
-                        return responseFormat<null>(false, 400, `Demand item id ${id} already responded`, null);
+                        return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} sudah pernah direspon.`, null);
                     }
                 } else if (!status_list.includes(status)) {
-                    return responseFormat<null>(false, 400, `Status is invalid`, null);
+                    return responseFormat<null>(false, 400, `Status tidak valid.`, null);
                 }
             } else if (!demand_item_id_is_valud) {
-                return responseFormat<null>(false, 400, `Demand item object id ${id} not found`, null);
+                return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
