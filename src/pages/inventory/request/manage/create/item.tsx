@@ -73,7 +73,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
         if (!items_query.isLoading) {
             items_query.data.map((item) => {
                 values.push({
-                    value: `${item.item_name} - ${item.category_name}`,
+                    value: `${item.item_name} - ${item.item_unit} - ${item.category_name} - ${item.item_saldo_remainder}`,
                     item_name: item.item_id,
                     category_name: item.category_id,
                 });
