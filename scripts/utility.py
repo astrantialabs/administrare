@@ -22,6 +22,7 @@
 """
 
 import datetime
+import json
 
 class Utility():
     def romanNumeral(number):
@@ -66,4 +67,13 @@ class Utility():
             status = "Ditolak"
 
         return status
+
+
+    def readJSON(path):
+        return json.load(open(path))
+
+    
+    def writeJSON(path, data):
+        with open(path, "w") as outfile:
+            outfile.write(json.dumps(data, indent = 4))
 
