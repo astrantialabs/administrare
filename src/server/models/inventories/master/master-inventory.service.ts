@@ -839,7 +839,12 @@ export class MasterInventoryService {
                             }
                         );
                     } else if (!deletion_is_valid) {
-                        return responseFormat<null>(false, 400, `Jumlah permintaan barang dengan id ${item_id} harus 0.`, null);
+                        return responseFormat<null>(
+                            false,
+                            400,
+                            `Jumlah permintaan barang dengan id ${item_id} di dalam kategori dengan id ${category_id} harus 0.`,
+                            null
+                        );
                     }
                 } else if (!item_id_is_valid) {
                     return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
