@@ -54,5 +54,6 @@ lerna-debug.log*
 # Misc
 note.txt
 scripts/**/__pycache__
+scripts/json/*.json
 spreadsheets/**/*.xlsx
 spreadsheets/**/*.pdf
