@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useQuery } from "react-query";
 

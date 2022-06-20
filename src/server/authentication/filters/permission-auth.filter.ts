@@ -1,6 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, ForbiddenException } from "@nestjs/common";
 import { Response } from "express";
-import { UnauthorizedException } from "@nestjs/common";
 
 @Catch(ForbiddenException)
 export class PermissionAuthFilter implements ExceptionFilter {

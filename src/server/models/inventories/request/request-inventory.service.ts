@@ -69,12 +69,11 @@ export class RequestInventoryService {
             request_barang_data.map(async (item_object: RequestBarang) => {
                 return {
                     ...item_object,
-                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id),
-                    barang_name: await this.masterInventoryService.masterGetBarangNameByKategoriIdAndBarangId(
-                        2022,
-                        item_object.kategori_id,
-                        item_object.barang_id
-                    ),
+                    kategori_name: (await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id)).result
+                        .master_category_name,
+                    barang_name: (
+                        await this.masterInventoryService.masterGetBarangNameByKategoriIdAndBarangId(2022, item_object.kategori_id, item_object.barang_id)
+                    ).result.master_item_name,
                 };
             })
         );

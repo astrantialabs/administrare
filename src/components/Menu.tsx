@@ -19,11 +19,9 @@
 import { BASE_DOMAIN } from "@/shared/typings/constants";
 import {
     Box,
-    Heading,
     HStack,
     Menu,
     MenuButton,
-    MenuDivider,
     MenuItem,
     MenuList,
     Button,
@@ -33,7 +31,6 @@ import {
     LinkOverlay,
 } from "@chakra-ui/react";
 import axios from "axios";
-import Router from "next/router";
 import React from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { useQuery } from "react-query";

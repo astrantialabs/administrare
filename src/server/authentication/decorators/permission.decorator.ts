@@ -18,7 +18,5 @@
 
 import { SetMetadata } from "@nestjs/common";
 
-import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.enum";
-
 export const PERMISSION_KEY = "permissions";
 export const Permission = (...permissions: string[]) => SetMetadata(PERMISSION_KEY, permissions);

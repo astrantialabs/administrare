@@ -30,7 +30,6 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
 import helmet from "helmet";
-import csurf from "csurf";
 
 import { Environment } from "@/shared/typings/enumerations/environment.enum";
 

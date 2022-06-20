@@ -35,21 +35,12 @@ import {
     FlexProps,
     useDisclosure,
     IconButton,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    LinkOverlay,
     HStack,
-    Button,
 } from "@chakra-ui/react";
 import { IconType } from "react-icons";
-import { useQuery } from "react-query";
 import { ReactNode } from "react";
-import { FiBook, FiFolder, FiHome, FiMenu, FiPieChart } from "react-icons/fi";
+import { FiHome, FiMenu, FiPieChart } from "react-icons/fi";
 import { DashboardMenu } from "./Menu";
-import axios from "axios";
-import { BASE_DOMAIN } from "@/shared/typings/constants";
 
 interface NavigationItemProps extends FlexProps {
     icon: IconType;

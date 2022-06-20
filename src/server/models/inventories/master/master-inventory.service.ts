@@ -21,13 +21,14 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
+import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
-import { ItemSearchData, JumlahData, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
-import { calculateSaldoAkhirJumlahSatuan, currentDate, romanizeNumber } from "@/shared/utils/util";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
+import { ItemSearchData, JumlahData, MasterParameterBarang, MasterParameterKategori, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
+import { calculateSaldoAkhirJumlahSatuan, currentDate, responseFormat, romanizeNumber } from "@/shared/utils/util";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { ParameterMasterUpdateItemDto } from "./dto/item.schema";
 import { MasterBarang, MasterKategori, MasterInventoryData, MasterInventoryDataDocument } from "./schema/master-inventory.schema";
 
 /**
@@ -65,7 +66,7 @@ export class MasterInventoryService {
      * @returns {Promise<Number>} Return the length of kategori
      */
     public async masterGetKategoriLength(year: number): Promise<number> {
-        return (await this.masterGetKategoriAll(year)).length;
+        return (await this.masterGetKategoriAll(year)).result.master_category.length;
     }
 
     /**
@@ -75,7 +76,7 @@ export class MasterInventoryService {
      * @returns {Promise<Number>} Return the length of barang
      */
     public async masterGetBarangLengthByKategoriId(year: number, category_id: number): Promise<number> {
-        return (await this.masterGetBarangAllByKategoriId(year, category_id)).length;
+        return (await this.masterGetBarangAllByKategoriId(year, category_id)).result.master_item.length;
     }
 
     /**
@@ -84,8 +85,8 @@ export class MasterInventoryService {
      * @returns {Promise<Number>} Return a new kategori id
      */
     public async masterGetNewKategoriId(year: number): Promise<number> {
-        const master_kategori_data: MasterKategori[] = await this.masterGetKategoriAll(year);
-        let kategori_length: number = await this.masterGetKategoriLength(year);
+        const master_kategori_data: MasterKategori[] = (await this.masterGetKategoriAll(year)).result.master_category;
+        const kategori_length: number = await this.masterGetKategoriLength(year);
         let new_kategori_id: number = kategori_length + 1;
 
         for (let i = 0; i < kategori_length; i++) {
@@ -106,8 +107,8 @@ export class MasterInventoryService {
      * @returns {Promise<Number>} Return a new barang id
      */
     public async masterGetNewBarangIdByKategoriId(year: number, category_id: number): Promise<number> {
-        const master_barang_data: MasterBarang[] = await this.masterGetBarangAllByKategoriId(year, category_id);
-        let barang_length: number = await this.masterGetBarangLengthByKategoriId(year, category_id);
+        const master_barang_data: MasterBarang[] = (await this.masterGetBarangAllByKategoriId(year, category_id)).result.master_item;
+        const barang_length: number = await this.masterGetBarangLengthByKategoriId(year, category_id);
         let new_barang_id: number = barang_length + 1;
 
         for (let i = 0; i < barang_length; i++) {
@@ -129,9 +130,9 @@ export class MasterInventoryService {
      * @returns {JumlahData} Return jumlah data
      */
     public async masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<JumlahData> {
-        let master_barang_object: MasterBarang = await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id);
+        const master_barang_object: MasterBarang = (await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id)).result.master_item;
 
-        let jumlah_data: JumlahData = {
+        const jumlah_data: JumlahData = {
             saldo_akhir: master_barang_object.saldo_akhir_jumlah_satuan,
             permintaan: master_barang_object.jumlah_permintaan,
         };
@@ -147,13 +148,18 @@ export class MasterInventoryService {
      * @param {Number} total - The amount of jumlah_permintaan will be increase
      * @returns {MasterBarang} The updated barang object
      */
-    public async masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(year: number, category_id: number, item_id: number, total: number) {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+    public async masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number,
+        total: number
+    ): Promise<MasterBarang> {
+        const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
         let updated_item_object: MasterBarang;
 
-        master_inventory_data.kategori.forEach((category_object) => {
+        master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
             if (category_object.id == category_id) {
-                category_object.barang.forEach((item_object) => {
+                category_object.barang.forEach((item_object: MasterBarang) => {
                     if (item_object.id == item_id) {
                         item_object.jumlah_permintaan += total;
 
@@ -176,12 +182,18 @@ export class MasterInventoryService {
      * @param {Number} total - The total
      * @param {Number} status - The status
      */
-    public async masterResponseJumlahPermintaanByKategoriIdAndBarangId(year: number, category_id: number, item_id: number, total: number, status: number) {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+    public async masterResponseJumlahPermintaanByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number,
+        total: number,
+        status: number
+    ): Promise<void> {
+        const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
-        master_inventory_data.kategori.forEach((master_category_object) => {
+        master_inventory_data.kategori.forEach((master_category_object: MasterKategori) => {
             if (master_category_object.id == category_id) {
-                master_category_object.barang.forEach((master_item_object) => {
+                master_category_object.barang.forEach((master_item_object: MasterBarang) => {
                     if (master_item_object.id == item_id) {
                         if (status == 1) {
                             master_item_object.mutasi_barang_keluar_jumlah_satuan += total;
@@ -210,11 +222,11 @@ export class MasterInventoryService {
      * @returns {Promise<ItemSearchData[]>} Return all items
      */
     public async masterSearchBarangAll(year: number): Promise<ItemSearchData[]> {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+        const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
         let item_search_data: ItemSearchData[] = [];
 
-        master_inventory_data.kategori.forEach((category_object) => {
-            category_object.barang.forEach((item_object) => {
+        master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+            category_object.barang.forEach((item_object: MasterBarang) => {
                 item_search_data.push({
                     category_id: category_object.id,
                     category_name: category_object.kategori,
@@ -243,10 +255,10 @@ export class MasterInventoryService {
         let item_search_data: ItemSearchData[] = [];
         let search_array: string[] = name.toLowerCase().split("-");
 
-        master_inventory_data.kategori.forEach((category_object) => {
-            category_object.barang.forEach((item_object) => {
+        master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+            category_object.barang.forEach((item_object: MasterBarang) => {
                 let total_match: number = 0;
-                search_array.forEach((search_element) => {
+                search_array.forEach((search_element: string) => {
                     if (item_object.nama.toLowerCase().includes(search_element)) {
                         total_match += 1;
                     }
@@ -272,7 +284,7 @@ export class MasterInventoryService {
     }
 
     public async masterGetSubTotal(year: number, category_id: number): Promise<MasterSubTotal> {
-        const category_object: MasterKategori = await this.masterGetKategoriByKategoriId(year, category_id);
+        const category_object: MasterKategori = (await this.masterGetKategoriByKategoriId(year, category_id)).result.master_category;
 
         const sub_total: MasterSubTotal = {
             category_id: category_id,
@@ -293,7 +305,7 @@ export class MasterInventoryService {
     }
 
     public async masterGetTotal(year: number): Promise<MasterTotal> {
-        const category_data: MasterKategori[] = await this.masterGetKategoriAll(year);
+        const category_data: MasterKategori[] = (await this.masterGetKategoriAll(year)).result.master_category;
 
         const sub_totals: MasterSubTotal[] = await Promise.all(
             category_data.map(async (category_object: MasterKategori) => {
@@ -327,8 +339,14 @@ export class MasterInventoryService {
      * @param {Number} year - The year
      * @returns {Promise<MasterKategori[]>} return all kategori object
      */
-    public async masterGetKategoriAll(year: number): Promise<MasterKategori[]> {
-        return (await this.masterFindOne(year)).kategori;
+    public async masterGetKategoriAll(year: number): Promise<ResponseFormat<ResponseObject<MasterKategori[]>>> {
+        try {
+            return responseFormat<ResponseObject<MasterKategori[]>>(true, 200, `Kategori berhasil ditemukan.`, {
+                master_category: (await this.masterFindOne(year)).kategori,
+            });
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -337,8 +355,20 @@ export class MasterInventoryService {
      * @param {Number} category_id - The category id
      * @returns {Promise<MasterBarang[]>} return all barang object
      */
-    public async masterGetBarangAllByKategoriId(year: number, category_id: number): Promise<MasterBarang[]> {
-        return (await this.masterGetKategoriByKategoriId(year, category_id)).barang;
+    public async masterGetBarangAllByKategoriId(year: number, category_id: number): Promise<ResponseFormat<ResponseObject<MasterBarang[]>>> {
+        try {
+            const master_kategori: ResponseFormat<ResponseObject<MasterKategori>> = await this.masterGetKategoriByKategoriId(year, category_id);
+
+            if (master_kategori.result) {
+                return responseFormat<ResponseObject<MasterBarang[]>>(true, 200, `Barang di dalam kategori dengan id ${category_id} berhasil ditemukan.`, {
+                    master_item: master_kategori.result.master_category.barang,
+                });
+            } else if (!master_kategori.result) {
+                return responseFormat<null>(master_kategori.success, master_kategori.statusCode, master_kategori.message, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -347,17 +377,31 @@ export class MasterInventoryService {
      * @param {Number} category_id - The category id
      * @returns {Promise<MasterKategori>} return kategori object
      */
-    public async masterGetKategoriByKategoriId(year: number, category_id: number): Promise<MasterKategori> {
-        const master_kategori_data: MasterKategori[] = await this.masterGetKategoriAll(year);
-        let master_kategori: MasterKategori;
+    public async masterGetKategoriByKategoriId(year: number, category_id: number): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        try {
+            const master_kategori_data: ResponseFormat<ResponseObject<MasterKategori[]>> = await this.masterGetKategoriAll(year);
+            if (master_kategori_data.result) {
+                let master_kategori: MasterKategori;
 
-        master_kategori_data.forEach((category_object) => {
-            if (category_object.id == category_id) {
-                master_kategori = category_object;
+                master_kategori_data.result.master_category.forEach((category_object: MasterKategori) => {
+                    if (category_object.id == category_id) {
+                        master_kategori = category_object;
+                    }
+                });
+
+                if (master_kategori == undefined) {
+                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} gagal ditemukan.`, null);
+                } else if (master_kategori != undefined) {
+                    return responseFormat<ResponseObject<MasterKategori>>(true, 200, `Kategori dengan id ${category_id} berhasil ditemukan.`, {
+                        master_category: master_kategori,
+                    });
+                }
+            } else if (!master_kategori_data.result) {
+                return responseFormat<null>(master_kategori_data.success, master_kategori_data.statusCode, master_kategori_data.message, null);
             }
-        });
-
-        return master_kategori;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -367,25 +411,82 @@ export class MasterInventoryService {
      * @param {Number} item_id - The item id
      * @returns {Promise<MasterBarang>} Return barang object
      */
-    public async masterGetBarangByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<MasterBarang> {
-        const master_barang_data: MasterBarang[] = await this.masterGetBarangAllByKategoriId(year, category_id);
-        let master_barang: MasterBarang;
+    public async masterGetBarangByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        try {
+            const master_barang_data: ResponseFormat<ResponseObject<MasterBarang[]>> = await this.masterGetBarangAllByKategoriId(year, category_id);
 
-        master_barang_data.forEach((item_object) => {
-            if (item_object.id == item_id) {
-                master_barang = item_object;
+            if (master_barang_data.result) {
+                let master_barang: MasterBarang;
+
+                master_barang_data.result.master_item.forEach((item_object: MasterBarang) => {
+                    if (item_object.id == item_id) {
+                        master_barang = item_object;
+                    }
+                });
+
+                if (master_barang == undefined) {
+                    return responseFormat<null>(false, 400, `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} gagal ditemukan.`, null);
+                } else if (master_barang != undefined) {
+                    return responseFormat<ResponseObject<MasterBarang>>(
+                        true,
+                        200,
+                        `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil ditemukan.`,
+                        {
+                            master_item: master_barang,
+                        }
+                    );
+                }
+            } else if (!master_barang_data.result) {
+                return responseFormat<null>(master_barang_data.success, master_barang_data.statusCode, master_barang_data.message, null);
             }
-        });
-
-        return master_barang;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
-    public async masterGetKategoriNameByKategoriId(year: number, category_id: number): Promise<string> {
-        return (await this.masterGetKategoriByKategoriId(year, category_id)).kategori;
+    public async masterGetKategoriNameByKategoriId(year: number, category_id: number): Promise<ResponseFormat<ResponseObject<string>>> {
+        try {
+            const master_kategori: ResponseFormat<ResponseObject<MasterKategori>> = await this.masterGetKategoriByKategoriId(year, category_id);
+
+            if (master_kategori.result) {
+                return responseFormat<ResponseObject<string>>(true, 200, `Nama kategori dengan id ${category_id} berhasil ditemukan.`, {
+                    master_category_name: master_kategori.result.master_category.kategori,
+                });
+            } else if (!master_kategori.result) {
+                return responseFormat<null>(master_kategori.success, master_kategori.statusCode, master_kategori.message, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
-    public async masterGetBarangNameByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<string> {
-        return (await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id)).nama;
+    public async masterGetBarangNameByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number
+    ): Promise<ResponseFormat<ResponseObject<string>>> {
+        try {
+            const master_barang: ResponseFormat<ResponseObject<MasterBarang>> = await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id);
+
+            if (master_barang.result) {
+                return responseFormat<ResponseObject<string>>(
+                    true,
+                    200,
+                    `Nama barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil ditemukan.`,
+                    {
+                        master_item_name: master_barang.result.master_item.nama,
+                    }
+                );
+            } else if (!master_barang.result) {
+                return responseFormat<null>(master_barang.success, master_barang.statusCode, master_barang.message, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -394,15 +495,29 @@ export class MasterInventoryService {
      * @param {Number} kategori - The new kategori
      * @returns {Promise<MasterKategori>} Return the new kategori object
      */
-    public async masterCreateKategori(year: number, category: MasterKategori): Promise<MasterKategori> {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+    public async masterCreateKategori(year: number, body: MasterParameterKategori): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        try {
+            const category: MasterKategori = {
+                id: await this.masterGetNewKategoriId(2022),
+                kategori: body.kategori,
+                created_at: currentDate(),
+                updated_at: currentDate(),
+                barang: [],
+            };
 
-        master_inventory_data.kategori.push(category);
-        master_inventory_data.kategori.sort((a: MasterKategori, b: MasterKategori) => a.id - b.id);
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
-        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+            master_inventory_data.kategori.push(category);
+            master_inventory_data.kategori.sort((a: MasterKategori, b: MasterKategori) => a.id - b.id);
 
-        return category;
+            this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+
+            return responseFormat<ResponseObject<MasterKategori>>(true, 201, `Kategori berhasil dibuat.`, {
+                master_category: category,
+            });
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -412,19 +527,56 @@ export class MasterInventoryService {
      * @param {MasterBarang} item - The new barang object
      * @returns {Promise<MasterBarang>} Return the new barang object
      */
-    public async masterCreateBarang(year: number, category_id: number, item: MasterBarang): Promise<MasterBarang> {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+    public async masterCreateBarang(year: number, body: MasterParameterBarang): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        try {
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+            const category_id: number = parseInt(body.kategori_id as unknown as string);
 
-        master_inventory_data.kategori.forEach((category_object) => {
-            if (category_object.id == category_id) {
-                category_object.barang.push(item);
-                category_object.barang.sort((a: MasterBarang, b: MasterBarang) => a.id - b.id);
+            let category_id_is_valid: boolean = false;
+            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == category_id) {
+                    category_id_is_valid = true;
+                }
+            });
+
+            if (category_id_is_valid) {
+                const item: MasterBarang = {
+                    id: await this.masterGetNewBarangIdByKategoriId(2022, category_id),
+                    nama: body.nama,
+                    satuan: body.satuan,
+                    created_at: currentDate(),
+                    updated_at: currentDate(),
+                    saldo_jumlah_satuan: parseInt(body.saldo_jumlah_satuan as unknown as string),
+                    mutasi_barang_masuk_jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
+                    mutasi_barang_keluar_jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string),
+                    saldo_akhir_jumlah_satuan: calculateSaldoAkhirJumlahSatuan(
+                        parseInt(body.saldo_jumlah_satuan as unknown as string),
+                        parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
+                        parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string)
+                    ),
+                    jumlah_permintaan: 0,
+                    harga_satuan: parseInt(body.harga_satuan as unknown as string),
+                    keterangan: body.keterangan,
+                };
+
+                master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                    if (category_object.id == category_id) {
+                        category_object.barang.push(item);
+                        category_object.barang.sort((a: MasterBarang, b: MasterBarang) => a.id - b.id);
+
+                        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                    }
+                });
+
+                return responseFormat<ResponseObject<MasterBarang>>(true, 201, `Barang di dalam kategori dengan id ${category_id} berhasil dibuat.`, {
+                    master_item: item,
+                });
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
             }
-        });
-
-        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
-
-        return item;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -434,22 +586,42 @@ export class MasterInventoryService {
      * @param {String} category - The category
      * @returns {Promise<MasterKategori>} Return the updated kategori object
      */
-    public async masterUpdateKategoriByKategoriId(year: number, category_id: number, category: string): Promise<MasterKategori> {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
-        let updated_category_object: MasterKategori;
+    public async masterUpdateKategoriByKategoriId(
+        year: number,
+        category_id: number,
+        body: MasterParameterKategori
+    ): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        try {
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
-        master_inventory_data.kategori.forEach((category_object) => {
-            if (category_object.id == category_id) {
-                category_object.kategori = category;
-                category_object.updated_at = currentDate();
+            let category_id_is_valid: boolean = false;
+            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == category_id) {
+                    category_id_is_valid = true;
+                }
+            });
 
-                updated_category_object = category_object;
+            if (category_id_is_valid) {
+                let updated_category_object: MasterKategori;
+                master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                    if (category_object.id == category_id) {
+                        category_object.kategori = body.kategori;
+                        category_object.updated_at = currentDate();
+
+                        updated_category_object = category_object;
+                        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                    }
+                });
+
+                return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil diupdate.`, {
+                    master_category: updated_category_object,
+                });
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
             }
-        });
-
-        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
-
-        return updated_category_object;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -464,38 +636,82 @@ export class MasterInventoryService {
         year: number,
         category_id: number,
         item_id: number,
-        barang: ParameterMasterUpdateItemDto
-    ): Promise<MasterBarang> {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
-        let updated_item_object: MasterBarang;
+        body: MasterParameterBarang
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        try {
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
-        master_inventory_data.kategori.forEach((category_object) => {
-            if (category_object.id == category_id) {
-                category_object.barang.forEach((item_object) => {
-                    if (item_object.id == item_id) {
-                        item_object.nama = barang.nama;
-                        item_object.satuan = barang.satuan;
-                        item_object.updated_at = currentDate();
-                        item_object.saldo_jumlah_satuan = barang.saldo_jumlah_satuan;
-                        item_object.mutasi_barang_masuk_jumlah_satuan = barang.mutasi_barang_masuk_jumlah_satuan;
-                        item_object.mutasi_barang_keluar_jumlah_satuan = barang.mutasi_barang_keluar_jumlah_satuan;
-                        item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
-                            barang.saldo_jumlah_satuan,
-                            barang.mutasi_barang_masuk_jumlah_satuan,
-                            barang.mutasi_barang_keluar_jumlah_satuan
-                        );
-                        item_object.harga_satuan = barang.harga_satuan;
-                        item_object.keterangan = barang.keterangan;
+            let category_id_is_valid: boolean = false;
+            let item_id_is_valid: boolean = false;
+            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == category_id) {
+                    category_id_is_valid = true;
 
-                        updated_item_object = item_object;
-                    }
-                });
+                    category_object.barang.forEach((item_object: MasterBarang) => {
+                        if (item_object.id == item_id) {
+                            item_id_is_valid = true;
+                        }
+                    });
+                }
+            });
+
+            if (category_id_is_valid) {
+                if (item_id_is_valid) {
+                    const item: MasterParameterBarang = {
+                        kategori_id: category_id,
+                        nama: body.nama,
+                        satuan: body.satuan,
+                        saldo_jumlah_satuan: body.saldo_jumlah_satuan,
+                        mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
+                        mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
+                        harga_satuan: body.harga_satuan,
+                        keterangan: body.keterangan,
+                    };
+
+                    let updated_item_object: MasterBarang;
+                    master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                        if (category_object.id == category_id) {
+                            category_object.barang.forEach((item_object: MasterBarang) => {
+                                if (item_object.id == item_id) {
+                                    item_object.nama = item.nama;
+                                    item_object.satuan = item.satuan;
+                                    item_object.updated_at = currentDate();
+                                    item_object.saldo_jumlah_satuan = item.saldo_jumlah_satuan;
+                                    item_object.mutasi_barang_masuk_jumlah_satuan = item.mutasi_barang_masuk_jumlah_satuan;
+                                    item_object.mutasi_barang_keluar_jumlah_satuan = item.mutasi_barang_keluar_jumlah_satuan;
+                                    item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
+                                        item.saldo_jumlah_satuan,
+                                        item.mutasi_barang_masuk_jumlah_satuan,
+                                        item.mutasi_barang_keluar_jumlah_satuan
+                                    );
+                                    item_object.harga_satuan = item.harga_satuan;
+                                    item_object.keterangan = item.keterangan;
+
+                                    updated_item_object = item_object;
+
+                                    this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                                }
+                            });
+                        }
+                    });
+
+                    return responseFormat<ResponseObject<MasterBarang>>(
+                        true,
+                        202,
+                        `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil diupdate.`,
+                        {
+                            master_item: updated_item_object,
+                        }
+                    );
+                } else if (!item_id_is_valid) {
+                    return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                }
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
             }
-        });
-
-        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
-
-        return updated_item_object;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -504,32 +720,53 @@ export class MasterInventoryService {
      * @param {Number} category_id - The category id
      * @returns {Promise<MasterKategori>} Return the deleted kategori object
      */
-    public async masterDeleteKategoriByKategoriId(year: number, category_id: number): Promise<MasterKategori> {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
-        let deleted_category_object: MasterKategori;
+    public async masterDeleteKategoriByKategoriId(year: number, category_id: number): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        try {
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
-        master_inventory_data.kategori.forEach((category_object, index) => {
-            if (category_object.id == category_id) {
+            let category_id_is_valid: boolean = false;
+            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == category_id) {
+                    category_id_is_valid = true;
+                }
+            });
+
+            if (category_id_is_valid) {
                 let deletion_is_valid: boolean = true;
-                category_object.barang.forEach((item_object) => {
-                    if (item_object.jumlah_permintaan > 0) {
-                        deletion_is_valid = false;
+                master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                    if (category_object.id == category_id) {
+                        category_object.barang.forEach((item_object) => {
+                            if (item_object.jumlah_permintaan > 0) {
+                                deletion_is_valid = false;
+                            }
+                        });
                     }
                 });
 
                 if (deletion_is_valid) {
-                    deleted_category_object = category_object;
+                    let deleted_category_object: MasterKategori;
+                    master_inventory_data.kategori.forEach((category_object: MasterKategori, index: number) => {
+                        if (category_object.id == category_id) {
+                            deleted_category_object = category_object;
 
-                    master_inventory_data.kategori.splice(index, 1);
+                            master_inventory_data.kategori.splice(index, 1);
+
+                            this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                        }
+                    });
+
+                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil dihapus.`, {
+                        master_category: deleted_category_object,
+                    });
                 } else if (!deletion_is_valid) {
-                    return new HttpException("jumlah permintaan of items in category needs to be 0", HttpStatus.BAD_GATEWAY);
+                    return responseFormat<null>(false, 400, `Jumlah permintaan barang-barang di dalam kategori dengan id ${category_id} harus 0.`, null);
                 }
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
             }
-        });
-
-        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
-
-        return deleted_category_object;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /**
@@ -539,35 +776,86 @@ export class MasterInventoryService {
      * @param {Number} item_id - The item id
      * @returns {Promise<MasterBarang>} Return the deleted barang object
      */
-    public async masterDeleteBarangByKategoriIdAndBarangId(year: number, category_id: number, item_id: number): Promise<MasterBarang> {
-        let master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
-        let deleted_item_object: MasterBarang;
+    public async masterDeleteBarangByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        try {
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
-        master_inventory_data.kategori.forEach((category_object) => {
-            if (category_object.id == category_id) {
-                category_object.barang.forEach((item_object, index) => {
-                    if (item_object.id == item_id) {
-                        if (item_object.jumlah_permintaan == 0) {
-                            deleted_item_object = item_object;
+            let category_id_is_valid: boolean = false;
+            let item_id_is_valid: boolean = false;
+            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == category_id) {
+                    category_id_is_valid = true;
 
-                            category_object.barang.splice(index, 1);
-                        } else if (item_object.jumlah_permintaan != 0) {
-                            return new HttpException("jumlah permintaan of item needs to be 0", HttpStatus.BAD_GATEWAY);
+                    category_object.barang.forEach((item_object: MasterBarang) => {
+                        if (item_object.id == item_id) {
+                            item_id_is_valid = true;
                         }
+                    });
+                }
+            });
+
+            if (category_id_is_valid) {
+                if (item_id_is_valid) {
+                    let deletion_is_valid: boolean = true;
+                    master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                        if (category_object.id == category_id) {
+                            category_object.barang.forEach((item_object) => {
+                                if (item_object.id == item_id) {
+                                    if (item_object.jumlah_permintaan > 0) {
+                                        deletion_is_valid = false;
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    if (deletion_is_valid) {
+                        let deleted_item_object: MasterBarang;
+
+                        master_inventory_data.kategori.forEach((category_object) => {
+                            if (category_object.id == category_id) {
+                                category_object.barang.forEach((item_object, index) => {
+                                    if (item_object.id == item_id) {
+                                        deleted_item_object = item_object;
+
+                                        category_object.barang.splice(index, 1);
+
+                                        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                                    }
+                                });
+                            }
+                        });
+
+                        return responseFormat<ResponseObject<MasterBarang>>(
+                            true,
+                            202,
+                            `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil dihapus.`,
+                            {
+                                master_category: deleted_item_object,
+                            }
+                        );
+                    } else if (!deletion_is_valid) {
+                        return responseFormat<null>(false, 400, `Jumlah permintaan barang dengan id ${item_id} harus 0.`, null);
                     }
-                });
+                } else if (!item_id_is_valid) {
+                    return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                }
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
             }
-        });
-
-        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
-
-        return deleted_item_object;
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
     }
 
     /* ---------------------------------- TABLE --------------------------------- */
 
     public async masterTableGetKategoriAll(year: number): Promise<any> {
-        const master_kategori_data: MasterKategori[] = await this.masterGetKategoriAll(year);
+        const master_kategori_data: MasterKategori[] = (await this.masterGetKategoriAll(year)).result.master_category;
         const categories: CategoriesPayload[] = [];
 
         master_kategori_data.forEach(async (category_object, index) => {

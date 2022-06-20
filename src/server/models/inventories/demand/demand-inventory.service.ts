@@ -69,7 +69,8 @@ export class DemandInventoryService {
             demand_barang_data.map(async (item_object: DemandBarang) => {
                 return {
                     ...item_object,
-                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id),
+                    kategori_name: (await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id)).result
+                        .master_category_name,
                 };
             })
         );
@@ -166,7 +167,7 @@ export class DemandInventoryService {
             } else if (demand_barang != undefined) {
                 let demand_barang_with_category_name: DemandBarangWithCategoryName = {
                     ...demand_barang,
-                    kategori_name: await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id),
+                    kategori_name: (await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id)).result.master_category_name,
                 };
 
                 return responseFormat<ResponseObject<DemandBarangWithCategoryName>>(true, 200, `Pengajuan barang dengan id ${id} berhasil ditemukan.`, {

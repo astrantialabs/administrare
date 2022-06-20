@@ -21,16 +21,17 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile, UseInterceptors } from "@nestjs/common";
 import { MasterInventoryService } from "./master-inventory.service";
 import { MasterBarang, MasterInventoryDataDocument, MasterKategori } from "./schema/master-inventory.schema";
-import { ParameterMasterCreateItemDto, ParameterMasterUpdateItemDto } from "./dto/item.schema";
-import { ItemSearchData, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
+import { ItemSearchData, MasterParameterBarang, MasterParameterKategori, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
 import { join } from "path";
-import { calculateSaldoAkhirJumlahSatuan, currentDate, slugifyDate } from "@/shared/utils/util";
+import { currentDate, slugifyDate } from "@/shared/utils/util";
+import { ResponseFormat, ResponseFormatInterceptor } from "@/server/common/interceptors/response-format.interceptor";
+import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 
 /**
  * @class MasterInventoryDataController
@@ -96,7 +97,8 @@ export class MasterInventoryController {
      * @returns {Promise<MasterKategori[]>} Return all kategori object
      */
     @Get("kategori/all")
-    public async masterGetKategoriAll(): Promise<MasterKategori[]> {
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterGetKategoriAll(): Promise<ResponseFormat<ResponseObject<MasterKategori[]>>> {
         return await this.masterInventoryService.masterGetKategoriAll(2022);
     }
 
@@ -106,7 +108,10 @@ export class MasterInventoryController {
      * @returns {Promise<MasterBarang[]>} Return all barang object
      */
     @Get("kategori/:category_id/barang/all")
-    public async masterGetBarangAllByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<MasterBarang[]> {
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterGetBarangAllByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang[]>>> {
         return await this.masterInventoryService.masterGetBarangAllByKategoriId(2022, category_id);
     }
 
@@ -116,7 +121,10 @@ export class MasterInventoryController {
      * @returns {Promise<MasterKategori>} Return kategori object
      */
     @Get("kategori/:category_id")
-    public async masterGetKategoriByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<MasterKategori> {
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterGetKategoriByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
         return await this.masterInventoryService.masterGetKategoriByKategoriId(2022, category_id);
     }
 
@@ -127,10 +135,11 @@ export class MasterInventoryController {
      * @returns {Promise<MasterBarang>} Return barang object
      */
     @Get("kategori/:category_id/barang/:item_id")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async masterGetBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
-    ): Promise<MasterBarang> {
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
         return await this.masterInventoryService.masterGetBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
@@ -140,7 +149,10 @@ export class MasterInventoryController {
      * @returns {Promise<string>} Return the name of category object
      */
     @Get("kategori/:category_id/name")
-    public async masterGetKategoriNameByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<string> {
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterGetKategoriNameByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<ResponseFormat<ResponseObject<string>>> {
         return await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, category_id);
     }
 
@@ -151,10 +163,11 @@ export class MasterInventoryController {
      * @returns {Promise<string>} Return the name of item object
      */
     @Get("kategori/:category_id/barang/:item_id/name")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async masterGetBarangNameByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
-    ): Promise<string> {
+    ): Promise<ResponseFormat<ResponseObject<string>>> {
         return await this.masterInventoryService.masterGetBarangNameByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
@@ -164,16 +177,9 @@ export class MasterInventoryController {
      * @returns {Promise<MasterKategori>} Return the new kategori object
      */
     @Post("new/kategori")
-    public async masterCreateKategori(@Body("kategori") kategori: string): Promise<MasterKategori> {
-        let new_kategori: MasterKategori = {
-            id: await this.masterInventoryService.masterGetNewKategoriId(2022),
-            kategori: kategori,
-            created_at: currentDate(),
-            updated_at: currentDate(),
-            barang: [],
-        };
-
-        return await this.masterInventoryService.masterCreateKategori(2022, new_kategori);
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterCreateKategori(@Body() body: MasterParameterKategori): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        return await this.masterInventoryService.masterCreateKategori(2022, body);
     }
 
     /**
@@ -182,29 +188,9 @@ export class MasterInventoryController {
      * @returns {Promise<MasterBarang>} Return the new barang object
      */
     @Post("new/barang")
-    public async masterCreateBarang(@Body() body: ParameterMasterCreateItemDto): Promise<MasterBarang> {
-        let kategori_id = parseInt(body.kategori_id as unknown as string);
-
-        let new_barang: MasterBarang = {
-            id: await this.masterInventoryService.masterGetNewBarangIdByKategoriId(2022, kategori_id),
-            nama: body.nama,
-            satuan: body.satuan,
-            created_at: currentDate(),
-            updated_at: currentDate(),
-            saldo_jumlah_satuan: parseInt(body.saldo_jumlah_satuan as unknown as string),
-            mutasi_barang_masuk_jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
-            mutasi_barang_keluar_jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string),
-            saldo_akhir_jumlah_satuan: calculateSaldoAkhirJumlahSatuan(
-                parseInt(body.saldo_jumlah_satuan as unknown as string),
-                parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
-                parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string)
-            ),
-            jumlah_permintaan: 0,
-            harga_satuan: parseInt(body.harga_satuan as unknown as string),
-            keterangan: body.keterangan,
-        };
-
-        return await this.masterInventoryService.masterCreateBarang(2022, kategori_id, new_barang);
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterCreateBarang(@Body() body: MasterParameterBarang): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        return await this.masterInventoryService.masterCreateBarang(2022, body);
     }
 
     /**
@@ -214,11 +200,12 @@ export class MasterInventoryController {
      * @returns {Promise<MasterKategori>} Return the updated kategori object
      */
     @Put("kategori/:category_id")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async masterUpdateKategoriByKategoriId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
-        @Body("kategori") kategori: string
-    ): Promise<MasterKategori> {
-        return await this.masterInventoryService.masterUpdateKategoriByKategoriId(2022, category_id, kategori);
+        @Body() body: MasterParameterKategori
+    ): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        return await this.masterInventoryService.masterUpdateKategoriByKategoriId(2022, category_id, body);
     }
 
     /**
@@ -229,22 +216,13 @@ export class MasterInventoryController {
      * @returns {Promise<MasterBarang>} Return the updated barang object
      */
     @Put("kategori/:category_id/barang/:item_id")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async masterUpdateBarangByKategoriIdAndItemId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number,
-        @Body() body: ParameterMasterUpdateItemDto
-    ): Promise<MasterBarang> {
-        let barang: ParameterMasterUpdateItemDto = {
-            nama: body.nama,
-            satuan: body.satuan,
-            saldo_jumlah_satuan: body.saldo_jumlah_satuan,
-            mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
-            mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
-            harga_satuan: body.harga_satuan,
-            keterangan: body.keterangan,
-        };
-
-        return await this.masterInventoryService.masterUpdateBarangByKategoriIdAndItemId(2022, category_id, item_id, barang);
+        @Body() body: MasterParameterBarang
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        return await this.masterInventoryService.masterUpdateBarangByKategoriIdAndItemId(2022, category_id, item_id, body);
     }
 
     /**
@@ -253,7 +231,10 @@ export class MasterInventoryController {
      * @returns {Promise<MasterKategori>} Return the deleted kategori object
      */
     @Delete("kategori/:category_id")
-    public async masterDeleteKategoriByKategoriId(@Param("category_id", new ParseIntPipe()) category_id: number): Promise<MasterKategori> {
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterDeleteKategoriByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
         return await this.masterInventoryService.masterDeleteKategoriByKategoriId(2022, category_id);
     }
 
@@ -264,10 +245,11 @@ export class MasterInventoryController {
      * @returns {Promise<MasterBarang>} Return the deleted barang object
      */
     @Delete("kategori/:category_id/barang/:item_id")
+    @UseInterceptors(ResponseFormatInterceptor)
     public async masterDeleteBarangByKategoriIdAndBarangId(
         @Param("category_id", new ParseIntPipe()) category_id: number,
         @Param("item_id", new ParseIntPipe()) item_id: number
-    ): Promise<MasterBarang> {
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
         return await this.masterInventoryService.masterDeleteBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 

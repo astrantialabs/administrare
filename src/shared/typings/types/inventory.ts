@@ -58,6 +58,21 @@ export type RequestCreateBarang = {
     deskripsi: string | null;
 };
 
+export type MasterParameterKategori = {
+    kategori: string;
+};
+
+export type MasterParameterBarang = {
+    kategori_id: number;
+    nama: string;
+    satuan: string;
+    saldo_jumlah_satuan: number;
+    mutasi_barang_masuk_jumlah_satuan: number;
+    mutasi_barang_keluar_jumlah_satuan: number;
+    harga_satuan: number;
+    keterangan: string | null;
+};
+
 export type MasterTotal = {
     saldo: number;
     mutasi_barang_masuk: number;

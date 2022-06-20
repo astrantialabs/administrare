@@ -22,7 +22,6 @@
  */
 
 import { Controller, Get, Render, Sse, UseInterceptors } from "@nestjs/common";
-import { interval, map, Observable } from "rxjs";
 
 import { ParamsInterceptor } from "./common/interceptors/params.interceptor";
 
