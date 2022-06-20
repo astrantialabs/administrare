@@ -61,7 +61,7 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
                 axiosInstance
                     .post("__api/data/inventory/demand/new/kategori", payload)
                     .then((response) => {
-                        if (response.data.success) {
+                        if (response.data.success === true) {
                             toast({
                                 title: "Kategori berhasil ditambahkan!",
                                 description: response.data.message,
@@ -78,7 +78,7 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
                     })
                     .catch((error) => {
                         if (error.response) {
-                            if (!error.response.data.success) {
+                            if (error.response.data.success === false) {
                                 toast({
                                     title: "Kategori gagal ditambahkan!",
                                     description: error.response.data.message,

@@ -154,7 +154,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                 axiosInstance
                     .post("__api/data/inventory/request/new/barang", payload)
                     .then((response) => {
-                        if (response.data.success) {
+                        if (response.data.success === true) {
                             toast({
                                 title: "Barang berhasil ditambahkan!",
                                 description: response.data.message,
@@ -176,7 +176,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                         console.log(error);
 
                         if (error.response) {
-                            if (!error.response.data.success) {
+                            if (error.response.data.success === false) {
                                 toast({
                                     title: "Barang gagal ditambahkan!",
                                     description: error.response.data.message,

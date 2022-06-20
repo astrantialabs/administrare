@@ -87,7 +87,7 @@ const InventoryMasterManageCreateItem: NextPage = () => {
                 axiosInstance
                     .post("__api/data/inventory/master/new/barang", payload)
                     .then((response) => {
-                        if (response.data.success) {
+                        if (response.data.success === true) {
                             toast({
                                 title: "Barang berhasil ditambahkan!",
                                 description: response.data.message,
@@ -96,10 +96,28 @@ const InventoryMasterManageCreateItem: NextPage = () => {
                                 duration: 5000,
                                 isClosable: true,
                             });
+
+                            actions.resetForm();
+                            actions.setSubmitting(false);
+                            resolve();
+                        }
+                    })
+                    .catch((error) => {
+                        if (error.response) {
+                            if (!error.response.data.success === false) {
+                                toast({
+                                    title: "Barang gagal ditambahkan!",
+                                    description: error.response.data.message,
+                                    status: "error",
+                                    position: "bottom-right",
+                                    duration: 5000,
+                                    isClosable: true,
+                                });
+                            }
                         } else {
                             toast({
                                 title: "Barang gagal ditambahkan!",
-                                description: response.data.message,
+                                description: "Barang baru gagal ditambahkan ke dalam database.",
                                 status: "error",
                                 position: "bottom-right",
                                 duration: 5000,
@@ -107,19 +125,6 @@ const InventoryMasterManageCreateItem: NextPage = () => {
                             });
                         }
 
-                        actions.resetForm();
-                        actions.setSubmitting(false);
-                        resolve();
-                    })
-                    .catch(() => {
-                        toast({
-                            title: "Barang gagal ditambahkan!",
-                            description: "Barang baru gagal ditambahkan ke dalam database.",
-                            status: "error",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
                         actions.setSubmitting(false);
                         resolve();
                     });

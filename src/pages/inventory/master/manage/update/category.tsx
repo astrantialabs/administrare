@@ -76,7 +76,7 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
                 axiosInstance
                     .put(`__api/data/inventory/master/kategori/${category_id}`, payload)
                     .then((response) => {
-                        if (response.data.success) {
+                        if (response.data.success === true) {
                             toast({
                                 title: "Kategori berhasil diupdate!",
                                 description: response.data.message,
@@ -85,28 +85,34 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
                                 duration: 5000,
                                 isClosable: true,
                             });
+
+                            actions.setSubmitting(false);
+                            resolve();
+                        }
+                    })
+                    .catch((error) => {
+                        if (error.response) {
+                            if (error.response.data.success === false) {
+                                toast({
+                                    title: "Kategori gagal diupdate!",
+                                    description: error.response.data.message,
+                                    status: "error",
+                                    position: "bottom-right",
+                                    duration: 5000,
+                                    isClosable: true,
+                                });
+                            }
                         } else {
                             toast({
                                 title: "Kategori gagal diupdate!",
-                                description: response.data.message,
+                                description: "Kategori baru gagal diupdate ke dalam database.",
                                 status: "error",
                                 position: "bottom-right",
                                 duration: 5000,
                                 isClosable: true,
                             });
                         }
-                        actions.setSubmitting(false);
-                        resolve();
-                    })
-                    .catch(() => {
-                        toast({
-                            title: "Kategori gagal diupdate!",
-                            description: "Kategori baru gagal diupdate ke dalam database.",
-                            status: "error",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
+
                         actions.setSubmitting(false);
                         resolve();
                     });

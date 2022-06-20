@@ -17,14 +17,13 @@
  */
 
 import { NextPage } from "next";
-import { Stack, Heading, FormControl, FormLabel, Input, Select, FormErrorMessage, Button, useToast } from "@chakra-ui/react";
+import { Stack, Heading, FormControl, FormLabel, Input, FormErrorMessage, Button, useToast } from "@chakra-ui/react";
 import { FormikValidatorBase, IsNotEmpty, IsOptional } from "formik-class-validator";
 import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps } from "formik";
 
 import Sidebar from "@/components/Sidebar";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useTableCategories } from "@/client/hooks/useTableCategories";
-import { MasterBarang } from "@/server/models/inventories/master/schema/master-inventory.schema";
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 import { fetch } from "@/shared/utils/fetch";
 
@@ -112,7 +111,7 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                 axiosInstance
                     .put(`__api/data/inventory/master/kategori/${category_id}/barang/${item_id}`, payload)
                     .then((response) => {
-                        if (response.data.success) {
+                        if (response.data.success === true) {
                             toast({
                                 title: "Barang berhasil diupdate!",
                                 description: response.data.message,
@@ -121,31 +120,36 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                                 duration: 5000,
                                 isClosable: true,
                             });
+
+                            actions.setSubmitting(false);
+                            resolve();
+                        }
+                    })
+                    .catch((error) => {
+                        if (error.response) {
+                            if (error.response.data.success === false) {
+                                toast({
+                                    title: "Barang gagal diupdate!",
+                                    description: error.response.data.message,
+                                    status: "error",
+                                    position: "bottom-right",
+                                    duration: 5000,
+                                    isClosable: true,
+                                });
+                            }
                         } else {
                             toast({
                                 title: "Barang gagal diupdate!",
-                                description: response.data.message,
+                                description: "Barang baru gagal diupdate ke dalam database.",
                                 status: "error",
                                 position: "bottom-right",
                                 duration: 5000,
                                 isClosable: true,
                             });
-                        }
 
-                        actions.setSubmitting(false);
-                        resolve();
-                    })
-                    .catch(() => {
-                        toast({
-                            title: "Barang gagal diupdate!",
-                            description: "Barang baru gagal diupdate ke dalam database.",
-                            status: "error",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
-                        actions.setSubmitting(false);
-                        resolve();
+                            actions.setSubmitting(false);
+                            resolve();
+                        }
                     });
             }, 1000);
         });
