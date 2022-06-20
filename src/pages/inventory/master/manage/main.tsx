@@ -28,7 +28,7 @@ import Sidebar from "@/components/Sidebar";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 
-import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure, ButtonGroup } from "@chakra-ui/react";
+import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure, ButtonGroup, useToast } from "@chakra-ui/react";
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody, PopoverArrow, PopoverCloseButton, Portal } from "@chakra-ui/react";
 import { MasterTotal } from "@/shared/typings/types/inventory";
 
@@ -98,6 +98,8 @@ const createArr = (n: number, tableData: any): PayloadTest[] => {
 
 const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, categories_roman, total }) => {
     const { onOpen } = useDisclosure();
+    const toast = useToast();
+
     const [loading, setLoading] = useState(false);
 
     const deleteKategori = (type: any, kategoriId: any, itemId?: any) => {
@@ -105,15 +107,52 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
             setLoading(true);
             axiosInstance
                 .delete(`/__api/data/inventory/master/kategori/${kategoriId}`, { withCredentials: true })
-                .then((res) => {
-                    setLoading(false);
+                .then((response) => {
+                    if (response.data.success === true) {
+                        toast({
+                            title: "Kategori berhasil dihapus!",
+                            description: response.data.message,
+                            status: "success",
+                            position: "bottom-right",
+                            duration: 5000,
+                            isClosable: true,
+                        });
 
-                    console.log(res);
-
-                    window.location.reload();
+                        setLoading(false);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
                 })
-                .catch((err) => {
-                    console.log(err);
+                .catch((error) => {
+                    console.log(error);
+
+                    if (error.response) {
+                        if (error.response.data.success === false) {
+                            toast({
+                                title: "Kategori gagal dihapus!",
+                                description: error.response.data.message,
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
+                    } else {
+                        toast({
+                            title: "Kategori gagal dihapus!",
+                            description: "Kategori baru gagal dihapus dari database.",
+                            status: "error",
+                            position: "bottom-right",
+                            duration: 5000,
+                            isClosable: true,
+                        });
+
+                        setLoading(false);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
                 });
         }
 
@@ -124,15 +163,52 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                 .delete(`/__api/data/inventory/master/kategori/${kategoriId}/barang/${itemId}`, {
                     withCredentials: true,
                 })
-                .then((res) => {
-                    setLoading(false);
+                .then((response) => {
+                    if (response.data.success === true) {
+                        toast({
+                            title: "Barang berhasil dihapus!",
+                            description: response.data.message,
+                            status: "success",
+                            position: "bottom-right",
+                            duration: 5000,
+                            isClosable: true,
+                        });
 
-                    console.log(res);
-
-                    window.location.reload();
+                        setLoading(false);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
                 })
-                .catch((err) => {
-                    console.log(err);
+                .catch((error) => {
+                    console.log(error);
+
+                    if (error.response) {
+                        if (error.response.data.success === false) {
+                            toast({
+                                title: "Barang gagal dihapus!",
+                                description: error.response.data.message,
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
+                    } else {
+                        toast({
+                            title: "Barang gagal dihapus!",
+                            description: "Barang baru gagal dihapus dari database.",
+                            status: "error",
+                            position: "bottom-right",
+                            duration: 5000,
+                            isClosable: true,
+                        });
+
+                        setLoading(false);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
                 });
         }
     };
