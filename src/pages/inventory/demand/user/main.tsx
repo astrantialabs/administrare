@@ -127,7 +127,8 @@ const InventoryDemandMain: NextPage = () => {
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{category.username}</Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {ConvertDate(category.created_at)}- direspon {ConvertDate(category.responded_at)}
+                                                dibuat {ConvertDate(category.created_at)}- direspon{" "}
+                                                {typeof ConvertDate(category.responded_at) === null ? ConvertDate(category.responded_at) : "belum"}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
@@ -156,7 +157,8 @@ const InventoryDemandMain: NextPage = () => {
                                                 {item.username} dari kategori {item.kategori_name}
                                             </Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {ConvertDate(item.created_at)}- direspon {ConvertDate(item.responded_at)}
+                                                dibuat {ConvertDate(item.created_at)}- direspon{" "}
+                                                {typeof ConvertDate(item.responded_at) === null ? ConvertDate(item.responded_at) : "belum"}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>

@@ -26,17 +26,17 @@ import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useTableCategories } from "@/client/hooks/useTableCategories";
 
 export interface InventoryDemandManageItemParameter {
-    username: string;
     kategori_id: string;
+    username: string;
     barang: string;
     satuan: string;
 }
 
 export class InventoryDemandManageCreateItemValidationModel extends FormikValidatorBase implements InventoryDemandManageItemParameter {
+    kategori_id: string;
+
     @IsNotEmpty({ message: "Username tidak boleh kosong!" })
     username: string;
-
-    kategori_id: string;
 
     @IsNotEmpty({ message: "Nama barang tidak boleh kosong!" })
     barang: string;
@@ -83,6 +83,8 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                         resolve();
                     })
                     .catch((error) => {
+                        console.log(error);
+
                         if (error.response) {
                             if (!error.response.data.success) {
                                 toast({
@@ -133,11 +135,14 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                                             {categories.isLoading ? (
                                                 <option>Loading...</option>
                                             ) : (
-                                                categories.data.map((category) => (
-                                                    <option key={category.id} value={category.id}>
-                                                        {category.name}
-                                                    </option>
-                                                ))
+                                                <>
+                                                    <option value="">Pilih kategori</option>
+                                                    {categories.data.map((category) => (
+                                                        <option key={category.id} value={category.id}>
+                                                            {category.name}
+                                                        </option>
+                                                    ))}
+                                                </>
                                             )}
                                         </Select>
                                         <FormErrorMessage>{form.errors.kategori_id}</FormErrorMessage>

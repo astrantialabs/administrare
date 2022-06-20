@@ -116,7 +116,8 @@ const InventoryRequestUserMain: NextPage = () => {
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{item.username}</Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {ConvertDate(item.created_at)} - direspon {ConvertDate(item.responded_at)}
+                                                dibuat {ConvertDate(item.created_at)} - direspon{" "}
+                                                {typeof ConvertDate(item.responded_at) === null ? ConvertDate(item.responded_at) : "belum"}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
@@ -126,6 +127,10 @@ const InventoryRequestUserMain: NextPage = () => {
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Barang</StatLabel>
                                                     <StatNumber fontSize="large">{item.barang_name}</StatNumber>
+                                                </Stat>
+                                                <Stat marginRight={8}>
+                                                    <StatLabel>Total</StatLabel>
+                                                    <StatNumber fontSize="large">{item.total}</StatNumber>
                                                 </Stat>
                                             </StatGroup>
                                             <Text fontSize={10} mt={4}>
