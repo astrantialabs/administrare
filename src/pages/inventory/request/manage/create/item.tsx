@@ -163,33 +163,40 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                                 duration: 5000,
                                 isClosable: true,
                             });
+
+                            actions.setSubmitting(false);
+                            actions.resetForm();
+                            setSelection("");
+                            setCategoryId("");
+                            setItem("");
+                            resolve();
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+
+                        if (error.response) {
+                            if (!error.response.data.success) {
+                                toast({
+                                    title: "Barang gagal ditambahkan!",
+                                    description: error.response.data.message,
+                                    status: "error",
+                                    position: "bottom-right",
+                                    duration: 5000,
+                                    isClosable: true,
+                                });
+                            }
                         } else {
                             toast({
                                 title: "Barang gagal ditambahkan!",
-                                description: response.data.message,
+                                description: "Barang baru gagal ditambahkan ke dalam database.",
                                 status: "error",
                                 position: "bottom-right",
                                 duration: 5000,
                                 isClosable: true,
                             });
                         }
-                        actions.setSubmitting(false);
-                        actions.resetForm();
-                        setSelection("");
-                        setCategoryId("");
-                        setItem("");
-                        resolve();
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        toast({
-                            title: "Barang gagal ditambahkan!",
-                            description: "Barang baru gagal ditambahkan ke dalam database.",
-                            status: "error",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
+
                         actions.setSubmitting(false);
                         resolve();
                     });

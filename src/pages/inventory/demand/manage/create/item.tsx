@@ -77,30 +77,35 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                                 isClosable: true,
                             });
                         } else {
-                            toast({
-                                title: "Barang gagal ditambahkan!",
-                                description: response.data.message,
-                                status: "error",
-                                position: "bottom-right",
-                                duration: 5000,
-                                isClosable: true,
-                            });
                         }
                         actions.resetForm();
                         actions.setSubmitting(false);
                         resolve();
                     })
-                    .catch(() => {
-                        toast({
-                            title: "Barang gagal ditambahkan!",
-                            description: "Barang baru gagal ditambahkan ke dalam database.",
-                            status: "error",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
-                        actions.setSubmitting(false);
-                        resolve();
+                    .catch((error) => {
+                        if (error.response) {
+                            if (!error.response.data.success) {
+                                toast({
+                                    title: "Barang gagal ditambahkan!",
+                                    description: error.response.data.message,
+                                    status: "error",
+                                    position: "bottom-right",
+                                    duration: 5000,
+                                    isClosable: true,
+                                });
+                            }
+                        } else {
+                            toast({
+                                title: "Barang gagal ditambahkan!",
+                                description: "Barang baru gagal ditambahkan ke dalam database.",
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                            actions.setSubmitting(false);
+                            resolve();
+                        }
                     });
             }, 1000);
         });

@@ -70,10 +70,28 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
                                 duration: 5000,
                                 isClosable: true,
                             });
+
+                            actions.resetForm();
+                            actions.setSubmitting(false);
+                            resolve();
+                        }
+                    })
+                    .catch((error) => {
+                        if (error.response) {
+                            if (!error.response.data.success) {
+                                toast({
+                                    title: "Kategori gagal ditambahkan!",
+                                    description: error.response.data.message,
+                                    status: "error",
+                                    position: "bottom-right",
+                                    duration: 5000,
+                                    isClosable: true,
+                                });
+                            }
                         } else {
                             toast({
                                 title: "Kategori gagal ditambahkan!",
-                                description: response.data.message,
+                                description: "Kategori baru gagal ditambahkan ke dalam database.",
                                 status: "error",
                                 position: "bottom-right",
                                 duration: 5000,
@@ -81,19 +99,6 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
                             });
                         }
 
-                        actions.resetForm();
-                        actions.setSubmitting(false);
-                        resolve();
-                    })
-                    .catch(() => {
-                        toast({
-                            title: "Kategori gagal ditambahkan!",
-                            description: "Kategori baru gagal ditambahkan ke dalam database.",
-                            status: "error",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
                         actions.setSubmitting(false);
                         resolve();
                     });
