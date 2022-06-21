@@ -28,8 +28,7 @@ from utility import Utility
 
 class InventoryRequest():
     def main(currentDate):
-        
-        filePath = f"../{Dependency.inventoryRequestFolderPath}/{currentDate}.xlsx"
+        filePath = f"../{Dependency.inventoryRequestFolderPath}/raw {currentDate}.xlsx"
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)

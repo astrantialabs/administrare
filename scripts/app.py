@@ -47,7 +47,7 @@ def inventoryMasterDownload(currentDate: str):
         return {"success": False}
 
 
-@app.post("/__api/inventory/request/download/{currentDate}")
+@app.post("/__api/inventory/request/download/raw/{currentDate}")
 def inventoryRequestDownload(currentDate: str):
     try:
         InventoryRequest.main(currentDate)

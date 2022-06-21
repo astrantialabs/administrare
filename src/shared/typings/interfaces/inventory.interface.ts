@@ -28,3 +28,14 @@
 export interface ResponseObject<T> {
     [key: string]: T;
 }
+
+export interface DownloadOptionDataDate {
+    id: number;
+    date: string;
+};
+
+export interface DownloadOptionData {
+    id: number;
+    name: string;
+    date: DownloadOptionDataDate[];
+};
