@@ -124,7 +124,7 @@ const InventoryRequestUserMain: NextPage = () => {
                                                     <StatLabel>Kategori</StatLabel>
                                                     <StatNumber fontSize="large">{item.kategori_name}</StatNumber>
                                                 </Stat>
-                                                <Stat marginRight={8}>
+                                                <Stat marginRight={8} maxW="500px">
                                                     <StatLabel>Barang</StatLabel>
                                                     <StatNumber fontSize="large">{item.barang_name}</StatNumber>
                                                 </Stat>
