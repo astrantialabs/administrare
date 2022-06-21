@@ -65,9 +65,9 @@ const InventoryRequestManageCreateItem: NextPage = () => {
         return response.data;
     };
     const useInventoryBarangAll = () => useQuery(["inventory-barang-all"], () => fetchInventoryBarangAll());
+    let items_query: UseQueryResult<any[], unknown> = useInventoryBarangAll();
 
     const InputAutoComplete = ({ formikFields, formContext }: { formikFields: any; formContext: any }) => {
-        let items_query: UseQueryResult<any[], unknown> = useInventoryBarangAll();
         let values: { value: string; item_name: string; category_name: string }[] = [];
 
         if (!items_query.isLoading) {
@@ -164,6 +164,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                                 isClosable: true,
                             });
 
+                            items_query.refetch();
                             actions.setSubmitting(false);
                             actions.resetForm();
                             setSelection("");
