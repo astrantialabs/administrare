@@ -17,6 +17,7 @@
  */
 
 import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
+import { readFileSync } from "fs";
 
 /**
  * @description Roman number conversion.
@@ -118,4 +119,10 @@ export function responseFormat<T>(success: boolean, statusCode: number, message:
         message: message,
         result: result,
     };
+}
+
+export function readJSON(path: string) {
+    const json_file = readFileSync(path, { encoding: "utf8" });
+
+    return JSON.parse(json_file);
 }
