@@ -30,7 +30,9 @@ from inventories.demand.inventoryDemand import InventoryDemand
 class Test:
     def main():
         # InventoryMaster.main(Utility.currentDate())
-        InventoryRequest.main(Utility.currentDate())
+        # InventoryRequest.raw(Utility.currentDate())
+        # InventoryRequest.updateUserData()
+        InventoryRequest.updateOptionData()
         # InventoryDemand.main(Utility.currentDate())
 
 

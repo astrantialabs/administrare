@@ -37,6 +37,7 @@ def test():
     except:
         print("Error")
 
+
 @app.post("/__api/inventory/master/download/{currentDate}")
 def inventoryMasterDownload(currentDate: str):
     try:
@@ -47,10 +48,21 @@ def inventoryMasterDownload(currentDate: str):
         return {"success": False}
 
 
+@app.post("/__api/inventory/request/update")
+def inventoryRequestUpdateData():
+    try:
+        InventoryRequest.updateUserData()
+        InventoryRequest.updateOptionData()
+        return {"success": True}
+
+    except:
+        return {"success": False}
+
+
 @app.post("/__api/inventory/request/download/raw/{currentDate}")
 def inventoryRequestDownload(currentDate: str):
     try:
-        InventoryRequest.main(currentDate)
+        InventoryRequest.raw(currentDate)
         return {"success": True}
 
     except:
