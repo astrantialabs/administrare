@@ -134,6 +134,15 @@ export class InventoryController {
         return {};
     }
 
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
+    @Get("request/download")
+    @Render("inventory/request/download/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryRequestDownload(): {} {
+        return {};
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                              INVENTORY DEMAND                              */
     /* -------------------------------------------------------------------------- */
@@ -192,7 +201,6 @@ export class InventoryController {
     public inventoryDemandManageCreateKategori(): {} {
         return {};
     }
-
 
     @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
