@@ -111,7 +111,7 @@ const InventoryRequestUserMain: NextPage = () => {
                     ) : (
                         QueryDataFilter<InventoryRequestItems>(status, items).map((item: InventoryRequestItem) => (
                             <Stack key={item.id} spacing={4}>
-                                <Box rounded={4} padding={8} background={BoxStatusBackgroundSwitch(item.status)}>
+                                <Box rounded={4} padding="8px" background={BoxStatusBackgroundSwitch(item.status)}>
                                     <Flex flexGrow={1}>
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{item.username}</Heading>
@@ -119,23 +119,27 @@ const InventoryRequestUserMain: NextPage = () => {
                                                 dibuat {ConvertDate(item.created_at)} - direspon{" "}
                                                 {typeof ConvertDate(item.responded_at) === null ? "belum" : ConvertDate(item.responded_at)}
                                             </Text>
-                                            <StatGroup marginTop={2}>
-                                                <Stat marginRight={8}>
-                                                    <StatLabel>Kategori</StatLabel>
-                                                    <StatNumber fontSize="large">{item.kategori_name}</StatNumber>
+                                            <StatGroup marginTop={2} padding={0}>
+                                                <Stat marginRight={8} size="sm" padding={0}>
+                                                    <StatLabel maxW="75px">Kategori</StatLabel>
+                                                    <StatNumber fontSize="14px">{item.kategori_name}</StatNumber>
                                                 </Stat>
-                                                <Stat marginRight={8} maxW="500px">
+                                                <Stat marginRight={8} width="600px" padding={0}>
                                                     <StatLabel>Barang</StatLabel>
-                                                    <StatNumber fontSize="large">{item.barang_name}</StatNumber>
+                                                    <StatNumber fontSize="14px">{item.barang_name}</StatNumber>
                                                 </Stat>
-                                                <Stat marginRight={8}>
+                                                <Stat marginRight={8} width="40px" padding={0}>
                                                     <StatLabel>Total</StatLabel>
-                                                    <StatNumber fontSize="large">{item.total}</StatNumber>
+                                                    <StatNumber fontSize="14px">{item.total}</StatNumber>
                                                 </Stat>
                                             </StatGroup>
-                                            <Text fontSize={10} mt={4}>
-                                                {item.deskripsi}
-                                            </Text>
+                                            {item.deskripsi === "" ? (
+                                                <></>
+                                            ) : (
+                                                <Text fontSize={10} mt={4}>
+                                                    {item.deskripsi}
+                                                </Text>
+                                            )}
                                         </Box>
                                     </Flex>
                                 </Box>

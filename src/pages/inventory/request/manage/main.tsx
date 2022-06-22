@@ -80,7 +80,7 @@ const InventoryRequestManageMain: NextPage = () => {
                     ) : (
                         QueryDataFilter<InventoryRequestItems>(status, items).map((item: InventoryRequestItem) => (
                             <Stack key={item.id} spacing={4}>
-                                <Box rounded={4} padding={8} background={BoxStatusBackgroundSwitch(item.status)}>
+                                <Box rounded={4} padding={"8px"} background={BoxStatusBackgroundSwitch(item.status)}>
                                     <Flex flexGrow={1}>
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{item.username}</Heading>
@@ -91,20 +91,24 @@ const InventoryRequestManageMain: NextPage = () => {
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Kategori</StatLabel>
-                                                    <StatNumber fontSize="large">{item.kategori_name}</StatNumber>
+                                                    <StatNumber fontSize="14px">{item.kategori_name}</StatNumber>
                                                 </Stat>
                                                 <Stat marginRight={8} maxW="500px">
                                                     <StatLabel>Barang</StatLabel>
-                                                    <StatNumber fontSize="large">{item.barang_name}</StatNumber>
+                                                    <StatNumber fontSize="14px">{item.barang_name}</StatNumber>
                                                 </Stat>
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Total</StatLabel>
-                                                    <StatNumber fontSize="large">{item.total}</StatNumber>
+                                                    <StatNumber fontSize="14px">{item.total}</StatNumber>
                                                 </Stat>
                                             </StatGroup>
-                                            <Text fontSize={10} mt={4}>
-                                                {item.deskripsi}
-                                            </Text>
+                                            {item.deskripsi === "" ? (
+                                                <></>
+                                            ) : (
+                                                <Text fontSize={10} mt={4}>
+                                                    {item.deskripsi}
+                                                </Text>
+                                            )}
                                             <Stack direction="row" marginTop={4}>
                                                 {item.status === 0 ? (
                                                     <>
