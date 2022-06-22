@@ -52,7 +52,7 @@ const InventoryRequestDownloadMain: NextPage = () => {
                         <Text>Loading</Text>
                     ) : (
                         downloadRequestQuery.data.map((item: DownloadOptionData) => (
-                            <Accordion defaultIndex={[0]} allowMultiple>
+                            <Accordion allowMultiple>
                                 <AccordionItem borderWidth="1px" borderColor={`white`}>
                                     <AccordionButton bg={`gray.100`} w="250px">
                                         <Box flex="1" textAlign="left">
