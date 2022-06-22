@@ -230,7 +230,9 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                         return (
                             <Popover>
                                 <PopoverTrigger>
-                                    <Button zIndex={1}>Actions</Button>
+                                    <Button size="sm" zIndex={1}>
+                                        Actions
+                                    </Button>
                                 </PopoverTrigger>
                                 <Portal>
                                     <PopoverContent>
@@ -260,7 +262,9 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                             <>
                                 <Popover>
                                     <PopoverTrigger>
-                                        <Button zIndex={1}>Actions</Button>
+                                        <Button size="sm" zIndex={1}>
+                                            Actions
+                                        </Button>
                                     </PopoverTrigger>
                                     <Portal>
                                         <PopoverContent>
