@@ -54,6 +54,10 @@ class Utility():
         return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 
+    def slugifyDate(rawDate):
+        return rawDate.replace(" ", "-").replace(":", "-").replace(":", "-");        
+
+
     def convertStatus(rawStatus):
         status = None
 
