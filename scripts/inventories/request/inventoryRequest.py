@@ -23,11 +23,17 @@
 
 import os
 import datetime
+import calendar
+
+from docx import Document
+from docx.shared import Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from dependency import Dependency
 from excel import Excel
 from database import Database
 from utility import Utility
+
 
 class InventoryRequest():
     def writeRaw(currentDate):
@@ -120,6 +126,9 @@ class InventoryRequest():
 
 
     def writeUser(userId, dateId):
+        masterCollection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
+        inventoryMasterDocument = masterCollection.find_one({"tahun": 2022})
+
         optionData = Utility.readJSON("./json/option_data.json")
         userData = Utility.readJSON("./json/user_data.json")
 
@@ -132,12 +141,19 @@ class InventoryRequest():
                         dateValue = dateObject.get("date")
 
         
-        filePath = f"../{Dependency.inventoryRequestFolderPath}/{usernameValue} {Utility.slugifyDate(dateValue)}.xlsx"
+        splittedDate = Utility.slugifyDate(dateValue).split("-")
 
-        Excel.create_file(filePath)
-        workbook = Excel(filePath)
-        workbook.change_sheet_name("Sheet", f"{usernameValue} {Utility.slugifyDate(dateValue)}")
-        workbook.set_zoom(85)
+        fileTemplate = "./template/User Request Template.docx"
+        filePath = f"../{Dependency.inventoryRequestFolderPath}/{usernameValue} {Utility.slugifyDate(dateValue)}.docx"
+
+        document = Document(fileTemplate)
+
+        for paragraph in document.paragraphs:
+            if("Balikpapan" in paragraph.text):
+                paragraph.add_run(f" {splittedDate[2]} {Utility.translateMonthName(calendar.month_name[int(splittedDate[1])])} {splittedDate[1]}")
+
+        
+        document.paragraphs[len(document.paragraphs) - 2].add_run(f"{' ' * 90} {usernameValue}")
 
         for userObject in userData:
             if(userObject.get("username") == usernameValue):
@@ -146,20 +162,42 @@ class InventoryRequest():
                         
                         rowCount = 1
                         for requestIndex, requestObject in enumerate(dateObject.get("request")):
+                            for categoryObject in inventoryMasterDocument.get("kategori"):
+                                if(categoryObject.get("id") == requestObject.get("kategori_id")):
+                                    for itemObject in categoryObject.get("barang"):
+                                        if(itemObject.get("id") == requestObject.get("barang_id")):
+                                            itemName = itemObject.get("nama")
+                                            itemUnit = itemObject.get("satuan")
+
+
+                            row = document.tables[0].rows[rowCount]
+
                             value = [
                                 requestIndex + 1,
-                                "Nama Barang",
+                                itemName,
                                 requestObject.get("total"),
-                                "Satuan",
+                                itemUnit,
                                 requestObject.get("deskripsi")
                             ]
 
-                            workbook.write_value_multiple(["A", rowCount], ["E", rowCount], value)
+                            for i in range(len(value)):
+                                row.cells[i].text = str(value[i])
+      
+                                for paragraph in row.cells[i].paragraphs:
+                                    for run in paragraph.runs:
+                                        run.font.size = Pt(10)
                             
+                            
+                            cellCenterList = [0, 2, 3]
+                            for cell in cellCenterList:
+                                for paragraph in row.cells[cell].paragraphs:
+                                    paragraph.alignment= WD_ALIGN_PARAGRAPH.CENTER
+
+
                             rowCount += 1
 
 
-        workbook.save()
+        document.save(filePath)
 
 
     def updateUserData():
@@ -168,7 +206,7 @@ class InventoryRequest():
 
         usernameArray = []
         for requestMain in inventoryRequestDocument.get("barang"):
-            if(requestMain.get("status") is 1):
+            if(requestMain.get("status") == 1):
                 if(requestMain.get("username") not in usernameArray):
                     usernameArray.append(requestMain.get("username"))
 
@@ -187,7 +225,7 @@ class InventoryRequest():
         for userObject in userData:
             dateArray = []
             for requestMain in inventoryRequestDocument.get("barang"):
-                if(requestMain.get("status") is 1):
+                if(requestMain.get("status") == 1):
                     if(requestMain.get("username") == userObject.get("username")):
                         createdAt = (requestMain.get("created_at").split(" "))[0]
                         
@@ -206,7 +244,7 @@ class InventoryRequest():
 
         
         for requestMain in inventoryRequestDocument.get("barang"):
-            if(requestMain.get("status") is 1):
+            if(requestMain.get("status") == 1):
                 for userObject in userData:
                     if(requestMain.get("username") == userObject.get("username")):
                         for dateObject in userObject.get("date"):

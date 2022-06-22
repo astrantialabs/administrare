@@ -30,10 +30,21 @@ from inventories.demand.inventoryDemand import InventoryDemand
 class Test:
     def main():
         # InventoryMaster.main(Utility.currentDate())
-        # InventoryRequest.writeRaw(Utility.currentDate())
-        InventoryRequest.writeUser(2, 1)
+
         # InventoryRequest.updateUserData()
         # InventoryRequest.updateOptionData()
+        # InventoryRequest.writeRaw(Utility.currentDate()) 
+        
+        optionData = Utility.readJSON("./json/option_data.json")
+        for userObject in optionData:
+            userId = userObject.get("id")
+            if(userId != 1):
+                for dateObject in userObject.get("date"):
+                    dateId = dateObject.get("id")
+
+                    InventoryRequest.writeUser(userId, dateId)
+        
+
         # InventoryDemand.main(Utility.currentDate())
 
 

@@ -175,19 +175,19 @@ export class RequestInventoryController {
                 const response = await pythonAxiosInstance.post(`/__api/inventory/request/download/user/${user_id}/date/${date_id}`);
 
                 if (response.data.success) {
-                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${slugified_date}.xlsx`));
+                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${slugified_date}.docx`));
                     res.set({
-                        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${slugified_date}.xlsx"`,
+                        "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${slugified_date}.docx"`,
                     });
 
                     return new StreamableFile(file);
                 }
             } else if (!is_creatable) {
-                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${slugified_date}.xlsx`));
+                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${slugified_date}.docx`));
                 res.set({
-                    "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${slugified_date}.xlsx"`,
+                    "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${slugified_date}.docx"`,
                 });
 
                 return new StreamableFile(file);

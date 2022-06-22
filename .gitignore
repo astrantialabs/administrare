@@ -55,5 +55,7 @@ lerna-debug.log*
 note.txt
 scripts/**/__pycache__
 scripts/json/*.json
-spreadsheets/**/*.xlsx
-spreadsheets/**/*.pdf
+scripts/template/*
+!scripts/template/.gitkeep
+spreadsheets/*
+!spreadsheets/.gitkeep
