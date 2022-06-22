@@ -69,9 +69,7 @@ const InventoryRequestDownloadMain: NextPage = () => {
                                                             bg={`gray.100`}
                                                             p={4}
                                                             onClick={() =>
-                                                                router.push(
-                                                                    `/__api/data/inventory/request/download/name/${item.name}/date/${slugifyDate(date.date)}`
-                                                                )
+                                                                router.push(`/__api/data/inventory/request/download/user/${item.id}/date/${date.id}`)
                                                             }
                                                         >
                                                             <Text>{date.date}</Text>
