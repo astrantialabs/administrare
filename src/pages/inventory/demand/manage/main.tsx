@@ -95,7 +95,9 @@ const InventoryDemandManageMain: NextPage = () => {
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Kategori</StatLabel>
-                                                    <StatNumber fontSize="large">{category.kategori}</StatNumber>
+                                                    <StatNumber fontSize="large" maxW="250px">
+                                                        {category.kategori}
+                                                    </StatNumber>
                                                 </Stat>
                                             </StatGroup>
                                             <Stack direction="row" marginTop={4}>
@@ -195,12 +197,16 @@ const InventoryDemandManageMain: NextPage = () => {
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Barang</StatLabel>
-                                                    <StatNumber fontSize="large">{item.barang}</StatNumber>
+                                                    <StatNumber fontSize="large" maxW="250px">
+                                                        {item.barang}
+                                                    </StatNumber>
                                                 </Stat>
 
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Satuan</StatLabel>
-                                                    <StatNumber fontSize="large">{item.satuan}</StatNumber>
+                                                    <StatNumber fontSize="large" maxW="250px">
+                                                        {item.satuan}
+                                                    </StatNumber>
                                                 </Stat>
                                             </StatGroup>
                                             <Stack direction="row" marginTop={4}>
