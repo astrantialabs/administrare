@@ -68,9 +68,10 @@ const InventoryRequestDownloadMain: NextPage = () => {
                                                         <Box
                                                             bg={`gray.100`}
                                                             p={4}
-                                                            onClick={() =>
+                                                            onClick={() => (
+                                                                downloadRequestQuery.refetch(),
                                                                 router.push(`/__api/data/inventory/request/download/user/${item.id}/date/${date.id}`)
-                                                            }
+                                                            )}
                                                         >
                                                             <Text>{date.date}</Text>
                                                         </Box>
