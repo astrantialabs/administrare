@@ -290,7 +290,9 @@ const InventoryDemandManageMain: NextPage = () => {
                 <Stack spacing={8} marginY={8} marginX={8}>
                     <VStack>
                         <Menu>
-                            <MenuButton as={Button}>Filters</MenuButton>
+                            <MenuButton as={Button} width="150px">
+                                Filters
+                            </MenuButton>
                             <MenuList>
                                 <MenuItem onClick={() => dispatch(setStatus(3))}>Semua</MenuItem>
                                 <MenuItem onClick={() => dispatch(setStatus(0))}>Belum Direspon</MenuItem>
@@ -298,13 +300,13 @@ const InventoryDemandManageMain: NextPage = () => {
                                 <MenuItem onClick={() => dispatch(setStatus(2))}>Ditolak</MenuItem>
                             </MenuList>
                         </Menu>
-                        <Button>
+                        <Button width="150px">
                             <Link href="/inventory/demand/manage/create/kategori">Create Kategori</Link>
                         </Button>
-                        <Button>
+                        <Button width="150px">
                             <Link href="/inventory/demand/manage/create/barang">Create Barang</Link>
                         </Button>
-                        <Button marginTop={8}>
+                        <Button width="150px" marginTop={8}>
                             <LinkOverlay href="/__api/data/inventory/demand/download/latest">Download Excel</LinkOverlay>
                         </Button>
                     </VStack>
