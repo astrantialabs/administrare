@@ -55,7 +55,7 @@ class Utility():
 
 
     def slugifyDate(rawDate):
-        return rawDate.replace(" ", "-").replace(":", "-").replace(":", "-");        
+        return rawDate.replace(" ", "-").replace(":", "-").replace(":", "-")     
 
 
     def convertStatus(rawStatus):
