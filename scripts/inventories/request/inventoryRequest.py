@@ -30,7 +30,7 @@ from database import Database
 from utility import Utility
 
 class InventoryRequest():
-    def raw(currentDate):
+    def writeRaw(currentDate):
         filePath = f"../{Dependency.inventoryRequestFolderPath}/Mentah {currentDate}.xlsx"
 
         Excel.create_file(filePath)
@@ -44,7 +44,7 @@ class InventoryRequest():
         masterCollection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = masterCollection.find_one({"tahun": 2022})
 
-        userData = Utility.readJSON("./request.json")
+        userData = Utility.readJSON("./json/user_data.json")
 
         InventoryRequest.writeHeaderRaw(workbook)
         InventoryRequest.writeMainRaw(workbook, inventoryRequestDocument, inventoryMasterDocument)
@@ -119,6 +119,49 @@ class InventoryRequest():
         workbook.adjust_width("A1", ["J", rowCount], extra_width=2)
 
 
+    def writeUser(userId, dateId):
+        optionData = Utility.readJSON("./json/option_data.json")
+        userData = Utility.readJSON("./json/user_data.json")
+
+        for userObject in optionData:
+            if(userObject.get("id") == userId):
+                usernameValue = userObject.get("name")
+
+                for dateObject in userObject.get("date"):
+                    if(dateObject.get("id") == dateId):
+                        dateValue = dateObject.get("date")
+
+        
+        filePath = f"../{Dependency.inventoryRequestFolderPath}/{usernameValue} {Utility.slugifyDate(dateValue)}.xlsx"
+
+        Excel.create_file(filePath)
+        workbook = Excel(filePath)
+        workbook.change_sheet_name("Sheet", f"{usernameValue} {Utility.slugifyDate(dateValue)}")
+        workbook.set_zoom(85)
+
+        for userObject in userData:
+            if(userObject.get("username") == usernameValue):
+                for dateObject in userObject.get("date"):
+                    if(dateObject.get("date") == dateValue.split(" ")[0]):
+                        
+                        rowCount = 1
+                        for requestIndex, requestObject in enumerate(dateObject.get("request")):
+                            value = [
+                                requestIndex + 1,
+                                "Nama Barang",
+                                requestObject.get("total"),
+                                "Satuan",
+                                requestObject.get("deskripsi")
+                            ]
+
+                            workbook.write_value_multiple(["A", rowCount], ["E", rowCount], value)
+                            
+                            rowCount += 1
+
+
+        workbook.save()
+
+
     def updateUserData():
         requestCollection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryRequest)
         inventoryRequestDocument = requestCollection.find_one({"tahun": 2022})
@@ -182,18 +225,18 @@ class InventoryRequest():
 
         files.remove(".gitkeep")
         
-        file_option_array = [["Mentah", ["Terbaru"]]]
+        file_option_array = [["Mentah", [["Terbaru", True]]]]
 
         json_user_requst_data = Utility.readJSON("./json/user_data.json")
         for user_object in json_user_requst_data:
             
             date_array = []
             for date_object in user_object.get("date"):
-                date_array.append(f"{date_object.get('date')} 00:00:00")
+                date_array.append([f"{date_object.get('date')} 00:00:00", True])
 
             
             file_option_array.append([user_object.get("username"), date_array])
-                
+        
 
         for file in files:
             file_name_array = file.split(".")[0].split(" ")
@@ -219,12 +262,19 @@ class InventoryRequest():
 
                     
                     if(file_name_is_valid):
-                        file_option_array.append([file_name, [formatted_file_date]])
+                        file_option_array.append([file_name, [[formatted_file_date, False]]])
 
                     elif(not file_name_is_valid):
                         for file_item in file_option_array:
                             if(file_item[0] == file_name):
-                                file_item[1].append(formatted_file_date)
+
+                                file_item_array_is_valid = True
+                                for file_item_array in file_item[1]:
+                                    if(file_item_array[0] == formatted_file_date):
+                                        file_item_array_is_valid = False
+                                
+                                if(file_item_array_is_valid):
+                                    file_item[1].append([formatted_file_date, False])
 
 
         file_option_data = []
@@ -233,7 +283,8 @@ class InventoryRequest():
             for file_date_index, file_date in enumerate(file_item[1]):
                 new_file_date_object = {
                     "id": file_date_index + 1,
-                    "date": file_date
+                    "date": file_date[0],
+                    "creatable": file_date[1]
                 }
 
                 file_date_data.append(new_file_date_object)

@@ -60,14 +60,25 @@ def inventoryRequestUpdateData():
 
 
 @app.post("/__api/inventory/request/download/raw/{currentDate}")
-def inventoryRequestDownload(currentDate: str):
+def inventoryRequestRawDownload(currentDate: str):
     try:
-        InventoryRequest.raw(currentDate)
+        InventoryRequest.writeRaw(currentDate)
         return {"success": True}
 
     except:
         return {"success": False}
     
+
+@app.post("/__api/inventory/request/download/user/{userId}/date/{dateId}")
+def inventoryRequestUserDownload(userId: int, dateId: int):
+    try:
+        InventoryRequest.writeUser(userId, dateId)
+        return {"success": True}
+
+    
+    except:
+        return {"success": False}
+
 
 @app.post("/__api/inventory/demand/download/{currentDate}")
 def inventoryDemandDownload(currentDate: str):
