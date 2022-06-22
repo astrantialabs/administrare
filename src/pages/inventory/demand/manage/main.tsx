@@ -89,7 +89,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                             <Heading fontSize="small">{category.username}</Heading>
                                             <Text fontSize={8} marginBottom={4}>
                                                 dibuat {ConvertDate(category.created_at)}- direspon{" "}
-                                                {typeof ConvertDate(category.responded_at) === null ? ConvertDate(category.responded_at) : "belum"}
+                                                {typeof ConvertDate(category.responded_at) === null ? "belum" : ConvertDate(category.responded_at)}
                                             </Text>
 
                                             <StatGroup marginTop={2}>
@@ -190,7 +190,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                             </Heading>
                                             <Text fontSize={8} marginBottom={4}>
                                                 dibuat {ConvertDate(item.created_at)}- direspon{" "}
-                                                {typeof ConvertDate(item.responded_at) === null ? ConvertDate(item.responded_at) : "belum"}
+                                                {typeof ConvertDate(item.responded_at) === null ? "belum" : ConvertDate(item.responded_at)}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
