@@ -58,6 +58,25 @@ class Utility():
         return rawDate.replace(" ", "-").replace(":", "-").replace(":", "-")     
 
 
+    def translateMonthName(rawMonth):
+        translation = {
+            "January" : "Januari",
+            "February" : "Februari", 
+            "March" : "Maret", 
+            "April" : "April", 
+            "May" : "Mei", 
+            "June" : "Juni", 
+            "July" : "Juli", 
+            "August" : "Agustus", 
+            "September" : "September", 
+            "October" : "Oktober", 
+            "November" : "November",
+            "December" : "Desember"
+        }
+
+        return translation.get(rawMonth)
+
+
     def convertStatus(rawStatus):
         status = None
 
