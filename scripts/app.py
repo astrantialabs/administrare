@@ -53,6 +53,14 @@ def test():
         print("Error")
 
 
+@app.get("/__api/inventory/master/get/dependency")
+def inventoryMasterGetDependencyData():
+    try :
+        return InventoryMaster.getDependencyData()
+    except:
+        return {"success": False}
+
+
 @app.put("/__api/inventory/master/update/dependency")
 def inventoryMasterUpdateDependencyData(dependencyData: DependencyData):
     InventoryMaster.updateDependencyData(dependencyData)
