@@ -83,26 +83,26 @@ const InventoryDemandManageMain: NextPage = () => {
                     ) : (
                         QueryDataFilter<InventoryDemandCategories>(status, categories).map((category: InventoryDemandCategory) => (
                             <Stack key={category.id} spacing={4}>
-                                <Box rounded={4} padding={8} background={BoxStatusBackgroundSwitch(category.status)}>
+                                <Box rounded={4} padding={"8px"} background={BoxStatusBackgroundSwitch(category.status)}>
                                     <Flex flexGrow={1}>
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{category.username}</Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {ConvertDate(category.created_at)}- direspon{" "}
+                                                dibuat {ConvertDate(category.created_at)} - direspon{" "}
                                                 {typeof ConvertDate(category.responded_at) === null ? "belum" : ConvertDate(category.responded_at)}
                                             </Text>
 
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Kategori</StatLabel>
-                                                    <StatNumber fontSize="large" maxW="250px">
+                                                    <StatNumber fontSize="14px" w="250px" maxW="250px">
                                                         {category.kategori}
                                                     </StatNumber>
                                                 </Stat>
                                             </StatGroup>
-                                            <Stack direction="row" marginTop={4}>
-                                                {category.status === 0 ? (
-                                                    <>
+                                            {category.status === 0 ? (
+                                                <>
+                                                    <Stack direction="row" marginTop={4}>
                                                         <Formik
                                                             initialValues={{}}
                                                             onSubmit={async (values, action) => {
@@ -165,11 +165,11 @@ const InventoryDemandManageMain: NextPage = () => {
                                                                 </Form>
                                                             )}
                                                         </Formik>
-                                                    </>
-                                                ) : (
-                                                    <></>
-                                                )}
-                                            </Stack>
+                                                    </Stack>
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )}
                                         </Box>
                                     </Flex>
                                 </Box>
@@ -184,34 +184,34 @@ const InventoryDemandManageMain: NextPage = () => {
                     ) : (
                         QueryDataFilter<InventoryDemandItems>(status, items).map((item: InventoryDemandItem) => (
                             <Stack key={item.id} spacing={4}>
-                                <Box rounded={4} padding={8} background={BoxStatusBackgroundSwitch(item.status)}>
+                                <Box rounded={4} padding={"8px"} background={BoxStatusBackgroundSwitch(item.status)}>
                                     <Flex>
                                         <Box flexGrow={1} marginRight={4}>
                                             <Heading fontSize="small">
-                                                {item.username} dari kategori {item.kategori_name}
+                                                {item.username} untuk kategori {item.kategori_name}
                                             </Heading>
                                             <Text fontSize={8} marginBottom={4}>
-                                                dibuat {ConvertDate(item.created_at)}- direspon{" "}
+                                                dibuat {ConvertDate(item.created_at)} - direspon{" "}
                                                 {typeof ConvertDate(item.responded_at) === null ? "belum" : ConvertDate(item.responded_at)}
                                             </Text>
                                             <StatGroup marginTop={2}>
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Barang</StatLabel>
-                                                    <StatNumber fontSize="large" maxW="250px">
+                                                    <StatNumber fontSize="14px" w="125px" maxW="250px">
                                                         {item.barang}
                                                     </StatNumber>
                                                 </Stat>
 
                                                 <Stat marginRight={8}>
                                                     <StatLabel>Satuan</StatLabel>
-                                                    <StatNumber fontSize="large" maxW="250px">
+                                                    <StatNumber fontSize="14px" w="125px" maxW="250px">
                                                         {item.satuan}
                                                     </StatNumber>
                                                 </Stat>
                                             </StatGroup>
-                                            <Stack direction="row" marginTop={4}>
-                                                {item.status === 0 ? (
-                                                    <>
+                                            {item.status === 0 ? (
+                                                <>
+                                                    <Stack direction="row" marginTop={4}>
                                                         <Formik
                                                             initialValues={{}}
                                                             onSubmit={async (values, action) => {
@@ -274,11 +274,11 @@ const InventoryDemandManageMain: NextPage = () => {
                                                                 </Form>
                                                             )}
                                                         </Formik>
-                                                    </>
-                                                ) : (
-                                                    <></>
-                                                )}
-                                            </Stack>
+                                                    </Stack>
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )}
                                         </Box>
                                     </Flex>
                                 </Box>

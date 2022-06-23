@@ -80,7 +80,7 @@ const InventoryRequestManageMain: NextPage = () => {
                     ) : (
                         QueryDataFilter<InventoryRequestItems>(status, items).map((item: InventoryRequestItem) => (
                             <Stack key={item.id} spacing={4}>
-                                <Box rounded={4} padding={"8px"} background={BoxStatusBackgroundSwitch(item.status)}>
+                                <Box rounded={4} padding="8px" background={BoxStatusBackgroundSwitch(item.status)}>
                                     <Flex flexGrow={1}>
                                         <Box flexGrow={1} marginRight={8}>
                                             <Heading fontSize="small">{item.username}</Heading>
@@ -88,16 +88,16 @@ const InventoryRequestManageMain: NextPage = () => {
                                                 dibuat {ConvertDate(item.created_at)} - direspon{" "}
                                                 {typeof ConvertDate(item.responded_at) === null ? "belum" : ConvertDate(item.responded_at)}
                                             </Text>
-                                            <StatGroup marginTop={2}>
-                                                <Stat marginRight={8}>
-                                                    <StatLabel>Kategori</StatLabel>
+                                            <StatGroup marginTop={2} padding={0}>
+                                                <Stat marginRight={8} size="sm" padding={0}>
+                                                    <StatLabel maxW="75px">Kategori</StatLabel>
                                                     <StatNumber fontSize="14px">{item.kategori_name}</StatNumber>
                                                 </Stat>
-                                                <Stat marginRight={8} maxW="500px">
+                                                <Stat marginRight={8} width="600px" padding={0}>
                                                     <StatLabel>Barang</StatLabel>
                                                     <StatNumber fontSize="14px">{item.barang_name}</StatNumber>
                                                 </Stat>
-                                                <Stat marginRight={8}>
+                                                <Stat marginRight={8} width="40px" padding={0}>
                                                     <StatLabel>Total</StatLabel>
                                                     <StatNumber fontSize="14px">{item.total}</StatNumber>
                                                 </Stat>
@@ -109,9 +109,9 @@ const InventoryRequestManageMain: NextPage = () => {
                                                     {item.deskripsi}
                                                 </Text>
                                             )}
-                                            <Stack direction="row" marginTop={4}>
-                                                {item.status === 0 ? (
-                                                    <>
+                                            {item.status === 0 ? (
+                                                <>
+                                                    <Stack direction="row" marginTop={4}>
                                                         <Formik
                                                             initialValues={{}}
                                                             onSubmit={async (values, action) => {
@@ -174,11 +174,11 @@ const InventoryRequestManageMain: NextPage = () => {
                                                                 </Form>
                                                             )}
                                                         </Formik>
-                                                    </>
-                                                ) : (
-                                                    <></>
-                                                )}
-                                            </Stack>
+                                                    </Stack>
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )}
                                         </Box>
                                     </Flex>
                                 </Box>
