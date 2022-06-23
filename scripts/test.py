@@ -29,6 +29,7 @@ from inventories.demand.inventoryDemand import InventoryDemand
 
 class Test:
     def main():
+        InventoryMaster.getDownloadData()
         InventoryMaster.main(Utility.currentDate())
 
         # InventoryRequest.updateUserData()
