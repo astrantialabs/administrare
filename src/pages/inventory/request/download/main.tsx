@@ -26,6 +26,7 @@ import { DownloadOptionData } from "@/shared/typings/interfaces/inventory.interf
 import Sidebar from "@/components/Sidebar";
 import axios from "axios";
 import { BASE_DOMAIN } from "@/shared/typings/constants";
+import { slugifyDate } from "@/shared/utils/slugifyDate";
 
 const InventoryRequestDownloadMain: NextPage = () => {
     const router = useRouter();
@@ -70,7 +71,9 @@ const InventoryRequestDownloadMain: NextPage = () => {
                                                             )}
                                                         >
                                                             <Text>
-                                                                {date.date == "Terbaru" ? date.date : `Laporan ${item.name} Permintaan Barang ${date.date}`}
+                                                                {date.date == "Terbaru"
+                                                                    ? date.date
+                                                                    : `Laporan ${item.name} Permintaan Barang ${slugifyDate(date.date)}`}
                                                             </Text>
                                                         </Box>
                                                     </Stack>
