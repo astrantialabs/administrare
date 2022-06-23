@@ -429,9 +429,6 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                 <Button>
                     <LinkOverlay href="/inventory/create/barang">Create Barang</LinkOverlay>
                 </Button>
-                <Button>
-                    <LinkOverlay href="/inventory/update/dependency">Update Excel Text</LinkOverlay>
-                </Button>
             </ButtonGroup>
 
             <Table<PayloadTest>
@@ -442,9 +439,15 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                 rows={rows}
                 prepareRow={prepareRow}
             />
-            <Button marginTop={8}>
-                <LinkOverlay href="__api/data/inventory/master/download/latest">Download Excel</LinkOverlay>
-            </Button>
+
+            <ButtonGroup marginTop={8}>
+                <Button>
+                    <LinkOverlay href="__api/data/inventory/master/download/latest">Download Excel</LinkOverlay>
+                </Button>
+                <Button>
+                    <LinkOverlay href="/inventory/update/dependency">Update Excel Text</LinkOverlay>
+                </Button>
+            </ButtonGroup>
         </Sidebar>
     );
 };
