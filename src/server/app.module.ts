@@ -36,22 +36,12 @@ import { InventoryModule } from "./models/inventories/inventory.module";
 import { UserModule } from "./models/users/user.module";
 import { MongoDBProviderModule } from "./providers/mongodb.module";
 
-declare const module: any;
-
 @Module({})
 export class AppModule {
     public static initialize(): DynamicModule {
-        const renderModule =
-            module.hot?.data?.renderModule ??
-            RenderModule.forRootAsync(Next({ dev: process.env.NODE_ENV === "development" }), {
-                viewsDir: null,
-            });
-
-        if (module.hot) {
-            module.hot.dispose((data: any) => {
-                data.renderModule = renderModule;
-            });
-        }
+        const renderModule = RenderModule.forRootAsync(Next({ dev: process.env.NODE_ENV === "development" }), {
+            viewsDir: null,
+        });
 
         return {
             module: AppModule,

@@ -33,8 +33,6 @@ import { middleware } from "./common/middlewares/app.middleware";
 import { ConfigService } from "./config/config.service";
 import { BASE_DOMAIN } from "@/shared/typings/constants";
 
-declare const module: any;
-
 async function boostrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule.initialize());
     const renderService = app.get(RenderService);
@@ -61,11 +59,6 @@ async function boostrap() {
         if (configService.env === Environment.DEVELOPMENT) Logger.debug(error);
         response.send(error.response);
     });
-
-    if (module.hot) {
-        module.hot.accept();
-        module.hot.dispose(() => app.close());
-    }
 }
 
 boostrap();
