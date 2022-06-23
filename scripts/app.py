@@ -22,43 +22,48 @@
 """
 
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from inventories.master.inventoryMaster import InventoryMaster
-
-from inventories.request.inventoryRequest import InventoryRequest
-
-from inventories.demand.inventoryDemand import InventoryDemand
-
 from dependency import Dependency
-
 from database import Database
+
+from inventories.master.inventoryMaster import InventoryMaster
+from inventories.request.inventoryRequest import InventoryRequest
+from inventories.demand.inventoryDemand import InventoryDemand
 
 class DependencyData(BaseModel):
     semester: int
-
     tanggal_awal: int
-
     bulan_awal: int
-
     tahun_awal: int
-
     tanggal_akhir: int
-
     bulan_akhir: int
-
     tahun_akhir: int
-
     pengurus_barang_pengguna: str
-
     plt_kasubag_umum: str
-
     sekretaris_dinas: str
-
     kepala_dinas_ketenagakerjaan: str
 
+
 app = FastAPI()
+
+origins = [
+    "http://inventory.setdisnakerbppn.com",
+    "https://inventory.setdisnakerbppn.com",
+    "http://localhost:3000",
+    "https://localhost:3000",
+    "http://localhost:3001",
+    "https://localhost:3001"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["get", "post"],
+    allow_headers=["*"],
+)
 
 @app.get("/test")
 def test():
@@ -67,19 +72,21 @@ def test():
     except:
         print("Error")
 
+
 @app.get("/__api/inventory/master/get/dependency")
 def inventoryMasterGetDependencyData():
-    collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDependency)
+    try:
+        return {"success": True, "result": {"dependencyData": InventoryMaster.getDependencyData()}}
 
-    inventoryDependencyDocument = collection.find_one({"id": 1}, { "id": False, "_id": False })
+    except:
+        return {"success": False}
 
-    return inventoryDependencyDocument
 
 @app.post("/__api/inventory/master/update/dependency")
 def inventoryMasterUpdateDependencyData(dependencyData: DependencyData):
-    InventoryMaster.updateDependencyData(dependencyData)
+    return InventoryMaster.updateDependencyData(dependencyData)
 
-    return {"success": True}
+
 
 @app.post("/__api/inventory/master/download/{currentDate}")
 def inventoryMasterDownload(currentDate):
@@ -89,6 +96,7 @@ def inventoryMasterDownload(currentDate):
         return {"success": True}
     except:
         return {"success": False}
+
 
 @app.post("/__api/inventory/request/update")
 def inventoryRequestUpdateData():
@@ -101,6 +109,7 @@ def inventoryRequestUpdateData():
     except:
         return {"success": False}
 
+
 @app.post("/__api/inventory/request/download/raw/{currentDate}")
 def inventoryRequestRawDownload(currentDate):
     try:
@@ -109,6 +118,7 @@ def inventoryRequestRawDownload(currentDate):
         return {"success": True}
     except:
         return {"success": False}
+
 
 @app.post("/__api/inventory/request/download/user/{userId}/date/{dateId}")
 def inventoryRequestUserDownload(userId, dateId):
@@ -119,6 +129,7 @@ def inventoryRequestUserDownload(userId, dateId):
     except:
         return {"success": False}
 
+
 @app.post("/__api/inventory/demand/download/{currentDate}")
 def inventoryDemandDownload(currentDate):
     try:
@@ -128,4 +139,3 @@ def inventoryDemandDownload(currentDate):
     except:
         return {"success": False}
 
-print(inventoryMasterGetDependencyData())

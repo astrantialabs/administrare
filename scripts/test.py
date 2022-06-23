@@ -28,6 +28,25 @@ from inventories.demand.inventoryDemand import InventoryDemand
 
 class Test:
     def main():
-        InventoryMaster.getDependencyData()
+        # print(InventoryMaster.getDependencyData())
+        print(InventoryMaster.getTranslatedDependencyData())
+        # InventoryMaster.main(Utility.currentDate())
 
-Test.main()
+        # InventoryRequest.updateUserData()
+        # InventoryRequest.updateOptionData()
+        # InventoryRequest.writeRaw(Utility.currentDate()) 
+
+        # optionData = Utility.readJSON("./json/option_data.json")
+        # for userObject in optionData:
+        #     userId = userObject.get("id")
+        #     if(userId != 1):
+        #         for dateObject in userObject.get("date"):
+        #             dateId = dateObject.get("id")
+
+        #             InventoryRequest.writeUser(userId, dateId)
+
+
+        # InventoryDemand.main(Utility.currentDate())
+
+
+Test.main() # Make sure you are on /scripts directory

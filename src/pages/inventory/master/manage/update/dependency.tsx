@@ -33,7 +33,7 @@ import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 import { fetch } from "@/shared/utils/fetch";
 import axios from "axios";
 
-export interface InventoryMasterManageUpdateCategoryParameter {
+export interface InventoryMasterUpdateDependencyParameter {
     semester: number;
     tanggal_awal: number;
     bulan_awal: number;
@@ -47,7 +47,7 @@ export interface InventoryMasterManageUpdateCategoryParameter {
     kepala_dinas_ketenagakerjaan: string;
 }
 
-export class InventoryMasterManageUpdateCategoryValidationModel extends FormikValidatorBase implements InventoryMasterManageUpdateCategoryParameter {
+export class InventoryMasterUpdateDependencyValidationModel extends FormikValidatorBase implements InventoryMasterUpdateDependencyParameter {
     @IsNotEmpty({ message: "" })
     semester: number;
 
@@ -81,7 +81,7 @@ export class InventoryMasterManageUpdateCategoryValidationModel extends FormikVa
     @IsNotEmpty({ message: "" })
     kepala_dinas_ketenagakerjaan: string;
 
-    constructor(isUpdate: boolean, data: InventoryMasterManageUpdateCategoryParameter) {
+    constructor(isUpdate: boolean, data: InventoryMasterUpdateDependencyParameter) {
         super();
 
         if (isUpdate) {
@@ -102,7 +102,7 @@ export class InventoryMasterManageUpdateCategoryValidationModel extends FormikVa
 
 type PageQuery = {};
 
-export interface MasterDependency extends InventoryMasterManageUpdateCategoryParameter {}
+export interface MasterDependency extends InventoryMasterUpdateDependencyParameter {}
 
 type PageProps = {
     payload: MasterDependency;
@@ -112,12 +112,12 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
     const toast = useToast();
 
     const InventoryMasterManageCreateCategorySubmit = (
-        values: InventoryMasterManageUpdateCategoryValidationModel,
-        actions: FormikHelpers<InventoryMasterManageUpdateCategoryValidationModel>
+        values: InventoryMasterUpdateDependencyValidationModel,
+        actions: FormikHelpers<InventoryMasterUpdateDependencyValidationModel>
     ) => {
         actions.setSubmitting(true);
 
-        const payload: InventoryMasterManageUpdateCategoryParameter = {
+        const payload: InventoryMasterUpdateDependencyParameter = {
             semester: parseInt(values.semester as unknown as string),
             tanggal_awal: parseInt(values.tanggal_awal as unknown as string),
             bulan_awal: parseInt(values.bulan_awal as unknown as string),
@@ -134,23 +134,32 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
         new Promise<void>((resolve) => {
             setTimeout(() => {
                 axios
-                    .post(`http://localhost:3001/__api/inventory/master/update/dependency`, payload, {
-                        method: "post",
-                        headers: {
-                            "Content-type": "application/json",
-                        },
-                    })
-                    .then(() => {
-                        toast({
-                            title: "Excel text berhasil diupdate!",
-                            status: "success",
-                            position: "bottom-right",
-                            duration: 5000,
-                            isClosable: true,
-                        });
+                    .post(`http://localhost:3001/__api/inventory/master/update/dependency`, payload)
+                    .then((response) => {
+                        if (response.data.success) {
+                            toast({
+                                title: "Excel text berhasil diupdate!",
+                                status: "success",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
 
-                        actions.setSubmitting(false);
-                        resolve();
+                            actions.setSubmitting(false);
+                            resolve();
+                        } else if (!response.data.success) {
+                            toast({
+                                title: "Excel text gagal diupdate!",
+                                description: response.data.message,
+                                status: "error",
+                                position: "bottom-right",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+
+                            actions.setSubmitting(false);
+                            resolve();
+                        }
                     })
                     .catch((error) => {
                         console.log(error);
@@ -174,14 +183,14 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
             <Stack spacing={8} marginY={8} marginX={8}>
                 <Heading fontSize="xl">Update Excel Text</Heading>
                 <Formik
-                    initialValues={new InventoryMasterManageUpdateCategoryValidationModel(true, payload)}
-                    validate={InventoryMasterManageUpdateCategoryValidationModel.createValidator()}
+                    initialValues={new InventoryMasterUpdateDependencyValidationModel(true, payload)}
+                    validate={InventoryMasterUpdateDependencyValidationModel.createValidator()}
                     onSubmit={InventoryMasterManageCreateCategorySubmit}
                 >
-                    {(props: FormikProps<InventoryMasterManageUpdateCategoryValidationModel>) => (
+                    {(props: FormikProps<InventoryMasterUpdateDependencyValidationModel>) => (
                         <Form>
                             <Field name="semester">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="semester" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Semester
@@ -192,7 +201,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="tanggal_awal">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="tanggal_awal" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Tanggal Awal
@@ -203,7 +212,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="bulan_awal">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="bulan_awal" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Bulan Awal
@@ -214,7 +223,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="tahun_awal">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="tahun_awal" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Tahun Awal
@@ -225,7 +234,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="tanggal_akhir">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="tanggal_akhir" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Tanggal Akhir
@@ -236,7 +245,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="bulan_akhir">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="bulan_akhir" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Bulan Akhir
@@ -247,7 +256,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="tahun_akhir">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="tahun_akhir" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Tahun Akhir
@@ -258,7 +267,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="pengurus_barang_pengguna">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="pengurus_barang_pengguna" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Pengerus Barang Pengguna
@@ -269,7 +278,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="plt_kasubag_umum">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="plt_kasubag_umum" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             PLT Kasubag Umum
@@ -280,7 +289,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="sekretaris_dinas">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="sekretaris_dinas" fontWeight={`medium`} color={`blackAlpha.700`}>
                                             Sekretaris Dinas
@@ -291,7 +300,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 )}
                             </Field>
                             <Field name="kepala_dinas_ketenagakerjaan">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel
                                             htmlFor="kepala_dinas_ketenagakerjaankepala_dinas_ketenagakerjaan"
@@ -322,11 +331,13 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
 };
 
 export const getServerSideProps = buildServerSideProps<PageProps, PageQuery>(async (ctx) => {
-    const payload = await fetch(`/__api/inventory/master/get/dependency`, {}, false, true);
+    const response = await fetch(`/__api/inventory/master/get/dependency`, {}, false, true);
 
-    return {
-        payload: payload,
-    };
+    if (response.success == true) {
+        return {
+            payload: response.result.dependencyData,
+        };
+    }
 });
 
 export default InventoryMasterManageUpdateDependency;

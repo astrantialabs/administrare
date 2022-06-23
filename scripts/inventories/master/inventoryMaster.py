@@ -39,7 +39,7 @@ class InventoryMaster():
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = collection.find_one({"tahun": 2022})
 
-        dependencyData = InventoryMaster.getDependencyData()
+        dependencyData = InventoryMaster.getTranslatedDependencyData()
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)
@@ -271,20 +271,26 @@ class InventoryMaster():
 
     def getDependencyData():
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDependency)
-        inventoryDependencyDocument = collection.find_one({"id": 1})
+        inventoryDependencyDocument = collection.find_one({"id": 1}, { "id": False, "_id": False })
+
+        return inventoryDependencyDocument
+
+
+    def getTranslatedDependencyData():
+        rawDependencyData = InventoryMaster.getDependencyData()
 
         dependencyData = {
-            "semester": Utility.romanNumeral(inventoryDependencyDocument.get("semester")),
-            "tanggal_awal": inventoryDependencyDocument.get("tanggal_awal"),
-            "bulan_awal" : Utility.translateMonthName(Utility.convertNumberToMonthName(inventoryDependencyDocument.get("bulan_awal"))),
-            "tahun_awal": inventoryDependencyDocument.get("tahun_awal"),
-            "tanggal_akhir": inventoryDependencyDocument.get("tanggal_akhir"),
-            "bulan_akhir" : Utility.translateMonthName(Utility.convertNumberToMonthName(inventoryDependencyDocument.get("bulan_akhir"))),
-            "tahun_akhir": inventoryDependencyDocument.get("tahun_akhir"),
-            "pengurus_barang_pengguna": inventoryDependencyDocument.get("pengurus_barang_pengguna"),
-            "plt_kasubag_umum": inventoryDependencyDocument.get("plt_kasubag_umum"),
-            "sekretaris_dinas": inventoryDependencyDocument.get("sekretaris_dinas"),
-            "kepala_dinas_ketenagakerjaan": inventoryDependencyDocument.get("kepala_dinas_ketenagakerjaan")
+            "semester": Utility.romanNumeral(rawDependencyData.get("semester")),
+            "tanggal_awal": rawDependencyData.get("tanggal_awal"),
+            "bulan_awal" : Utility.translateMonthName(Utility.convertNumberToMonthName(rawDependencyData.get("bulan_awal"))),
+            "tahun_awal": rawDependencyData.get("tahun_awal"),
+            "tanggal_akhir": rawDependencyData.get("tanggal_akhir"),
+            "bulan_akhir" : Utility.translateMonthName(Utility.convertNumberToMonthName(rawDependencyData.get("bulan_akhir"))),
+            "tahun_akhir": rawDependencyData.get("tahun_akhir"),
+            "pengurus_barang_pengguna": rawDependencyData.get("pengurus_barang_pengguna"),
+            "plt_kasubag_umum": rawDependencyData.get("plt_kasubag_umum"),
+            "sekretaris_dinas": rawDependencyData.get("sekretaris_dinas"),
+            "kepala_dinas_ketenagakerjaan": rawDependencyData.get("kepala_dinas_ketenagakerjaan")
         }
 
         Utility.writeJSON("./json/dependency_data.json", dependencyData)
@@ -293,14 +299,14 @@ class InventoryMaster():
     
     def updateDependencyData(dependencyData):
         if(dependencyData.semester not in (1, 2)):
-            raise HTTPException(status_code=400, detail = "Semester value invalid")
+            return {"success": False, "message": "Semester tidak valid"}
 
         month_list = [x for x in range(1, 13)]
         if(dependencyData.bulan_awal not in month_list):
-            raise HTTPException(status_code=400, detail = "Bulan Awal value invalid")
+            return {"success": False, "message": "Bulan awal tidak valid"}
 
         if(dependencyData.bulan_akhir not in month_list):
-            raise HTTPException(status_code=400, detail = "Bulan Akhir value invalid")
+            return {"success": False, "message": "Bulan Akhir tidak valid"}
 
         dependencyData = {
             "id": 1,
@@ -319,3 +325,5 @@ class InventoryMaster():
 
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDependency)
         collection.replace_one({"id": dependencyData["id"]}, dependencyData, upsert=True)
+
+        return {"success": True}
