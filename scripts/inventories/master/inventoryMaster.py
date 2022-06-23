@@ -38,27 +38,27 @@ class InventoryMaster():
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = collection.find_one({"tahun": 2022})
 
-        downloadData = InventoryMaster.getDownloadData()
+        dependencyData = InventoryMaster.getDependencyData()
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)
-        workbook.change_sheet_name("Sheet", f"Semester {downloadData['semester']}")
+        workbook.change_sheet_name("Sheet", f"Semester {dependencyData['semester']}")
         workbook.set_zoom(85)
 
-        InventoryMaster.writeHeader(workbook, downloadData)
-        InventoryMaster.writeMain(workbook, inventoryMasterDocument, downloadData)
+        InventoryMaster.writeHeader(workbook, dependencyData)
+        InventoryMaster.writeMain(workbook, inventoryMasterDocument, dependencyData)
 
         workbook.save()
 
 
-    def writeHeader(workbook, downloadData):
-        workbook.write_value_multiple("A1", "A3", [f"LAPORAN INVENTARISASI PERSEDIAAN SEMESTER {downloadData['semester']} TAHUN {downloadData['tahun_akhir']}", f"PER {downloadData['tanggal_akhir']} {(downloadData['bulan_akhir']).upper()} {downloadData['tahun_akhir']}", "DINAS KETENAGAKERJAAN KOTA BALIKPAPAN"])
+    def writeHeader(workbook, dependencyData):
+        workbook.write_value_multiple("A1", "A3", [f"LAPORAN INVENTARISASI PERSEDIAAN SEMESTER {dependencyData['semester']} TAHUN {dependencyData['tahun_akhir']}", f"PER {dependencyData['tanggal_akhir']} {(dependencyData['bulan_akhir']).upper()} {dependencyData['tahun_akhir']}", "DINAS KETENAGAKERJAAN KOTA BALIKPAPAN"])
         workbook.write_value_multiple("A4", "C4", ["No", "Uraian Barang", "Satuan"])
 
-        workbook.write_value_singular("D4", f"Saldo (Per {downloadData['tanggal_awal']} {downloadData['bulan_awal']} {downloadData['tahun_awal']})")
+        workbook.write_value_singular("D4", f"Saldo (Per {dependencyData['tanggal_awal']} {dependencyData['bulan_awal']} {dependencyData['tahun_awal']})")
         workbook.write_value_singular("G4", "Mutasi Barang Masuk")
         workbook.write_value_singular("J4", "Mutasi Barang Keluar")
-        workbook.write_value_singular("M4", f"Saldo Akhir (Per {downloadData['tanggal_akhir']} {downloadData['bulan_akhir']} {downloadData['tahun_akhir']})")
+        workbook.write_value_singular("M4", f"Saldo Akhir (Per {dependencyData['tanggal_akhir']} {dependencyData['bulan_akhir']} {dependencyData['tahun_akhir']})")
 
         d5O5Value = ["Jumlah Satuan", "Harga Satuan (Rp)", "Jumlah (Rp)"]
         workbook.write_value_multiple("D5", "F5", d5O5Value)
@@ -90,7 +90,7 @@ class InventoryMaster():
         workbook.border_multiple("A4", "O5", "all", style = "thin")
 
 
-    def writeMain(workbook, inventoryMasterDocument, downloadData): 
+    def writeMain(workbook, inventoryMasterDocument, dependencyData): 
         rowCount = 6
 
         footerString = "Total"
@@ -208,7 +208,7 @@ class InventoryMaster():
         workbook.alignment_singular("B4", vertical = "center", horizontal = "center")
 
         rowCount += 2
-        workbook.write_value_singular(["L", rowCount], f"Balikpapan, {downloadData['tanggal_akhir']} {downloadData['bulan_akhir']} {downloadData['tahun_akhir']}")
+        workbook.write_value_singular(["L", rowCount], f"Balikpapan, {dependencyData['tanggal_akhir']} {dependencyData['bulan_akhir']} {dependencyData['tahun_akhir']}")
         workbook.alignment_singular(["L", rowCount], horizontal = "center")
         workbook.merge(["L", rowCount], ["N", rowCount])
 
@@ -222,11 +222,11 @@ class InventoryMaster():
         workbook.merge(["L", rowCount], ["N", rowCount])
 
         rowCount += 4
-        workbook.write_value_singular(["B", rowCount], downloadData['plt_kasubag_umum'])
+        workbook.write_value_singular(["B", rowCount], dependencyData['plt_kasubag_umum'])
         workbook.alignment_singular(["B", rowCount], horizontal = "center")
         workbook.merge(["B", rowCount], ["C", rowCount])
 
-        workbook.write_value_singular(["L", rowCount], downloadData['pengurus_barang_pengguna'])
+        workbook.write_value_singular(["L", rowCount], dependencyData['pengurus_barang_pengguna'])
         workbook.alignment_singular(["L", rowCount], horizontal = "center")
         workbook.merge(["L", rowCount], ["N", rowCount])
 
@@ -244,7 +244,7 @@ class InventoryMaster():
 
         masterFooterFilePath = "./media/Master Footer Image"
         masterFooterWorkbook = Excel(f"{masterFooterFilePath}.xlsx")
-        masterFooterWorkbook.write_value_singular("C3", downloadData["sekretaris_dinas"])
+        masterFooterWorkbook.write_value_singular("C3", dependencyData["sekretaris_dinas"])
         masterFooterWorkbook.save()
 
         excel2img.export_img(f"{masterFooterFilePath}.xlsx", f"{masterFooterFilePath}.png", "", "sheet!B2:F3")
@@ -262,29 +262,29 @@ class InventoryMaster():
         workbook.merge(["F", rowCount], ["H", rowCount])
 
         rowCount += 4
-        workbook.write_value_singular(["F", rowCount], downloadData['kepala_dinas_ketenagakerjaan'])
+        workbook.write_value_singular(["F", rowCount], dependencyData['kepala_dinas_ketenagakerjaan'])
         workbook.font_singular(["F", rowCount], bold = True)
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
         workbook.merge(["F", rowCount], ["H", rowCount])
 
 
-    def getDownloadData():
-        collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDownload)
-        inventoryDownloadDocument = collection.find_one({"id": 1})
+    def getDependencyData():
+        collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDependency)
+        inventoryDependencyDocument = collection.find_one({"id": 1})
 
-        downloadData = {
-            "semester": Utility.romanNumeral(inventoryDownloadDocument.get("semester")),
-            "tanggal_awal": inventoryDownloadDocument.get("tanggal_awal"),
-            "bulan_awal" : Utility.translateMonthName(Utility.convertNumberToMonthName(inventoryDownloadDocument.get("bulan_awal"))),
-            "tahun_awal": inventoryDownloadDocument.get("tahun_awal"),
-            "tanggal_akhir": inventoryDownloadDocument.get("tanggal_akhir"),
-            "bulan_akhir" : Utility.translateMonthName(Utility.convertNumberToMonthName(inventoryDownloadDocument.get("bulan_akhir"))),
-            "tahun_akhir": inventoryDownloadDocument.get("tahun_akhir"),
-            "pengurus_barang_pengguna": inventoryDownloadDocument.get("pengurus_barang_pengguna"),
-            "plt_kasubag_umum": inventoryDownloadDocument.get("plt_kasubag_umum"),
-            "sekretaris_dinas": inventoryDownloadDocument.get("sekretaris_dinas"),
-            "kepala_dinas_ketenagakerjaan": inventoryDownloadDocument.get("kepala_dinas_ketenagakerjaan")
+        dependencyData = {
+            "semester": Utility.romanNumeral(inventoryDependencyDocument.get("semester")),
+            "tanggal_awal": inventoryDependencyDocument.get("tanggal_awal"),
+            "bulan_awal" : Utility.translateMonthName(Utility.convertNumberToMonthName(inventoryDependencyDocument.get("bulan_awal"))),
+            "tahun_awal": inventoryDependencyDocument.get("tahun_awal"),
+            "tanggal_akhir": inventoryDependencyDocument.get("tanggal_akhir"),
+            "bulan_akhir" : Utility.translateMonthName(Utility.convertNumberToMonthName(inventoryDependencyDocument.get("bulan_akhir"))),
+            "tahun_akhir": inventoryDependencyDocument.get("tahun_akhir"),
+            "pengurus_barang_pengguna": inventoryDependencyDocument.get("pengurus_barang_pengguna"),
+            "plt_kasubag_umum": inventoryDependencyDocument.get("plt_kasubag_umum"),
+            "sekretaris_dinas": inventoryDependencyDocument.get("sekretaris_dinas"),
+            "kepala_dinas_ketenagakerjaan": inventoryDependencyDocument.get("kepala_dinas_ketenagakerjaan")
         }
 
-        Utility.writeJSON("./json/download_data.json", downloadData)
-        return downloadData
+        Utility.writeJSON("./json/dependency_data.json", dependencyData)
+        return dependencyData

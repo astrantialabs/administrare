@@ -60,7 +60,7 @@ class Dependency():
     inventoryRequestFilePath = "request"
     inventoryRequestFolderPath = f"{inventoryFolderPath}/{inventoryRequestFilePath}"
 
-    collectionInventoryDownload = environtmentValues.get("DATABASE_DOWNLOAD_INVENTORY_COLLECTION")
+    collectionInventoryDependency = environtmentValues.get("DATABASE_DEPENDENCY_INVENTORY_COLLECTION")
 
     #endregion Inventory
 
