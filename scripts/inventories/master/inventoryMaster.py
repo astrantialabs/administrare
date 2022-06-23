@@ -21,6 +21,11 @@
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
+import excel2img
+
+from openpyxl.drawing.image import Image as ExcelImage
+from PIL import Image, ImageOps
+
 from dependency import Dependency
 from excel import Excel
 from database import Database
@@ -198,3 +203,58 @@ class InventoryMaster():
         
         workbook.adjust_width("A4", ["O", rowCount - 1], width_limit = 35)
         workbook.alignment_singular("B4", vertical = "center", horizontal = "center")
+
+        rowCount += 2
+        workbook.write_value_singular(["L", rowCount], "Balikpapan, 31 Desember 2021")
+        workbook.alignment_singular(["L", rowCount], horizontal = "center")
+        workbook.merge(["L", rowCount], ["N", rowCount])
+
+        rowCount += 1
+        workbook.write_value_singular(["B", rowCount], "Plt. Kasubag Umum")
+        workbook.alignment_singular(["B", rowCount], horizontal = "center")
+        workbook.merge(["B", rowCount], ["C", rowCount])
+
+        workbook.write_value_singular(["L", rowCount], "Pengurus Barang Pengguna")
+        workbook.alignment_singular(["L", rowCount], horizontal = "center")
+        workbook.merge(["L", rowCount], ["N", rowCount])
+
+        rowCount += 4
+        workbook.write_value_singular(["B", rowCount], "Dina Hadiani S")
+        workbook.alignment_singular(["B", rowCount], horizontal = "center")
+        workbook.merge(["B", rowCount], ["C", rowCount])
+
+        workbook.write_value_singular(["L", rowCount], "Trie Wahyu Kurniati")
+        workbook.alignment_singular(["L", rowCount], horizontal = "center")
+        workbook.merge(["L", rowCount], ["N", rowCount])
+
+        rowCount += 1
+        workbook.write_value_singular(["F", rowCount], "Mengetahui,")
+        workbook.font_singular(["F", rowCount], bold = True)
+        workbook.alignment_singular(["F", rowCount], horizontal = "center")
+        workbook.merge(["F", rowCount], ["H", rowCount])
+
+        rowCount += 1
+        workbook.write_value_singular(["F", rowCount], "Kepala Dinas Ketenagakerjaan")
+        workbook.font_singular(["F", rowCount], bold = True)
+        workbook.alignment_singular(["F", rowCount], horizontal = "center")
+        workbook.merge(["F", rowCount], ["H", rowCount])
+
+        excel2img.export_img("./media/Master Footer Image.xlsx","./media/Master Footer Image.png", "", "sheet!B2:F3")
+        
+        image = Image.open("./media/Master Footer Image.png").resize((420, 89))
+        ImageOps.expand(image, border=1).save("./media/Master Footer Image.png")
+
+        excelImage = ExcelImage("./media/Master Footer Image.png")
+        workbook.active_sheet.add_image(excelImage, f"B{rowCount}")
+
+        rowCount += 1
+        workbook.write_value_singular(["F", rowCount], "Kota Balikpapan")
+        workbook.font_singular(["F", rowCount], bold = True)
+        workbook.alignment_singular(["F", rowCount], horizontal = "center")
+        workbook.merge(["F", rowCount], ["H", rowCount])
+
+        rowCount += 4
+        workbook.write_value_singular(["F", rowCount], "Ani Mufaidah")
+        workbook.font_singular(["F", rowCount], bold = True)
+        workbook.alignment_singular(["F", rowCount], horizontal = "center")
+        workbook.merge(["F", rowCount], ["H", rowCount])

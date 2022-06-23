@@ -143,7 +143,7 @@ class InventoryRequest():
         
         splittedDate = Utility.slugifyDate(dateValue).split("-")
 
-        fileTemplate = "./template/User Request Template.docx"
+        fileTemplate = "./media/User Request Template.docx"
         filePath = f"../{Dependency.inventoryRequestFolderPath}/{usernameValue} {Utility.slugifyDate(dateValue)}.docx"
 
         document = Document(fileTemplate)
