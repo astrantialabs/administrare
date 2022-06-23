@@ -49,9 +49,18 @@ async function boostrap() {
         next();
     });
 
+    const origins: string[] = [
+        "http://inventory.setdisnakerbppn.com/",
+        "https://inventory.setdisnakerbppn.com/",
+        "http://localhost:3000/",
+        "https://localhost:3000/",
+        "http://localhost:3001/",
+        "https://localhost:3001/",
+    ];
+
     app.enableCors({
         credentials: true,
-        origin: ["*"],
+        origin: origins,
         allowedHeaders: "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe",
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     });
