@@ -121,12 +121,16 @@ const InventoryRequestUserMain: NextPage = () => {
                                             </Text>
                                             <StatGroup marginTop={2} padding={0}>
                                                 <Stat marginRight={8} size="sm" padding={0}>
-                                                    <StatLabel maxW="75px">Kategori</StatLabel>
+                                                    <StatLabel width="75px">Kategori</StatLabel>
                                                     <StatNumber fontSize="14px">{item.kategori_name}</StatNumber>
                                                 </Stat>
                                                 <Stat marginRight={8} width="600px" padding={0}>
                                                     <StatLabel>Barang</StatLabel>
                                                     <StatNumber fontSize="14px">{item.barang_name}</StatNumber>
+                                                </Stat>
+                                                <Stat marginRight={8} width="50px" padding={0}>
+                                                    <StatLabel>Satuan</StatLabel>
+                                                    <StatNumber fontSize="14px">{item.barang_unit}</StatNumber>
                                                 </Stat>
                                                 <Stat marginRight={8} width="40px" padding={0}>
                                                     <StatLabel>Total</StatLabel>

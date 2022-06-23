@@ -48,7 +48,7 @@ export type DemandCreateBarang = {
     satuan: string;
 };
 
-export type RequestBarangWithCategoryNameAndItemName = RequestBarang & { kategori_name: string; barang_name: string };
+export type RequestBarangExtended = RequestBarang & { kategori_name: string; barang_name: string; barang_unit: string };
 
 export type RequestCreateBarang = {
     kategori_id: number;

@@ -23,7 +23,7 @@
 
 import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
-import { JumlahData, RequestBarangWithCategoryNameAndItemName, RequestCreateBarang } from "@/shared/typings/types/inventory";
+import { JumlahData, RequestBarangExtended, RequestCreateBarang } from "@/shared/typings/types/inventory";
 import { currentDate, responseFormat } from "@/shared/utils/util";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -64,16 +64,19 @@ export class RequestInventoryService {
 
     //#region utility
 
-    public async requestBarangWithCategoryAndItemName(request_barang_data: RequestBarang[]): Promise<RequestBarangWithCategoryNameAndItemName[]> {
-        let request_barang_data_with_category_and_item_name: RequestBarangWithCategoryNameAndItemName[] = await Promise.all(
+    public async requestBarangWithCategoryAndItemName(request_barang_data: RequestBarang[]): Promise<RequestBarangExtended[]> {
+        let request_barang_data_with_category_and_item_name: RequestBarangExtended[] = await Promise.all(
             request_barang_data.map(async (item_object: RequestBarang) => {
+                const master_item_object: MasterBarang = (
+                    await this.masterInventoryService.masterGetBarangByKategoriIdAndBarangId(2022, item_object.kategori_id, item_object.barang_id)
+                ).result.master_item;
+
                 return {
                     ...item_object,
                     kategori_name: (await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, item_object.kategori_id)).result
                         .master_category_name,
-                    barang_name: (
-                        await this.masterInventoryService.masterGetBarangNameByKategoriIdAndBarangId(2022, item_object.kategori_id, item_object.barang_id)
-                    ).result.master_item_name,
+                    barang_name: master_item_object.nama,
+                    barang_unit: master_item_object.satuan,
                 };
             })
         );
@@ -90,15 +93,15 @@ export class RequestInventoryService {
      * @param {Number} year - The year
      * @returns {Promise<RequestBarang[]>} The request item object
      */
-    public async requestGetBarangAll(year: number): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
+    public async requestGetBarangAll(year: number): Promise<ResponseFormat<ResponseObject<RequestBarangExtended[]>>> {
         try {
             const request_barang_data: RequestBarang[] = (await this.requestFindOne(year)).barang;
 
-            const request_barang_data_with_category_and_item_name: RequestBarangWithCategoryNameAndItemName[] = await this.requestBarangWithCategoryAndItemName(
+            const request_barang_data_with_category_and_item_name: RequestBarangExtended[] = await this.requestBarangWithCategoryAndItemName(
                 request_barang_data
             );
 
-            return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(true, 200, "Permintaan barang berhasil ditemukan.", {
+            return responseFormat<ResponseObject<RequestBarangExtended[]>>(true, 200, "Permintaan barang berhasil ditemukan.", {
                 request_item: request_barang_data_with_category_and_item_name,
             });
         } catch (error: any) {
@@ -112,12 +115,12 @@ export class RequestInventoryService {
      * @param {Number} id - The id
      * @returns {Promise<RequestBarang>} The request item object
      */
-    public async requestGetBarangById(year: number, id: number): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>> {
+    public async requestGetBarangById(year: number, id: number): Promise<ResponseFormat<ResponseObject<RequestBarangExtended>>> {
         try {
-            const request_barang_data: RequestBarangWithCategoryNameAndItemName[] = (await this.requestGetBarangAll(year)).result.request_item;
-            let request_barang: RequestBarangWithCategoryNameAndItemName;
+            const request_barang_data: RequestBarangExtended[] = (await this.requestGetBarangAll(year)).result.request_item;
+            let request_barang: RequestBarangExtended;
 
-            request_barang_data.forEach((item_object: RequestBarangWithCategoryNameAndItemName) => {
+            request_barang_data.forEach((item_object: RequestBarangExtended) => {
                 if (item_object.id == id) {
                     request_barang = item_object;
                 }
@@ -126,14 +129,9 @@ export class RequestInventoryService {
             if (request_barang == undefined) {
                 return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} gagal ditemukan.`, null);
             } else if (request_barang != undefined) {
-                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>(
-                    true,
-                    200,
-                    `Permintaan barang dengan id ${id} berhasil ditemukan.`,
-                    {
-                        request_item: request_barang,
-                    }
-                );
+                return responseFormat<ResponseObject<RequestBarangExtended>>(true, 200, `Permintaan barang dengan id ${id} berhasil ditemukan.`, {
+                    request_item: request_barang,
+                });
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -146,28 +144,23 @@ export class RequestInventoryService {
      * @param {Number} status - The status
      * @returns {Promise<RequestBarang[]>} The request item object
      */
-    public async requestGetBarangByStatus(year: number, status: number): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
+    public async requestGetBarangByStatus(year: number, status: number): Promise<ResponseFormat<ResponseObject<RequestBarangExtended[]>>> {
         try {
             const status_list: number[] = [0, 1, 2];
 
             if (status_list.includes(status)) {
-                const request_barang_data: RequestBarangWithCategoryNameAndItemName[] = (await this.requestGetBarangAll(year)).result.request_item;
-                let request_barang: RequestBarangWithCategoryNameAndItemName[] = [];
+                const request_barang_data: RequestBarangExtended[] = (await this.requestGetBarangAll(year)).result.request_item;
+                let request_barang: RequestBarangExtended[] = [];
 
-                request_barang_data.forEach((item_object: RequestBarangWithCategoryNameAndItemName) => {
+                request_barang_data.forEach((item_object: RequestBarangExtended) => {
                     if (item_object.status == status) {
                         request_barang.push(item_object);
                     }
                 });
 
-                return responseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>(
-                    true,
-                    200,
-                    `Permintaan barang dengan status ${status} berhasil ditemukan.`,
-                    {
-                        request_item: request_barang,
-                    }
-                );
+                return responseFormat<ResponseObject<RequestBarangExtended[]>>(true, 200, `Permintaan barang dengan status ${status} berhasil ditemukan.`, {
+                    request_item: request_barang,
+                });
             } else if (!status_list.includes(status)) {
                 return responseFormat<null>(false, 400, `Status tidak valid.`, null);
             }

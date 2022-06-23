@@ -31,6 +31,7 @@ export type InventoryRequestItem = {
     status: number;
     kategori_name: string;
     barang_name: string;
+    barang_unit: string;
 };
 
 export type InventoryRequestItems = Array<InventoryRequestItem>;

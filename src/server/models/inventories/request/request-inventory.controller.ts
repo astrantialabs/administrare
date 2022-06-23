@@ -22,7 +22,7 @@
  */
 
 import { currentDate, readJSON, slugifyDate } from "@/shared/utils/util";
-import { RequestBarangWithCategoryNameAndItemName, RequestCreateBarang } from "@/shared/typings/types/inventory";
+import { RequestBarangExtended, RequestCreateBarang } from "@/shared/typings/types/inventory";
 import { Body, Controller, Get, Logger, Param, ParseIntPipe, Post, Put, StreamableFile, UseInterceptors, Response } from "@nestjs/common";
 import { MasterInventoryService } from "../master/master-inventory.service";
 import { RequestInventoryService } from "./request-inventory.service";
@@ -54,7 +54,7 @@ export class RequestInventoryController {
      */
     @Get("barang/all")
     @UseInterceptors(ResponseFormatInterceptor)
-    public async requestGetBarangAll(): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
+    public async requestGetBarangAll(): Promise<ResponseFormat<ResponseObject<RequestBarangExtended[]>>> {
         return await this.requestInventoryService.requestGetBarangAll(2022);
     }
 
@@ -65,9 +65,7 @@ export class RequestInventoryController {
      */
     @Get("barang/:id")
     @UseInterceptors(ResponseFormatInterceptor)
-    public async requestGetBarangById(
-        @Param("id", new ParseIntPipe()) id: number
-    ): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName>>> {
+    public async requestGetBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<RequestBarangExtended>>> {
         return await this.requestInventoryService.requestGetBarangById(2022, id);
     }
 
@@ -80,7 +78,7 @@ export class RequestInventoryController {
     @UseInterceptors(ResponseFormatInterceptor)
     public async requestGetBarangByStatus(
         @Param("status", new ParseIntPipe()) status: number
-    ): Promise<ResponseFormat<ResponseObject<RequestBarangWithCategoryNameAndItemName[]>>> {
+    ): Promise<ResponseFormat<ResponseObject<RequestBarangExtended[]>>> {
         return await this.requestInventoryService.requestGetBarangByStatus(2022, status);
     }
 
