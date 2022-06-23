@@ -18,18 +18,14 @@
 
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { Form, Formik } from "formik";
-import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer } from "@chakra-ui/react";
+import { Flex, Box, Heading, Text, Stack } from "@chakra-ui/react";
 import { useQuery, UseQueryResult } from "react-query";
-import dayjs from "dayjs";
-import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup, Link, LinkOverlay } from "@chakra-ui/react";
 import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from "@chakra-ui/react";
 import { DownloadOptionData } from "@/shared/typings/interfaces/inventory.interface";
 
 import Sidebar from "@/components/Sidebar";
 import axios from "axios";
 import { BASE_DOMAIN } from "@/shared/typings/constants";
-import { slugifyDate } from "@/shared/utils/util";
 
 const InventoryRequestDownloadMain: NextPage = () => {
     const router = useRouter();
@@ -73,7 +69,9 @@ const InventoryRequestDownloadMain: NextPage = () => {
                                                                 downloadRequestQuery.refetch()
                                                             )}
                                                         >
-                                                            <Text>{date.date}</Text>
+                                                            <Text>
+                                                                {date.date == "Terbaru" ? date.date : `Laporan ${item.name} Permintaan Barang ${date.date}`}
+                                                            </Text>
                                                         </Box>
                                                     </Stack>
                                                 </>
