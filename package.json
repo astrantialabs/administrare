@@ -64,7 +64,6 @@
     "devDependencies": {
         "@nestjs/cli": "^8.0.0",
         "@nestjs/schematics": "^8.0.0",
-        "@prettier/plugin-python": "^0.0.0-development",
         "@types/bcrypt": "^5.0.0",
         "@types/compression": "^1.7.2",
         "@types/connect-mongodb-session": "^2.4.3",
