@@ -23,6 +23,7 @@
 
 import datetime
 import json
+import calendar
 
 class Utility():
     def romanNumeral(number):
@@ -56,6 +57,10 @@ class Utility():
 
     def slugifyDate(rawDate):
         return rawDate.replace(" ", "-").replace(":", "-").replace(":", "-")     
+
+
+    def convertNumberToMonthName(number):
+        return calendar.month_name[int(number)]
 
 
     def translateMonthName(rawMonth):

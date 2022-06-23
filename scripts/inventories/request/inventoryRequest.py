@@ -23,7 +23,6 @@
 
 import os
 import datetime
-import calendar
 
 from docx import Document
 from docx.shared import Pt
@@ -150,7 +149,7 @@ class InventoryRequest():
 
         for paragraph in document.paragraphs:
             if("Balikpapan" in paragraph.text):
-                paragraph.add_run(f" {splittedDate[2]} {Utility.translateMonthName(calendar.month_name[int(splittedDate[1])])} {splittedDate[1]}")
+                paragraph.add_run(f" {splittedDate[2]} {Utility.translateMonthName(Utility.convertNumberToMonthName(splittedDate[1]))} {splittedDate[1]}")
 
         
         document.paragraphs[len(document.paragraphs) - 2].add_run(f"{' ' * 90} {usernameValue}")
