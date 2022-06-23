@@ -29,7 +29,7 @@ from inventories.demand.inventoryDemand import InventoryDemand
 
 class Test:
     def main():
-        InventoryMaster.getDependencyData()
+        # InventoryMaster.getDependencyData()
         InventoryMaster.main(Utility.currentDate())
 
         # InventoryRequest.updateUserData()

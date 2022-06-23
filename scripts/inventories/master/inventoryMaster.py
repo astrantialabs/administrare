@@ -22,6 +22,7 @@
 """
 
 import excel2img
+from fastapi import HTTPException
 
 from openpyxl.drawing.image import Image as ExcelImage
 from PIL import Image, ImageOps
@@ -288,3 +289,33 @@ class InventoryMaster():
 
         Utility.writeJSON("./json/dependency_data.json", dependencyData)
         return dependencyData
+
+    
+    def updateDependencyData(dependencyData):
+        if(dependencyData.semester not in (1, 2)):
+            raise HTTPException(status_code=400, detail = "Semester value invalid")
+
+        month_list = [x for x in range(1, 13)]
+        if(dependencyData.bulan_awal not in month_list):
+            raise HTTPException(status_code=400, detail = "Bulan Awal value invalid")
+
+        if(dependencyData.bulan_akhir not in month_list):
+            raise HTTPException(status_code=400, detail = "Bulan Akhir value invalid")
+
+        dependencyData = {
+            "id": 1,
+            "semester": dependencyData.semester,
+            "tanggal_awal": dependencyData.tanggal_awal,
+            "bulan_awal" : dependencyData.bulan_awal,
+            "tahun_awal": dependencyData.tahun_awal,
+            "tanggal_akhir": dependencyData.tanggal_akhir,
+            "bulan_akhir" : dependencyData.bulan_akhir,
+            "tahun_akhir": dependencyData.tahun_akhir,
+            "pengurus_barang_pengguna": dependencyData.pengurus_barang_pengguna,
+            "plt_kasubag_umum": dependencyData.plt_kasubag_umum,
+            "sekretaris_dinas": dependencyData.sekretaris_dinas,
+            "kepala_dinas_ketenagakerjaan": dependencyData.kepala_dinas_ketenagakerjaan
+        }
+
+        collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDependency)
+        collection.replace_one({"id": dependencyData["id"]}, dependencyData, upsert=True)

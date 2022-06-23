@@ -22,10 +22,25 @@
 """
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 from inventories.master.inventoryMaster import InventoryMaster
 from inventories.request.inventoryRequest import InventoryRequest
 from inventories.demand.inventoryDemand import InventoryDemand
+
+class DependencyData(BaseModel):
+    semester: int
+    tanggal_awal: int
+    bulan_awal: int
+    tahun_awal: int
+    tanggal_akhir: int
+    bulan_akhir: int
+    tahun_akhir: int
+    pengurus_barang_pengguna: str
+    plt_kasubag_umum: str
+    sekretaris_dinas: str
+    kepala_dinas_ketenagakerjaan: str
+
 
 app = FastAPI()
 
@@ -36,6 +51,12 @@ def test():
 
     except:
         print("Error")
+
+
+@app.put("/__api/inventory/master/update/dependency")
+def inventoryMasterUpdateDependencyData(dependencyData: DependencyData):
+    InventoryMaster.updateDependencyData(dependencyData)
+    return {"success": True}
 
 
 @app.post("/__api/inventory/master/download/{currentDate}")
