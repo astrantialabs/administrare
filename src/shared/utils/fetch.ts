@@ -31,16 +31,20 @@ const initializeFetch = (basePath: string) => {
     context.basePath = basePath;
 };
 
-const getFetchUrl = (url: string) => {
+const getFetchUrl = (url: string, isPython: boolean) => {
     if (isServer) {
-        return url.startsWith("/") ? `${isDevelopmentEnvironment ? "http://localhost:3000" : "https://inventory.setdisnakerbppn.com/"}${url}` : url;
+        if (isPython) {
+            return url.startsWith("/") ? `${isDevelopmentEnvironment ? "http://0.0.0.0:3001" : "http://156.67.217.92:3001/"}${url}` : url;
+        } else {
+            return url.startsWith("/") ? `${isDevelopmentEnvironment ? "http://localhost:3000" : "https://inventory.setdisnakerbppn.com/"}${url}` : url;
+        }
     }
 
     return url.startsWith("/") ? context.basePath + url : url;
 };
 
-const envAwareFetch = (url: string, options?: Partial<RequestInit>, text?: boolean) => {
-    const fetchUrl = getFetchUrl(url);
+const envAwareFetch = (url: string, options?: Partial<RequestInit>, text?: boolean, isPython?: boolean) => {
+    const fetchUrl = getFetchUrl(url, isPython);
 
     if (text) {
         return fetch(fetchUrl, options).then((response) => response.text());

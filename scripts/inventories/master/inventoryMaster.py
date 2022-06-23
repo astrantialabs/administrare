@@ -21,7 +21,7 @@
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
-import excel2img
+# import excel2img
 from fastapi import HTTPException
 
 from openpyxl.drawing.image import Image as ExcelImage
@@ -243,18 +243,18 @@ class InventoryMaster():
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
         workbook.merge(["F", rowCount], ["H", rowCount])
 
-        masterFooterFilePath = "./media/Master Footer Image"
-        masterFooterWorkbook = Excel(f"{masterFooterFilePath}.xlsx")
-        masterFooterWorkbook.write_value_singular("C3", dependencyData["sekretaris_dinas"])
-        masterFooterWorkbook.save()
+        # masterFooterFilePath = "./media/Master Footer Image"
+        # masterFooterWorkbook = Excel(f"{masterFooterFilePath}.xlsx")
+        # masterFooterWorkbook.write_value_singular("C3", dependencyData["sekretaris_dinas"])
+        # masterFooterWorkbook.save()
 
-        excel2img.export_img(f"{masterFooterFilePath}.xlsx", f"{masterFooterFilePath}.png", "", "sheet!B2:F3")
+        # excel2img.export_img(f"{masterFooterFilePath}.xlsx", f"{masterFooterFilePath}.png", "", "sheet!B2:F3")
         
-        image = Image.open(f"{masterFooterFilePath}.png").resize((420, 89))
-        ImageOps.expand(image, border=1).save(f"{masterFooterFilePath}.png")
+        # image = Image.open(f"{masterFooterFilePath}.png").resize((420, 89))
+        # ImageOps.expand(image, border=1).save(f"{masterFooterFilePath}.png")
 
-        excelImage = ExcelImage(f"{masterFooterFilePath}.png")
-        workbook.active_sheet.add_image(excelImage, f"B{rowCount}")
+        # excelImage = ExcelImage(f"{masterFooterFilePath}.png")
+        # workbook.active_sheet.add_image(excelImage, f"B{rowCount}")
 
         rowCount += 1
         workbook.write_value_singular(["F", rowCount], "Kota Balikpapan")

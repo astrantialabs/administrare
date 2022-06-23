@@ -429,6 +429,9 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                 <Button>
                     <LinkOverlay href="/inventory/create/barang">Create Barang</LinkOverlay>
                 </Button>
+                <Button>
+                    <LinkOverlay href="/inventory/update/dependency">Update Excel Text</LinkOverlay>
+                </Button>
             </ButtonGroup>
 
             <Table<PayloadTest>

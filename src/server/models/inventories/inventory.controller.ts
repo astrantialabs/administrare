@@ -97,6 +97,14 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
+    @Get("update/dependency")
+    @Render("inventory/master/manage/update/dependency")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterUpdateDependency(): {} {
+        return {};
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */
