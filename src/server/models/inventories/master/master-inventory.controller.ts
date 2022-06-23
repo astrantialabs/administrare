@@ -29,7 +29,7 @@ import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payloa
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
 import { join } from "path";
-import { currentDate, slugifyDate } from "@/shared/utils/util";
+import { currentDate, readJSON, slugifyDate } from "@/shared/utils/util";
 import { ResponseFormat, ResponseFormatInterceptor } from "@/server/common/interceptors/response-format.interceptor";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 
@@ -281,9 +281,10 @@ export class MasterInventoryController {
 
         if (response.data.success) {
             const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${current_date}.xlsx`));
+            const dependency_data = readJSON("./scripts/json/dependency_data.json");
             res.set({
                 "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Content-Disposition": `attachment; filename="LAPORAN INVENTARISASI PERSEDIAAN SEMESTERAN.xlsx"`,
+                "Content-Disposition": `attachment; filename="LAPORAN INVENTARISASI PERSEDIAAN SEMESTERAN ${dependency_data.tahun_akhir}.xlsx"`,
             });
             return new StreamableFile(file);
         }
