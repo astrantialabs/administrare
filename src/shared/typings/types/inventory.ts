@@ -73,6 +73,20 @@ export type MasterParameterBarang = {
     keterangan: string | null;
 };
 
+export type MasterParameterDependency = {
+    semester: number;
+    tanggal_awal: number;
+    bulan_awal: number;
+    tahun_awal: number;
+    tanggal_akhir: number;
+    bulan_akhir: number;
+    tahun_akhir: number;
+    pengurus_barang_pengguna: string;
+    plt_kasubag_umum: string;
+    sekretaris_dinas: string;
+    kepala_dinas_ketenagakerjaan: string;
+};
+
 export type MasterTotal = {
     saldo: number;
     mutasi_barang_masuk: number;

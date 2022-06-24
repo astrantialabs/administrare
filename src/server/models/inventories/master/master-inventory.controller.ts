@@ -24,7 +24,14 @@
 import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile, UseInterceptors } from "@nestjs/common";
 import { MasterInventoryService } from "./master-inventory.service";
 import { MasterBarang, MasterInventoryDataDocument, MasterKategori } from "./schema/master-inventory.schema";
-import { ItemSearchData, MasterParameterBarang, MasterParameterKategori, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
+import {
+    ItemSearchData,
+    MasterParameterBarang,
+    MasterParameterDependency,
+    MasterParameterKategori,
+    MasterSubTotal,
+    MasterTotal,
+} from "@/shared/typings/types/inventory";
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
 import { createReadStream } from "fs";
@@ -273,6 +280,13 @@ export class MasterInventoryController {
     }
 
     /* -------------------------------- DOWNLOAD -------------------------------- */
+
+    @Post("update/dependency")
+    public async masterUpdateDependency(@Body() body: MasterParameterDependency) {
+        const response = await pythonAxiosInstance.post("__api/inventory/master/update/dependency", body);
+
+        return response.data;
+    }
 
     @Get("download/latest")
     public async masterDownloadLatest(@Response({ passthrough: true }) res: any): Promise<StreamableFile> {

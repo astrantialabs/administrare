@@ -133,8 +133,8 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
 
         new Promise<void>((resolve) => {
             setTimeout(() => {
-                axios
-                    .post(`http://localhost:3001/__api/inventory/master/update/dependency`, payload)
+                axiosInstance
+                    .post(`__api/data/inventory/master/update/dependency`, payload)
                     .then((response) => {
                         if (response.data.success) {
                             toast({

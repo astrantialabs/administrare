@@ -25,9 +25,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from dependency import Dependency
-from database import Database
-
 from inventories.master.inventoryMaster import InventoryMaster
 from inventories.request.inventoryRequest import InventoryRequest
 from inventories.demand.inventoryDemand import InventoryDemand
@@ -54,7 +51,11 @@ origins = [
     "http://localhost:3000",
     "https://localhost:3000",
     "http://localhost:3001",
-    "https://localhost:3001"
+    "https://localhost:3001",
+    "http://0.0.0.0:3000",
+    "https://0.0.0.0:3000",
+    "http://0.0.0.0:3001",
+    "https://0.0.0.0:3001"
 ]
 
 app.add_middleware(
@@ -85,7 +86,6 @@ def inventoryMasterGetDependencyData():
 @app.post("/__api/inventory/master/update/dependency")
 def inventoryMasterUpdateDependencyData(dependencyData: DependencyData):
     return InventoryMaster.updateDependencyData(dependencyData)
-
 
 
 @app.post("/__api/inventory/master/download/{currentDate}")
