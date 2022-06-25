@@ -21,16 +21,56 @@
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
-# import excel2img
-from fastapi import HTTPException
-
 from openpyxl.drawing.image import Image as ExcelImage
-from PIL import Image, ImageOps
+from PIL import Image, ImageDraw, ImageFont
 
 from dependency import Dependency
 from excel import Excel
 from database import Database
 from utility import Utility
+
+class Pillow():
+    def __init__(self, filePath, size = None):
+        self.filePath = filePath
+
+        if(size == None):
+            self.image = Image.open(self.filePath)
+
+            self.size = self.image.size
+            self.width = self.size[0]
+            self.height = self.size[1]
+
+
+        elif(size != None):
+            self.size = size
+            self.width = self.size[0]
+            self.height = self.size[1]
+            
+            self.image = Image.new("RGB", self.size, "white")
+
+
+        self.draw = ImageDraw.Draw(self.image)
+
+
+    def resize(self, size):
+        self.image = self.image.resize(size)
+
+
+    def save(self):
+        self.image.save(self.filePath)
+
+
+    def checkTextSize(self, text, font):
+        return self.draw.textsize(text, font=font)
+
+
+    def drawText(self, position, text, font, fill):
+        self.draw.text(position, text, fill=fill, font=font)
+
+
+    def drawLine(self, position, fill, width):
+        self.draw.line(position, fill=fill, width=width)
+    
 
 class InventoryMaster():
     def main(currentDate):
@@ -243,18 +283,9 @@ class InventoryMaster():
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
         workbook.merge(["F", rowCount], ["H", rowCount])
 
-        # masterFooterFilePath = "./media/Master Footer Image"
-        # masterFooterWorkbook = Excel(f"{masterFooterFilePath}.xlsx")
-        # masterFooterWorkbook.write_value_singular("C3", dependencyData["sekretaris_dinas"])
-        # masterFooterWorkbook.save()
-
-        # excel2img.export_img(f"{masterFooterFilePath}.xlsx", f"{masterFooterFilePath}.png", "", "sheet!B2:F3")
-        
-        # image = Image.open(f"{masterFooterFilePath}.png").resize((420, 89))
-        # ImageOps.expand(image, border=1).save(f"{masterFooterFilePath}.png")
-
-        # excelImage = ExcelImage(f"{masterFooterFilePath}.png")
-        # workbook.active_sheet.add_image(excelImage, f"B{rowCount}")
+        InventoryMaster.generateFooterImage(dependencyData["sekretaris_dinas"])
+        excelImage = ExcelImage("./media/master footer/Master Footer Image.png")
+        workbook.active_sheet.add_image(excelImage, f"B{rowCount}")
 
         rowCount += 1
         workbook.write_value_singular(["F", rowCount], "Kota Balikpapan")
@@ -267,6 +298,57 @@ class InventoryMaster():
         workbook.font_singular(["F", rowCount], bold = True)
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
         workbook.merge(["F", rowCount], ["H", rowCount])
+
+
+    def generateFooterImage(text):
+        middleHeaderMasterFooterObject = Pillow("./media/master footer/Middle Header Master Footer Image.png")
+        middleTemplateMasterFooterObject = Pillow("./media/master footer/Middle Template Master Footer Image.png", (191, 77))
+
+        fontSize = 11
+        font = ImageFont.truetype("calibri.ttf", fontSize)
+        
+        textWidthRange = int(middleTemplateMasterFooterObject.width // 1.25)
+        textWidth, textHeight = middleTemplateMasterFooterObject.checkTextSize(text, font)
+
+        if textWidthRange > textWidth:
+            while textWidthRange > textWidth:
+                fontSize += 1
+                font = ImageFont.truetype("calibri.ttf", fontSize)
+
+                textWidth, textHeight = middleTemplateMasterFooterObject.checkTextSize(text, font)
+
+
+        elif textWidthRange < textWidth:
+            while textWidthRange < textWidth:
+                fontSize -= 1
+                font = ImageFont.truetype("calibri.ttf", fontSize)
+
+                textWidth, textHeight = middleTemplateMasterFooterObject.checkTextSize(text, font)
+
+
+        middleTemplateMasterFooterObject.drawText((8, (middleTemplateMasterFooterObject.height - textHeight)//2), text, font, "black")
+        middleTemplateMasterFooterObject.drawLine((0, 0, middleTemplateMasterFooterObject.width-1, 0), fill="black", width=1)
+        middleTemplateMasterFooterObject.drawLine((0, 0, 0, middleTemplateMasterFooterObject.height-1), fill="black", width=1)
+        middleTemplateMasterFooterObject.drawLine((middleTemplateMasterFooterObject.width-1, 0, middleTemplateMasterFooterObject.width-1, middleTemplateMasterFooterObject.height-1), fill="black", width=1)
+        middleTemplateMasterFooterObject.drawLine((0, middleTemplateMasterFooterObject.height-1, middleTemplateMasterFooterObject.width-1, middleTemplateMasterFooterObject.height-1), fill="black", width=1)
+        middleTemplateMasterFooterObject.save()
+
+        middleMasterFooterObject = Pillow("./media/master footer/Middle Master Footer Image.png", (middleHeaderMasterFooterObject.width, (middleHeaderMasterFooterObject.height + middleTemplateMasterFooterObject.height - 1)))
+        middleMasterFooterObject.image.paste(middleTemplateMasterFooterObject.image, (0, (middleMasterFooterObject.height - middleTemplateMasterFooterObject.height)))
+        middleMasterFooterObject.image.paste(middleHeaderMasterFooterObject.image, (0, (middleMasterFooterObject.height -  middleHeaderMasterFooterObject.height - middleTemplateMasterFooterObject.height + 1)))
+
+        middleMasterFooterObject.save()
+
+        leftMasterFooterObject = Pillow("./media/master footer/Left Master Footer Image.png")
+        rightMasterFooterObject = Pillow("./media/master footer/Right Master Footer Image.png")
+
+        masterFooterObject = Pillow("./media/master footer/Master Footer Image.png", ((leftMasterFooterObject.width + middleMasterFooterObject.width + rightMasterFooterObject.width - 2), 113))
+        masterFooterObject.image.paste(rightMasterFooterObject.image, ((masterFooterObject.width - rightMasterFooterObject.width), 0))
+        masterFooterObject.image.paste(middleMasterFooterObject.image, ((masterFooterObject.width - middleMasterFooterObject.width - rightMasterFooterObject.width + 1), 0))
+        masterFooterObject.image.paste(leftMasterFooterObject.image, ((masterFooterObject.width - leftMasterFooterObject.width - middleMasterFooterObject.width - rightMasterFooterObject.width + 2), 0))
+
+        masterFooterObject.resize((420, 89))
+        masterFooterObject.save()
 
 
     def getDependencyData():
