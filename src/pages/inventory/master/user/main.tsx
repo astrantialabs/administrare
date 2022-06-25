@@ -252,9 +252,6 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                 rows={rows}
                 prepareRow={prepareRow}
             />
-            <Button marginTop={8}>
-                <LinkOverlay href="__api/data/inventory/master/download/latest">Download Excel</LinkOverlay>
-            </Button>
         </Sidebar>
     );
 };

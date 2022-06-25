@@ -168,9 +168,6 @@ const InventoryRequestUserMain: NextPage = () => {
                         <Button width="150px">
                             <Link href="/inventory/request/create/barang">Create Barang</Link>
                         </Button>
-                        <Button width="150px" marginTop={8}>
-                            <LinkOverlay href="/inventory/request/download">Download Excel</LinkOverlay>
-                        </Button>
                     </VStack>
                 </Stack>
             </Flex>
