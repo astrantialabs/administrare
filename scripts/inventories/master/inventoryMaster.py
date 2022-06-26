@@ -327,10 +327,10 @@ class InventoryMaster():
 
 
         middleTemplateMasterFooterObject.drawText((8, (middleTemplateMasterFooterObject.height - textHeight)//2), text, font, "black")
-        middleTemplateMasterFooterObject.drawLine((0, 0, middleTemplateMasterFooterObject.width-1, 0), fill="black", width=1)
-        middleTemplateMasterFooterObject.drawLine((0, 0, 0, middleTemplateMasterFooterObject.height-1), fill="black", width=1)
-        middleTemplateMasterFooterObject.drawLine((middleTemplateMasterFooterObject.width-1, 0, middleTemplateMasterFooterObject.width-1, middleTemplateMasterFooterObject.height-1), fill="black", width=1)
-        middleTemplateMasterFooterObject.drawLine((0, middleTemplateMasterFooterObject.height-1, middleTemplateMasterFooterObject.width-1, middleTemplateMasterFooterObject.height-1), fill="black", width=1)
+        middleTemplateMasterFooterObject.drawLine((0, 0, middleTemplateMasterFooterObject.width-1, 0), "black", 1)
+        middleTemplateMasterFooterObject.drawLine((0, 0, 0, middleTemplateMasterFooterObject.height-1), "black", 1)
+        middleTemplateMasterFooterObject.drawLine((middleTemplateMasterFooterObject.width-1, 0, middleTemplateMasterFooterObject.width-1, middleTemplateMasterFooterObject.height-1), "black", 1)
+        middleTemplateMasterFooterObject.drawLine((0, middleTemplateMasterFooterObject.height-1, middleTemplateMasterFooterObject.width-1, middleTemplateMasterFooterObject.height-1), "black", 1)
         middleTemplateMasterFooterObject.save()
 
         middleMasterFooterObject = Pillow("./media/master footer/Middle Master Footer Image.png", (middleHeaderMasterFooterObject.width, (middleHeaderMasterFooterObject.height + middleTemplateMasterFooterObject.height - 1)))
@@ -375,7 +375,7 @@ class InventoryMaster():
             "kepala_dinas_ketenagakerjaan": rawDependencyData.get("kepala_dinas_ketenagakerjaan")
         }
 
-        Utility.writeJSON("./json/dependency_data.json", dependencyData)
+        Utility.writeJSON("./json/master_dependency_data.json", dependencyData)
         return dependencyData
 
     

@@ -49,7 +49,7 @@ class InventoryRequest():
         masterCollection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = masterCollection.find_one({"tahun": 2022})
 
-        userData = Utility.readJSON("./json/user_data.json")
+        userData = Utility.readJSON("./json/request_user_data.json")
 
         InventoryRequest.writeHeaderRaw(workbook)
         InventoryRequest.writeMainRaw(workbook, inventoryRequestDocument, inventoryMasterDocument)
@@ -128,8 +128,8 @@ class InventoryRequest():
         masterCollection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = masterCollection.find_one({"tahun": 2022})
 
-        optionData = Utility.readJSON("./json/option_data.json")
-        userData = Utility.readJSON("./json/user_data.json")
+        optionData = Utility.readJSON("./json/request_option_data.json")
+        userData = Utility.readJSON("./json/request_user_data.json")
 
         for userObject in optionData:
             if(userObject.get("id") == userId):
@@ -139,7 +139,7 @@ class InventoryRequest():
                     if(dateObject.get("id") == dateId):
                         dateValue = dateObject.get("date")
 
-        
+
         splittedDate = Utility.slugifyDate(dateValue).split("-")
 
         fileTemplate = "./media/User Request Template.docx"
@@ -254,7 +254,7 @@ class InventoryRequest():
                                 dateObject.get("request").append(newRequestObject)
 
 
-        Utility.writeJSON("./json/user_data.json", userData) 
+        Utility.writeJSON("./json/request_user_data.json", userData) 
 
 
     def updateOptionData():
@@ -262,78 +262,78 @@ class InventoryRequest():
 
         files.remove(".gitkeep")
         
-        file_option_array = [["Mentah", [["Terbaru", True]]]]
+        fileOptionArray = [["Mentah", [["Terbaru", True]]]]
 
-        json_user_requst_data = Utility.readJSON("./json/user_data.json")
-        for user_object in json_user_requst_data:
+        jsonUserRequstData = Utility.readJSON("./json/request_user_data.json")
+        for userObject in jsonUserRequstData:
             
-            date_array = []
-            for date_object in user_object.get("date"):
-                date_array.append([f"{date_object.get('date')} 00:00:00", True])
+            dateArray = []
+            for dateObject in userObject.get("date"):
+                dateArray.append([f"{dateObject.get('date')} 00:00:00", True])
 
             
-            file_option_array.append([user_object.get("username"), date_array])
+            fileOptionArray.append([userObject.get("username"), dateArray])
         
 
         for file in files:
-            file_name_array = file.split(".")[0].split(" ")
-            if(len(file_name_array) > 1):
-                file_date = file_name_array[-1].split("-")
-                formatted_file_date = f"{file_date[0]}-{file_date[1]}-{file_date[2]} {file_date[3]}:{file_date[4]}:{file_date[5]}"
+            fileNameArray = file.split(".")[0].split(" ")
+            if(len(fileNameArray) > 1):
+                fileDate = fileNameArray[-1].split("-")
+                formattedFileDate = f"{fileDate[0]}-{fileDate[1]}-{fileDate[2]} {fileDate[3]}:{fileDate[4]}:{fileDate[5]}"
 
-                date_is_valid = None
+                dateIsValid = None
                 try:
-                    date_validation = datetime.datetime(int(file_date[0]), int(file_date[1]), int(file_date[2]), int(file_date[3]), int(file_date[4]), int(file_date[5]))
-                    date_is_valid = True
+                    dateValidation = datetime.datetime(int(fileDate[0]), int(fileDate[1]), int(fileDate[2]), int(fileDate[3]), int(fileDate[4]), int(fileDate[5]))
+                    dateIsValid = True
 
                 except ValueError:
-                    date_is_valid = False
+                    dateIsValid = False
 
-                if(date_is_valid):
-                    file_name = " ".join(file_name_array[0:-1])
+                if(dateIsValid):
+                    fileName = " ".join(fileNameArray[0:-1])
 
-                    file_name_is_valid = True
-                    for file_item in file_option_array:
-                        if(file_item[0] == file_name):
-                            file_name_is_valid = False
+                    fileNameIsValid = True
+                    for fileItem in fileOptionArray:
+                        if(fileItem[0] == fileName):
+                            fileNameIsValid = False
 
                     
-                    if(file_name_is_valid):
-                        file_option_array.append([file_name, [[formatted_file_date, False]]])
+                    if(fileNameIsValid):
+                        fileOptionArray.append([fileName, [[formattedFileDate, False]]])
 
-                    elif(not file_name_is_valid):
-                        for file_item in file_option_array:
-                            if(file_item[0] == file_name):
+                    elif(not fileNameIsValid):
+                        for fileItem in fileOptionArray:
+                            if(fileItem[0] == fileName):
 
-                                file_item_array_is_valid = True
-                                for file_item_array in file_item[1]:
-                                    if(file_item_array[0] == formatted_file_date):
-                                        file_item_array_is_valid = False
+                                fileItemArrayIsValid = True
+                                for fileItemArray in fileItem[1]:
+                                    if(fileItemArray[0] == formattedFileDate):
+                                        fileItemArrayIsValid = False
                                 
-                                if(file_item_array_is_valid):
-                                    file_item[1].append([formatted_file_date, False])
+                                if(fileItemArrayIsValid):
+                                    fileItem[1].append([formattedFileDate, False])
 
 
-        file_option_data = []
-        for file_item_index, file_item in enumerate(file_option_array):
-            file_date_data = []
-            for file_date_index, file_date in enumerate(file_item[1]):
-                new_file_date_object = {
-                    "id": file_date_index + 1,
-                    "date": file_date[0],
-                    "creatable": file_date[1]
+        fileOptionData = []
+        for fileItemIndex, fileItem in enumerate(fileOptionArray):
+            fileDateData = []
+            for fileDateIndex, fileDate in enumerate(fileItem[1]):
+                newFileDateObject = {
+                    "id": fileDateIndex + 1,
+                    "date": fileDate[0],
+                    "creatable": fileDate[1]
                 }
 
-                file_date_data.append(new_file_date_object)
+                fileDateData.append(newFileDateObject)
 
             
-            new_file_option_object = {
-                "id": file_item_index + 1,
-                "name": file_item[0],
-                "date": file_date_data
+            newFileOptionObject = {
+                "id": fileItemIndex + 1,
+                "name": fileItem[0],
+                "date": fileDateData
             }
 
-            file_option_data.append(new_file_option_object)
+            fileOptionData.append(newFileOptionObject)
 
         
-        Utility.writeJSON("./json/option_data.json", file_option_data)
+        Utility.writeJSON("./json/request_option_data.json", fileOptionData)

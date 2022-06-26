@@ -295,7 +295,7 @@ export class MasterInventoryController {
 
         if (response.data.success) {
             const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${current_date}.xlsx`));
-            const dependency_data = readJSON("./scripts/json/dependency_data.json");
+            const dependency_data = readJSON("./scripts/json/master_dependency_data.json");
             res.set({
                 "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "Content-Disposition": `attachment; filename="LAPORAN INVENTARISASI PERSEDIAAN SEMESTERAN ${dependency_data.tahun_akhir}.xlsx"`,

@@ -112,10 +112,10 @@ export class RequestInventoryController {
 
     @Get("download/option")
     public async masterDownloadOption() {
-        const response = await pythonAxiosInstance.post("/__api/inventory/request/update");
+        const response = await pythonAxiosInstance.post("/__api/inventory/request/update/option");
 
         if (response.data.success) {
-            return readJSON("./scripts/json/option_data.json");
+            return readJSON("./scripts/json/request_option_data.json");
         }
     }
 
@@ -125,7 +125,7 @@ export class RequestInventoryController {
         @Param("date_id") date_id: number,
         @Response({ passthrough: true }) res: any
     ): Promise<StreamableFile> {
-        const option_data = readJSON("./scripts/json/option_data.json");
+        const option_data = readJSON("./scripts/json/request_option_data.json");
 
         let username_value: string;
         let date_value: string;

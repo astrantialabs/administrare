@@ -98,8 +98,8 @@ def inventoryMasterDownload(currentDate):
         return {"success": False}
 
 
-@app.post("/__api/inventory/request/update")
-def inventoryRequestUpdateData():
+@app.post("/__api/inventory/request/update/option")
+def inventoryRequestUpdateOption():
     try:
         InventoryRequest.updateUserData()
 
@@ -123,7 +123,7 @@ def inventoryRequestRawDownload(currentDate):
 @app.post("/__api/inventory/request/download/user/{userId}/date/{dateId}")
 def inventoryRequestUserDownload(userId, dateId):
     try:
-        InventoryRequest.writeUser(userId, dateId)
+        InventoryRequest.writeUser(int(userId), int(dateId))
 
         return {"success": True}
     except:

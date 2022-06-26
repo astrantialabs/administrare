@@ -30,13 +30,14 @@ class Test:
     def main():
         # print(InventoryMaster.getDependencyData())
         # print(InventoryMaster.getTranslatedDependencyData())
-        InventoryMaster.main(Utility.currentDate())
+        # InventoryMaster.main(Utility.currentDate())
 
         # InventoryRequest.updateUserData()
         # InventoryRequest.updateOptionData()
         # InventoryRequest.writeRaw(Utility.currentDate()) 
+        InventoryRequest.writeUser(2, 1)
 
-        # optionData = Utility.readJSON("./json/option_data.json")
+        # optionData = Utility.readJSON("./json/request_option_data.json")
         # for userObject in optionData:
         #     userId = userObject.get("id")
         #     if(userId != 1):
