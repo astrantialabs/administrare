@@ -220,4 +220,13 @@ export class InventoryController {
     public inventoryDemandManageCreateBarang(): {} {
         return {};
     }
+
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
+    @Get("demand/download")
+    @Render("inventory/demand/download/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryDemandDownload(): {} {
+        return {};
+    }
 }

@@ -30,14 +30,14 @@ import { slugifyDate } from "@/shared/utils/slugifyDate";
 
 const InventoryDemandDownloadMain: NextPage = () => {
     const router = useRouter();
-    const downloadMasterQuery: UseQueryResult<any[], unknown> = useQuery("downloadMasterQuery", () =>
-        axios.get(`${BASE_DOMAIN}__api/data/inventory/master/download/option`, { withCredentials: true }).then((res) => res.data)
+    const downloadDemandQuery: UseQueryResult<any[], unknown> = useQuery("downloadDemandQuery", () =>
+        axios.get(`${BASE_DOMAIN}__api/data/inventory/demand/download/option`, { withCredentials: true }).then((res) => res.data)
     );
 
-    if (downloadMasterQuery.isLoading) {
+    if (downloadDemandQuery.isLoading) {
         console.log("loading");
     } else {
-        console.log(downloadMasterQuery.data);
+        console.log(downloadDemandQuery.data);
     }
 
     return (
@@ -45,10 +45,10 @@ const InventoryDemandDownloadMain: NextPage = () => {
             <Heading>Inventory Demand</Heading>
             <Flex flexDirection={[`column`, `row`, `row`]}>
                 <Stack spacing={8} marginY={8} marginX={8}>
-                    {downloadMasterQuery.isLoading ? (
+                    {downloadDemandQuery.isLoading ? (
                         <Text>Loading</Text>
                     ) : (
-                        downloadMasterQuery.data.map((item: DownloadOptionData) => (
+                        downloadDemandQuery.data.map((item: DownloadOptionData) => (
                             <Accordion allowMultiple>
                                 <AccordionItem borderWidth="1px" borderColor={`white`} cursor="pointer">
                                     <AccordionButton bg={`gray.100`} w="250px">
@@ -65,15 +65,18 @@ const InventoryDemandDownloadMain: NextPage = () => {
                                                         <Box
                                                             bg={`gray.100`}
                                                             p={4}
-                                                            onClick={() => (
-                                                                router.push(`/__api/data/inventory/demand/download/user/${item.id}/date/${date.id}`),
-                                                                downloadMasterQuery.refetch()
-                                                            )}
+                                                            onClick={() =>
+                                                                router
+                                                                    .push(`/__api/data/inventory/demand/download/user/${item.id}/date/${date.id}`)
+                                                                    .then(() => {
+                                                                        downloadDemandQuery.refetch();
+                                                                    })
+                                                            }
                                                         >
                                                             <Text>
                                                                 {date.date == "Terbaru"
                                                                     ? date.date
-                                                                    : `Laporan ${item.name} Permintaan Barang ${slugifyDate(date.date)}`}
+                                                                    : `Laporan ${item.name} Permintaan Kategori dan Barang Baru ${slugifyDate(date.date)}`}
                                                             </Text>
                                                         </Box>
                                                     </Stack>
