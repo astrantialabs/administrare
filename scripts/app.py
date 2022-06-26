@@ -73,6 +73,7 @@ def test():
     except:
         print("Error")
 
+# ---------------------------------- MASTER ---------------------------------- #
 
 @app.get("/__api/inventory/master/get/dependency")
 def inventoryMasterGetDependencyData():
@@ -97,6 +98,7 @@ def inventoryMasterDownload(currentDate):
     except:
         return {"success": False}
 
+# ---------------------------------- REQUEST --------------------------------- #
 
 @app.post("/__api/inventory/request/update/option")
 def inventoryRequestUpdateOption():
@@ -129,11 +131,22 @@ def inventoryRequestUserDownload(userId, dateId):
     except:
         return {"success": False}
 
+# ---------------------------------- DEMAND ---------------------------------- #
 
-@app.post("/__api/inventory/demand/download/{currentDate}")
+@app.post("/__api/inventory/demand/update/option")
+def inventoryDemandUpdateOption():
+    try:
+        InventoryDemand.updateOptionData()
+
+        return {"success": True}
+    except:
+        return {"success": False}
+
+
+@app.post("/__api/inventory/demand/download/raw/{currentDate}")
 def inventoryDemandDownload(currentDate):
     try:
-        InventoryDemand.main(currentDate)
+        InventoryDemand.writeRaw(currentDate)
 
         return {"success": True}
     except:

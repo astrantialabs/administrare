@@ -21,14 +21,17 @@
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
+import datetime
+import os
+
 from dependency import Dependency
 from excel import Excel
 from database import Database
 from utility import Utility
 
 class InventoryDemand():
-    def main(currentDate):
-        filePath = f"../{Dependency.inventoryDemandFolderPath}/{currentDate}.xlsx"
+    def writeRaw(currentDate):
+        filePath = f"../{Dependency.inventoryDemandFolderPath}/Mentah {currentDate}.xlsx"
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)
@@ -41,27 +44,27 @@ class InventoryDemand():
         masterCollection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = masterCollection.find_one({"tahun": 2022})
         
-        InventoryDemand.writeCategoryHeader(workbook)
-        InventoryDemand.writeCategoryMain(workbook, inventoryDemandDocument)
+        InventoryDemand.writeCategoryHeaderRaw(workbook)
+        InventoryDemand.writeCategoryMainRaw(workbook, inventoryDemandDocument)
 
         workbook.create_sheet("Barang")
         workbook.change_sheet("Barang")
         workbook.set_zoom(85)
 
-        InventoryDemand.writeItemHeader(workbook)
-        InventoryDemand.writeItemMain(workbook, inventoryDemandDocument, inventoryMasterDocument)
+        InventoryDemand.writeItemHeaderRaw(workbook)
+        InventoryDemand.writeItemMainRaw(workbook, inventoryDemandDocument, inventoryMasterDocument)
 
         workbook.save()
 
 
-    def writeCategoryHeader(workbook):
+    def writeCategoryHeaderRaw(workbook):
         workbook.write_value_multiple("A1", "F1", ["No.", "Peminta", "Kategori", "Dibuat", "Direspon", "Status"])
         workbook.font_multiple("A1", "F1", size=12, bold=True)
         workbook.alignment_multiple("A1", "F1", vertical="center", horizontal="center")
         workbook.border_multiple("A1", "F1", "all", style="thin")
 
 
-    def writeCategoryMain(workbook, inventoryDemandDocument):
+    def writeCategoryMainRaw(workbook, inventoryDemandDocument):
         rowCount = 2
         for categoryIndex, categoryObject in enumerate(inventoryDemandDocument.get("kategori")):
             status = Utility.convertStatus(categoryObject.get("status"))
@@ -86,14 +89,14 @@ class InventoryDemand():
         workbook.adjust_width("A1", ["F", rowCount], extra_width=1)
 
 
-    def writeItemHeader(workbook):
+    def writeItemHeaderRaw(workbook):
         workbook.write_value_multiple("A1", "H1", ["No.", "Peminta", "Kategori", "Barang", "Satuan", "Dibuat", "Direspon", "Status"])
         workbook.font_multiple("A1", "H1", size=12, bold=True)
         workbook.alignment_multiple("A1", "H1", vertical="center", horizontal="center")
         workbook.border_multiple("A1", "H1", "all", style="thin")
 
 
-    def writeItemMain(workbook, inventoryDemandDocument, inventoryMasterDocument):
+    def writeItemMainRaw(workbook, inventoryDemandDocument, inventoryMasterDocument):
         rowCount = 2
         for demandItemIndex, demandItemObject in enumerate(inventoryDemandDocument.get("barang")):
             for masterCategoryObject in inventoryMasterDocument.get("kategori"):
@@ -122,3 +125,74 @@ class InventoryDemand():
 
 
         workbook.adjust_width("A1", ["H", rowCount], extra_width=1)
+
+    
+    def updateOptionData():
+        files = os.listdir("../spreadsheets/inventories/demand")
+
+        files.remove(".gitkeep")
+        
+        fileOptionArray = [["Mentah", [["Terbaru", True]]]]
+
+        for file in files:
+            fileNameArray = file.split(".")[0].split(" ")
+            if(len(fileNameArray) > 1):
+                fileDate = fileNameArray[-1].split("-")
+                formattedFileDate = f"{fileDate[0]}-{fileDate[1]}-{fileDate[2]} {fileDate[3]}:{fileDate[4]}:{fileDate[5]}"
+
+                dateIsValid = None
+                try:
+                    dateValidation = datetime.datetime(int(fileDate[0]), int(fileDate[1]), int(fileDate[2]), int(fileDate[3]), int(fileDate[4]), int(fileDate[5]))
+                    dateIsValid = True
+
+                except ValueError:
+                    dateIsValid = False
+
+                if(dateIsValid):
+                    fileName = " ".join(fileNameArray[0:-1])
+
+                    fileNameIsValid = True
+                    for fileItem in fileOptionArray:
+                        if(fileItem[0] == fileName):
+                            fileNameIsValid = False
+
+                    
+                    if(fileNameIsValid):
+                        fileOptionArray.append([fileName, [[formattedFileDate, False]]])
+
+                    elif(not fileNameIsValid):
+                        for fileItem in fileOptionArray:
+                            if(fileItem[0] == fileName):
+
+                                fileItemArrayIsValid = True
+                                for fileItemArray in fileItem[1]:
+                                    if(fileItemArray[0] == formattedFileDate):
+                                        fileItemArrayIsValid = False
+                                
+                                if(fileItemArrayIsValid):
+                                    fileItem[1].append([formattedFileDate, False])
+
+
+        fileOptionData = []
+        for fileItemIndex, fileItem in enumerate(fileOptionArray):
+            fileDateData = []
+            for fileDateIndex, fileDate in enumerate(fileItem[1]):
+                newFileDateObject = {
+                    "id": fileDateIndex + 1,
+                    "date": fileDate[0],
+                    "creatable": fileDate[1]
+                }
+
+                fileDateData.append(newFileDateObject)
+
+            
+            newFileOptionObject = {
+                "id": fileItemIndex + 1,
+                "name": fileItem[0],
+                "date": fileDateData
+            }
+
+            fileOptionData.append(newFileOptionObject)
+
+        
+        Utility.writeJSON("./json/demand_option_data.json", fileOptionData)

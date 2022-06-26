@@ -35,7 +35,6 @@ class Test:
         # InventoryRequest.updateUserData()
         # InventoryRequest.updateOptionData()
         # InventoryRequest.writeRaw(Utility.currentDate()) 
-        InventoryRequest.writeUser(2, 1)
 
         # optionData = Utility.readJSON("./json/request_option_data.json")
         # for userObject in optionData:
@@ -48,6 +47,7 @@ class Test:
 
 
         # InventoryDemand.main(Utility.currentDate())
+        InventoryDemand.updateOptionData()
 
 
 Test.main() # Make sure you are on /scripts directory
