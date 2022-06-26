@@ -92,7 +92,7 @@ def inventoryMasterUpdateDependencyData(dependencyData: DependencyData):
 @app.post("/__api/inventory/master/download/{currentDate}")
 def inventoryMasterDownload(currentDate):
     try:
-        InventoryMaster.main(currentDate)
+        InventoryMaster.writeFormat(currentDate)
 
         return {"success": True}
     except:

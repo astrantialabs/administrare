@@ -73,8 +73,99 @@ class Pillow():
     
 
 class InventoryMaster():
-    def main(currentDate):
-        filePath = f"../{Dependency.inventoryMasterFolderPath}/{currentDate}.xlsx"
+    def writeRaw(currentDate):
+        filePath = f"../{Dependency.inventoryMasterFolderPath}/Mentah {currentDate}.xlsx"
+
+        collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
+        inventoryMasterDocument = collection.find_one({"tahun": 2022})
+
+        Excel.create_file(filePath)
+        workbook = Excel(filePath)
+        workbook.change_sheet_name("Sheet", "Inventaris")
+        workbook.set_zoom(85)
+
+        InventoryMaster.writeHeaderRaw(workbook)
+        InventoryMaster.writeMainRaw(workbook, inventoryMasterDocument)
+
+        workbook.save()
+
+
+    def writeHeaderRaw(workbook):
+        headerValue = [
+            "No.",
+            "Nama",
+            "Satuan",
+            "Harga Satuan",
+            "Saldo Jumlah Satuan",
+            "Mutasi Barang Masuk Jumlah Satuan",
+            "Mutasi Barang Keluar Jumlah Satuan",
+            "Saldo Akhir Jumlah Satuan",
+            "Jumlah Permintaan",
+            "Dibuat",
+            "Diupdate",
+            "Keterangan"
+        ]
+
+        workbook.write_value_multiple("A1", "L1", headerValue)
+        workbook.font_multiple("A1", "L1", bold = True, size = 12)
+        workbook.alignment_multiple("A1", "L1", horizontal = "center", vertical = "center")
+        workbook.border_multiple("A1", "L1", "all", style="thin")
+
+
+    def writeMainRaw(workbook, inventoryMasterDocument):
+        rowCount = 2
+
+        for categoryIndex, categoryObject in enumerate(inventoryMasterDocument.get("kategori")):
+            workbook.write_value_multiple(["A", rowCount], ["B", rowCount], [Utility.romanNumeral(categoryIndex + 1), categoryObject.get("kategori")])
+            workbook.write_value_multiple(["J", rowCount], ["K", rowCount], [categoryObject.get("created_at"), categoryObject.get("updated_at")])
+
+            workbook.font_multiple(["A", rowCount], ["L", rowCount], bold = True)
+            workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical = "center")
+            workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
+
+            rowCount += 1
+
+            for itemIndex, itemObject in enumerate(categoryObject.get("barang")):
+                itemValue = [
+                    itemIndex + 1,
+                    itemObject.get("nama"),
+                    itemObject.get("satuan"),
+                    itemObject.get("harga_satuan"),
+                    itemObject.get("saldo_jumlah_satuan"),
+                    itemObject.get("mutasi_barang_masuk_jumlah_satuan"),
+                    itemObject.get("mutasi_barang_keluar_jumlah_satuan"),
+                    itemObject.get("saldo_akhir_jumlah_satuan"),
+                    itemObject.get("jumlah_permintaan"),
+                    itemObject.get("created_at"),
+                    itemObject.get("updated_at"),
+                    itemObject.get("keterangan")
+                ]
+
+                workbook.write_value_multiple(["A", rowCount], ["L", rowCount], itemValue)
+ 
+                workbook.font_multiple(["A", rowCount], ["L", rowCount], size = 10)
+                workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical="center")
+                workbook.alignment_multiple(["C", rowCount], ["I", rowCount], horizontal = "center", vertical="center")
+                workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
+
+                rowCount += 1
+
+
+            workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
+            rowCount += 1
+
+
+        workbook.adjust_width("A1", ["C", rowCount], extra_width = 1, width_limit = 40)
+        workbook.alignment_singular("B1", horizontal = "center", vertical = "center")
+
+        workbook.adjust_width("D1", ["I", rowCount], extra_width = 1, width_limit = 15)
+        workbook.alignment_multiple("D1", ["I", rowCount], horizontal = "center", vertical = "center", wrap = True)
+
+        workbook.adjust_width("J1", ["L", rowCount], extra_width = 1)
+
+
+    def writeFormat(currentDate):
+        filePath = f"../{Dependency.inventoryMasterFolderPath}/Format {currentDate}.xlsx"
 
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = collection.find_one({"tahun": 2022})
@@ -86,13 +177,13 @@ class InventoryMaster():
         workbook.change_sheet_name("Sheet", f"Semester {dependencyData['semester']}")
         workbook.set_zoom(85)
 
-        InventoryMaster.writeHeader(workbook, dependencyData)
-        InventoryMaster.writeMain(workbook, inventoryMasterDocument, dependencyData)
+        InventoryMaster.writeHeaderFormat(workbook, dependencyData)
+        InventoryMaster.writeMainFormat(workbook, inventoryMasterDocument, dependencyData)
 
         workbook.save()
 
 
-    def writeHeader(workbook, dependencyData):
+    def writeHeaderFormat(workbook, dependencyData):
         workbook.write_value_multiple("A1", "A3", [f"LAPORAN INVENTARISASI PERSEDIAAN SEMESTER {dependencyData['semester']} TAHUN {dependencyData['tahun_akhir']}", f"PER {dependencyData['tanggal_akhir']} {(dependencyData['bulan_akhir']).upper()} {dependencyData['tahun_akhir']}", "DINAS KETENAGAKERJAAN KOTA BALIKPAPAN"])
         workbook.write_value_multiple("A4", "C4", ["No", "Uraian Barang", "Satuan"])
 
@@ -131,7 +222,7 @@ class InventoryMaster():
         workbook.border_multiple("A4", "O5", "all", style = "thin")
 
 
-    def writeMain(workbook, inventoryMasterDocument, dependencyData): 
+    def writeMainFormat(workbook, inventoryMasterDocument, dependencyData): 
         rowCount = 6
 
         footerString = "Total"

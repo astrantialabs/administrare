@@ -30,7 +30,8 @@ class Test:
     def main():
         # print(InventoryMaster.getDependencyData())
         # print(InventoryMaster.getTranslatedDependencyData())
-        # InventoryMaster.main(Utility.currentDate())
+        InventoryMaster.writeRaw(Utility.currentDate())
+        # InventoryMaster.writeFormat(Utility.currentDate())
 
         # InventoryRequest.updateUserData()
         # InventoryRequest.updateOptionData()
@@ -46,8 +47,7 @@ class Test:
         #             InventoryRequest.writeUser(userId, dateId)
 
 
-        # InventoryDemand.main(Utility.currentDate())
-        InventoryDemand.updateOptionData()
+        # InventoryDemand.updateOptionData()
 
 
 Test.main() # Make sure you are on /scripts directory
