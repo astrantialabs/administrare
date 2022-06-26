@@ -105,6 +105,16 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
+    @Get("master/download")
+    @Render("inventory/master/download/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterDownload(): {} {
+        return {};
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */

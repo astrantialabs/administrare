@@ -89,14 +89,35 @@ def inventoryMasterUpdateDependencyData(dependencyData: DependencyData):
     return InventoryMaster.updateDependencyData(dependencyData)
 
 
-@app.post("/__api/inventory/master/download/{currentDate}")
-def inventoryMasterDownload(currentDate):
+@app.post("/__api/inventory/master/update/option")
+def inventoryMasterUpdateOption():
+    try:
+        InventoryMaster.updateOptionData()
+
+        return {"success": True}
+    except:
+        return {"success": False}
+
+
+@app.post("/__api/inventory/master/download/raw/{currentDate}")
+def inventoryMasterRawDownload(currentDate):
+    try:
+        InventoryMaster.writeRaw(currentDate)
+
+        return {"success": True}
+    except:
+        return {"success": False}
+
+    
+@app.post("/__api/inventory/master/download/format/{currentDate}")
+def inventoryMasterFormatDownload(currentDate):
     try:
         InventoryMaster.writeFormat(currentDate)
 
         return {"success": True}
     except:
         return {"success": False}
+
 
 # ---------------------------------- REQUEST --------------------------------- #
 
@@ -144,7 +165,7 @@ def inventoryDemandUpdateOption():
 
 
 @app.post("/__api/inventory/demand/download/raw/{currentDate}")
-def inventoryDemandDownload(currentDate):
+def inventoryDemandRawDownload(currentDate):
     try:
         InventoryDemand.writeRaw(currentDate)
 

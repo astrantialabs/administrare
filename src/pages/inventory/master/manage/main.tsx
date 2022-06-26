@@ -442,7 +442,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
 
             <ButtonGroup marginTop={8}>
                 <Button>
-                    <LinkOverlay href="/__api/data/inventory/master/download/latest">Download Excel</LinkOverlay>
+                    <LinkOverlay href="/inventory/master/download">Download Excel</LinkOverlay>
                 </Button>
                 <Button>
                     <LinkOverlay href="/inventory/update/dependency">Update Excel Text</LinkOverlay>

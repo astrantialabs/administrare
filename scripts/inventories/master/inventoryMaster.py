@@ -21,6 +21,9 @@
  # @author Rizky Irswanda <rizky.irswanda115@gmail.com>
 """
 
+import datetime
+import os
+
 from openpyxl.drawing.image import Image as ExcelImage
 from PIL import Image, ImageDraw, ImageFont
 
@@ -81,7 +84,7 @@ class InventoryMaster():
 
         Excel.create_file(filePath)
         workbook = Excel(filePath)
-        workbook.change_sheet_name("Sheet", "Inventaris")
+        workbook.change_sheet_name("Sheet", "Inventarisasi")
         workbook.set_zoom(85)
 
         InventoryMaster.writeHeaderRaw(workbook)
@@ -500,3 +503,74 @@ class InventoryMaster():
         collection.replace_one({"id": dependencyData["id"]}, dependencyData, upsert=True)
 
         return {"success": True}
+
+    
+    def updateOptionData():
+        files = os.listdir("../spreadsheets/inventories/master")
+
+        files.remove(".gitkeep")
+        
+        fileOptionArray = [["Mentah", [["Terbaru", True]]], ["Format", [["Terbaru", True]]]]
+
+        for file in files:
+            fileNameArray = file.split(".")[0].split(" ")
+            if(len(fileNameArray) > 1):
+                fileDate = fileNameArray[-1].split("-")
+                formattedFileDate = f"{fileDate[0]}-{fileDate[1]}-{fileDate[2]} {fileDate[3]}:{fileDate[4]}:{fileDate[5]}"
+
+                dateIsValid = None
+                try:
+                    dateValidation = datetime.datetime(int(fileDate[0]), int(fileDate[1]), int(fileDate[2]), int(fileDate[3]), int(fileDate[4]), int(fileDate[5]))
+                    dateIsValid = True
+
+                except ValueError:
+                    dateIsValid = False
+
+                if(dateIsValid):
+                    fileName = " ".join(fileNameArray[0:-1])
+
+                    fileNameIsValid = True
+                    for fileItem in fileOptionArray:
+                        if(fileItem[0] == fileName):
+                            fileNameIsValid = False
+
+                    
+                    if(fileNameIsValid):
+                        fileOptionArray.append([fileName, [[formattedFileDate, False]]])
+
+                    elif(not fileNameIsValid):
+                        for fileItem in fileOptionArray:
+                            if(fileItem[0] == fileName):
+
+                                fileItemArrayIsValid = True
+                                for fileItemArray in fileItem[1]:
+                                    if(fileItemArray[0] == formattedFileDate):
+                                        fileItemArrayIsValid = False
+                                
+                                if(fileItemArrayIsValid):
+                                    fileItem[1].append([formattedFileDate, False])
+
+
+        fileOptionData = []
+        for fileItemIndex, fileItem in enumerate(fileOptionArray):
+            fileDateData = []
+            for fileDateIndex, fileDate in enumerate(fileItem[1]):
+                newFileDateObject = {
+                    "id": fileDateIndex + 1,
+                    "date": fileDate[0],
+                    "creatable": fileDate[1]
+                }
+
+                fileDateData.append(newFileDateObject)
+
+            
+            newFileOptionObject = {
+                "id": fileItemIndex + 1,
+                "name": fileItem[0],
+                "date": fileDateData
+            }
+
+            fileOptionData.append(newFileOptionObject)
+
+        
+        Utility.writeJSON("./json/master_option_data.json", fileOptionData)
