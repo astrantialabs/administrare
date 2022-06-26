@@ -142,6 +142,7 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @Get("request/download")
@@ -221,6 +222,7 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
     @Get("demand/download")
