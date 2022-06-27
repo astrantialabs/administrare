@@ -226,17 +226,21 @@ export class MasterInventoryService {
         let item_search_data: ItemSearchData[] = [];
 
         master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
-            category_object.barang.forEach((item_object: MasterBarang) => {
-                item_search_data.push({
-                    category_id: category_object.id,
-                    category_name: category_object.kategori,
-                    item_id: item_object.id,
-                    item_name: item_object.nama,
-                    item_unit: item_object.satuan,
-                    item_saldo_remainder: item_object.saldo_akhir_jumlah_satuan - item_object.jumlah_permintaan,
-                    total_match: 1,
+            if (category_object.active === true) {
+                category_object.barang.forEach((item_object: MasterBarang) => {
+                    if (item_object.active === true) {
+                        item_search_data.push({
+                            category_id: category_object.id,
+                            category_name: category_object.kategori,
+                            item_id: item_object.id,
+                            item_name: item_object.nama,
+                            item_unit: item_object.satuan,
+                            item_saldo_remainder: item_object.saldo_akhir_jumlah_satuan - item_object.jumlah_permintaan,
+                            total_match: 1,
+                        });
+                    }
                 });
-            });
+            }
         });
 
         item_search_data.sort((a: ItemSearchData, b: ItemSearchData) => b.total_match - a.total_match);
@@ -256,26 +260,30 @@ export class MasterInventoryService {
         let search_array: string[] = name.toLowerCase().split("-");
 
         master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
-            category_object.barang.forEach((item_object: MasterBarang) => {
-                let total_match: number = 0;
-                search_array.forEach((search_element: string) => {
-                    if (item_object.nama.toLowerCase().includes(search_element)) {
-                        total_match += 1;
+            if (category_object.active === true) {
+                category_object.barang.forEach((item_object: MasterBarang) => {
+                    if (item_object.active === true) {
+                        let total_match: number = 0;
+                        search_array.forEach((search_element: string) => {
+                            if (item_object.nama.toLowerCase().includes(search_element)) {
+                                total_match += 1;
+                            }
+                        });
+
+                        if (total_match > 0) {
+                            item_search_data.push({
+                                category_id: category_object.id,
+                                category_name: category_object.kategori,
+                                item_id: item_object.id,
+                                item_name: item_object.nama,
+                                item_unit: item_object.satuan,
+                                item_saldo_remainder: item_object.saldo_akhir_jumlah_satuan - item_object.jumlah_permintaan,
+                                total_match: total_match,
+                            });
+                        }
                     }
                 });
-
-                if (total_match > 0) {
-                    item_search_data.push({
-                        category_id: category_object.id,
-                        category_name: category_object.kategori,
-                        item_id: item_object.id,
-                        item_name: item_object.nama,
-                        item_unit: item_object.satuan,
-                        item_saldo_remainder: item_object.saldo_akhir_jumlah_satuan - item_object.jumlah_permintaan,
-                        total_match: total_match,
-                    });
-                }
-            });
+            }
         });
 
         item_search_data.sort((a: ItemSearchData, b: ItemSearchData) => b.total_match - a.total_match);
@@ -305,7 +313,9 @@ export class MasterInventoryService {
     }
 
     public async masterGetTotal(year: number): Promise<MasterTotal> {
-        const category_data: MasterKategori[] = (await this.masterGetKategoriAll(year)).result.master_category;
+        const category_data: MasterKategori[] = (await this.masterGetKategoriAll(year)).result.master_category.filter((category_object: MasterKategori) => {
+            return category_object.active === true;
+        });
 
         const sub_totals: MasterSubTotal[] = await Promise.all(
             category_data.map(async (category_object: MasterKategori) => {
@@ -503,6 +513,7 @@ export class MasterInventoryService {
                 created_at: currentDate(),
                 updated_at: currentDate(),
                 barang: [],
+                active: true,
             };
 
             const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
@@ -533,44 +544,51 @@ export class MasterInventoryService {
             const category_id: number = parseInt(body.kategori_id as unknown as string);
 
             let category_id_is_valid: boolean = false;
+            let category_id_is_active: boolean;
             master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                 if (category_object.id == category_id) {
                     category_id_is_valid = true;
+                    category_id_is_active = category_object.active;
                 }
             });
 
             if (category_id_is_valid) {
-                const item: MasterBarang = {
-                    id: await this.masterGetNewBarangIdByKategoriId(2022, category_id),
-                    nama: body.nama,
-                    satuan: body.satuan,
-                    created_at: currentDate(),
-                    updated_at: currentDate(),
-                    saldo_jumlah_satuan: parseInt(body.saldo_jumlah_satuan as unknown as string),
-                    mutasi_barang_masuk_jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
-                    mutasi_barang_keluar_jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string),
-                    saldo_akhir_jumlah_satuan: calculateSaldoAkhirJumlahSatuan(
-                        parseInt(body.saldo_jumlah_satuan as unknown as string),
-                        parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
-                        parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string)
-                    ),
-                    jumlah_permintaan: 0,
-                    harga_satuan: parseInt(body.harga_satuan as unknown as string),
-                    keterangan: body.keterangan,
-                };
+                if (category_id_is_active) {
+                    const item: MasterBarang = {
+                        id: await this.masterGetNewBarangIdByKategoriId(2022, category_id),
+                        nama: body.nama,
+                        satuan: body.satuan,
+                        created_at: currentDate(),
+                        updated_at: currentDate(),
+                        saldo_jumlah_satuan: parseInt(body.saldo_jumlah_satuan as unknown as string),
+                        mutasi_barang_masuk_jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
+                        mutasi_barang_keluar_jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string),
+                        saldo_akhir_jumlah_satuan: calculateSaldoAkhirJumlahSatuan(
+                            parseInt(body.saldo_jumlah_satuan as unknown as string),
+                            parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
+                            parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string)
+                        ),
+                        jumlah_permintaan: 0,
+                        harga_satuan: parseInt(body.harga_satuan as unknown as string),
+                        keterangan: body.keterangan,
+                        active: true,
+                    };
 
-                master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
-                    if (category_object.id == category_id) {
-                        category_object.barang.push(item);
-                        category_object.barang.sort((a: MasterBarang, b: MasterBarang) => a.id - b.id);
+                    master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                        if (category_object.id == category_id) {
+                            category_object.barang.push(item);
+                            category_object.barang.sort((a: MasterBarang, b: MasterBarang) => a.id - b.id);
 
-                        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
-                    }
-                });
+                            this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                        }
+                    });
 
-                return responseFormat<ResponseObject<MasterBarang>>(true, 201, `Barang di dalam kategori dengan id ${category_id} berhasil dibuat.`, {
-                    master_item: item,
-                });
+                    return responseFormat<ResponseObject<MasterBarang>>(true, 201, `Barang di dalam kategori dengan id ${category_id} berhasil dibuat.`, {
+                        master_item: item,
+                    });
+                } else if (!category_id_is_active) {
+                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
+                }
             } else if (!category_id_is_valid) {
                 return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
             }
@@ -595,27 +613,33 @@ export class MasterInventoryService {
             const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
             let category_id_is_valid: boolean = false;
+            let category_id_is_active: boolean;
             master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                 if (category_object.id == category_id) {
                     category_id_is_valid = true;
+                    category_id_is_active = category_object.active;
                 }
             });
 
             if (category_id_is_valid) {
-                let updated_category_object: MasterKategori;
-                master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
-                    if (category_object.id == category_id) {
-                        category_object.kategori = body.kategori;
-                        category_object.updated_at = currentDate();
+                if (category_id_is_active) {
+                    let updated_category_object: MasterKategori;
+                    master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                        if (category_object.id == category_id) {
+                            category_object.kategori = body.kategori;
+                            category_object.updated_at = currentDate();
 
-                        updated_category_object = category_object;
-                        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
-                    }
-                });
+                            updated_category_object = category_object;
+                            this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                        }
+                    });
 
-                return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil diupdate.`, {
-                    master_category: updated_category_object,
-                });
+                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil diupdate.`, {
+                        master_category: updated_category_object,
+                    });
+                } else if (!category_id_is_active) {
+                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
+                }
             } else if (!category_id_is_valid) {
                 return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
             }
@@ -643,68 +667,85 @@ export class MasterInventoryService {
 
             let category_id_is_valid: boolean = false;
             let item_id_is_valid: boolean = false;
+            let category_id_is_active: boolean;
+            let item_id_is_active: boolean;
             master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                 if (category_object.id == category_id) {
                     category_id_is_valid = true;
+                    category_id_is_active = category_object.active;
 
                     category_object.barang.forEach((item_object: MasterBarang) => {
                         if (item_object.id == item_id) {
                             item_id_is_valid = true;
+                            item_id_is_active = item_object.active;
                         }
                     });
                 }
             });
 
             if (category_id_is_valid) {
-                if (item_id_is_valid) {
-                    const item: MasterParameterBarang = {
-                        kategori_id: category_id,
-                        nama: body.nama,
-                        satuan: body.satuan,
-                        saldo_jumlah_satuan: body.saldo_jumlah_satuan,
-                        mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
-                        mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
-                        harga_satuan: body.harga_satuan,
-                        keterangan: body.keterangan,
-                    };
+                if (category_id_is_active) {
+                    if (item_id_is_valid) {
+                        if (item_id_is_active) {
+                            const item: MasterParameterBarang = {
+                                kategori_id: category_id,
+                                nama: body.nama,
+                                satuan: body.satuan,
+                                saldo_jumlah_satuan: body.saldo_jumlah_satuan,
+                                mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
+                                mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
+                                harga_satuan: body.harga_satuan,
+                                keterangan: body.keterangan,
+                            };
 
-                    let updated_item_object: MasterBarang;
-                    master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
-                        if (category_object.id == category_id) {
-                            category_object.barang.forEach((item_object: MasterBarang) => {
-                                if (item_object.id == item_id) {
-                                    item_object.nama = item.nama;
-                                    item_object.satuan = item.satuan;
-                                    item_object.updated_at = currentDate();
-                                    item_object.saldo_jumlah_satuan = item.saldo_jumlah_satuan;
-                                    item_object.mutasi_barang_masuk_jumlah_satuan = item.mutasi_barang_masuk_jumlah_satuan;
-                                    item_object.mutasi_barang_keluar_jumlah_satuan = item.mutasi_barang_keluar_jumlah_satuan;
-                                    item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
-                                        item.saldo_jumlah_satuan,
-                                        item.mutasi_barang_masuk_jumlah_satuan,
-                                        item.mutasi_barang_keluar_jumlah_satuan
-                                    );
-                                    item_object.harga_satuan = item.harga_satuan;
-                                    item_object.keterangan = item.keterangan;
+                            let updated_item_object: MasterBarang;
+                            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                                if (category_object.id == category_id) {
+                                    category_object.barang.forEach((item_object: MasterBarang) => {
+                                        if (item_object.id == item_id) {
+                                            item_object.nama = item.nama;
+                                            item_object.satuan = item.satuan;
+                                            item_object.updated_at = currentDate();
+                                            item_object.saldo_jumlah_satuan = item.saldo_jumlah_satuan;
+                                            item_object.mutasi_barang_masuk_jumlah_satuan = item.mutasi_barang_masuk_jumlah_satuan;
+                                            item_object.mutasi_barang_keluar_jumlah_satuan = item.mutasi_barang_keluar_jumlah_satuan;
+                                            item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
+                                                item.saldo_jumlah_satuan,
+                                                item.mutasi_barang_masuk_jumlah_satuan,
+                                                item.mutasi_barang_keluar_jumlah_satuan
+                                            );
+                                            item_object.harga_satuan = item.harga_satuan;
+                                            item_object.keterangan = item.keterangan;
 
-                                    updated_item_object = item_object;
+                                            updated_item_object = item_object;
 
-                                    this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                                            this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                                        }
+                                    });
                                 }
                             });
-                        }
-                    });
 
-                    return responseFormat<ResponseObject<MasterBarang>>(
-                        true,
-                        202,
-                        `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil diupdate.`,
-                        {
-                            master_item: updated_item_object,
+                            return responseFormat<ResponseObject<MasterBarang>>(
+                                true,
+                                202,
+                                `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil diupdate.`,
+                                {
+                                    master_item: updated_item_object,
+                                }
+                            );
+                        } else if (!item_id_is_active) {
+                            return responseFormat<null>(
+                                false,
+                                400,
+                                `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} sudah dihapus.`,
+                                null
+                            );
                         }
-                    );
-                } else if (!item_id_is_valid) {
-                    return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                    } else if (!item_id_is_valid) {
+                        return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                    }
+                } else if (!category_id_is_active) {
+                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
                 return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
@@ -725,41 +766,46 @@ export class MasterInventoryService {
             const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
 
             let category_id_is_valid: boolean = false;
+            let category_id_is_active: boolean;
             master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                 if (category_object.id == category_id) {
                     category_id_is_valid = true;
+                    category_id_is_active = category_object.active;
                 }
             });
 
             if (category_id_is_valid) {
-                let deletion_is_valid: boolean = true;
-                master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
-                    if (category_object.id == category_id) {
-                        category_object.barang.forEach((item_object) => {
-                            if (item_object.jumlah_permintaan > 0) {
-                                deletion_is_valid = false;
-                            }
-                        });
-                    }
-                });
-
-                if (deletion_is_valid) {
-                    let deleted_category_object: MasterKategori;
-                    master_inventory_data.kategori.forEach((category_object: MasterKategori, index: number) => {
+                if (category_id_is_active) {
+                    let deletion_is_valid: boolean = true;
+                    master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                         if (category_object.id == category_id) {
-                            deleted_category_object = category_object;
-
-                            master_inventory_data.kategori.splice(index, 1);
-
-                            this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                            category_object.barang.forEach((item_object) => {
+                                if (item_object.jumlah_permintaan > 0) {
+                                    deletion_is_valid = false;
+                                }
+                            });
                         }
                     });
 
-                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil dihapus.`, {
-                        master_category: deleted_category_object,
-                    });
-                } else if (!deletion_is_valid) {
-                    return responseFormat<null>(false, 400, `Jumlah permintaan barang-barang di dalam kategori dengan id ${category_id} harus 0.`, null);
+                    if (deletion_is_valid) {
+                        let deleted_category_object: MasterKategori;
+                        master_inventory_data.kategori.forEach((category_object: MasterKategori, index: number) => {
+                            if (category_object.id == category_id) {
+                                category_object.active = false;
+                                deleted_category_object = category_object;
+
+                                this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                            }
+                        });
+
+                        return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil dihapus.`, {
+                            master_category: deleted_category_object,
+                        });
+                    } else if (!deletion_is_valid) {
+                        return responseFormat<null>(false, 400, `Jumlah permintaan barang-barang di dalam kategori dengan id ${category_id} harus 0.`, null);
+                    }
+                } else if (!category_id_is_active) {
+                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
                 return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
@@ -786,68 +832,84 @@ export class MasterInventoryService {
 
             let category_id_is_valid: boolean = false;
             let item_id_is_valid: boolean = false;
+            let category_id_is_active: boolean;
+            let item_id_is_active: boolean;
             master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                 if (category_object.id == category_id) {
                     category_id_is_valid = true;
+                    category_id_is_active = category_object.active;
 
                     category_object.barang.forEach((item_object: MasterBarang) => {
                         if (item_object.id == item_id) {
                             item_id_is_valid = true;
+                            item_id_is_active = item_object.active;
                         }
                     });
                 }
             });
 
             if (category_id_is_valid) {
-                if (item_id_is_valid) {
-                    let deletion_is_valid: boolean = true;
-                    master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
-                        if (category_object.id == category_id) {
-                            category_object.barang.forEach((item_object) => {
-                                if (item_object.id == item_id) {
-                                    if (item_object.jumlah_permintaan > 0) {
-                                        deletion_is_valid = false;
-                                    }
+                if (category_id_is_active) {
+                    if (item_id_is_valid) {
+                        if (item_id_is_active) {
+                            let deletion_is_valid: boolean = true;
+                            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                                if (category_object.id == category_id) {
+                                    category_object.barang.forEach((item_object) => {
+                                        if (item_object.id == item_id) {
+                                            if (item_object.jumlah_permintaan > 0) {
+                                                deletion_is_valid = false;
+                                            }
+                                        }
+                                    });
                                 }
                             });
-                        }
-                    });
 
-                    if (deletion_is_valid) {
-                        let deleted_item_object: MasterBarang;
+                            if (deletion_is_valid) {
+                                let deleted_item_object: MasterBarang;
 
-                        master_inventory_data.kategori.forEach((category_object) => {
-                            if (category_object.id == category_id) {
-                                category_object.barang.forEach((item_object, index) => {
-                                    if (item_object.id == item_id) {
-                                        deleted_item_object = item_object;
+                                master_inventory_data.kategori.forEach((category_object) => {
+                                    if (category_object.id == category_id) {
+                                        category_object.barang.forEach((item_object, index) => {
+                                            if (item_object.id == item_id) {
+                                                item_object.active = false;
+                                                deleted_item_object = item_object;
 
-                                        category_object.barang.splice(index, 1);
-
-                                        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                                                this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                                            }
+                                        });
                                     }
                                 });
-                            }
-                        });
 
-                        return responseFormat<ResponseObject<MasterBarang>>(
-                            true,
-                            202,
-                            `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil dihapus.`,
-                            {
-                                master_category: deleted_item_object,
+                                return responseFormat<ResponseObject<MasterBarang>>(
+                                    true,
+                                    202,
+                                    `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil dihapus.`,
+                                    {
+                                        master_category: deleted_item_object,
+                                    }
+                                );
+                            } else if (!deletion_is_valid) {
+                                return responseFormat<null>(
+                                    false,
+                                    400,
+                                    `Jumlah permintaan barang dengan id ${item_id} di dalam kategori dengan id ${category_id} harus 0.`,
+                                    null
+                                );
                             }
-                        );
-                    } else if (!deletion_is_valid) {
-                        return responseFormat<null>(
-                            false,
-                            400,
-                            `Jumlah permintaan barang dengan id ${item_id} di dalam kategori dengan id ${category_id} harus 0.`,
-                            null
-                        );
+                        } else if (!item_id_is_active) {
+                            return responseFormat<null>(
+                                false,
+                                400,
+                                `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} sudah dihapus.`,
+                                null
+                            );
+                        }
+                    } else if (!item_id_is_valid) {
+                        return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
                     }
-                } else if (!item_id_is_valid) {
-                    return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                } else if (!category_id_is_active) {
+                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
                 return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
@@ -860,10 +922,14 @@ export class MasterInventoryService {
     /* ---------------------------------- TABLE --------------------------------- */
 
     public async masterTableGetKategoriAll(year: number): Promise<any> {
-        const master_kategori_data: MasterKategori[] = (await this.masterGetKategoriAll(year)).result.master_category;
+        const master_kategori_data: MasterKategori[] = (await this.masterGetKategoriAll(year)).result.master_category.filter(
+            (category_object: MasterKategori) => {
+                return category_object.active === true;
+            }
+        );
         const categories: CategoriesPayload[] = [];
 
-        master_kategori_data.forEach(async (category_object, index) => {
+        master_kategori_data.forEach(async (category_object: MasterKategori, index: number) => {
             categories.push({
                 id: category_object.id,
                 name: category_object.kategori,
@@ -875,11 +941,15 @@ export class MasterInventoryService {
     }
 
     public async masterTableGetAll(): Promise<any> {
-        const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(2022);
+        const master_category_data: MasterKategori[] = (await this.masterGetKategoriAll(2022)).result.master_category.filter(
+            (category_object: MasterKategori) => {
+                return category_object.active === true;
+            }
+        );
         let table_data: any[] = [];
 
         const sub_totals: MasterSubTotal[] = await Promise.all(
-            master_inventory_data.kategori.map(async (category_object: MasterKategori) => {
+            master_category_data.map(async (category_object: MasterKategori) => {
                 const sub_total: MasterSubTotal = await this.masterGetSubTotal(2022, category_object.id);
 
                 return sub_total;
@@ -888,7 +958,7 @@ export class MasterInventoryService {
 
         const set_sub_totals: Set<MasterSubTotal> = new Set(sub_totals);
 
-        master_inventory_data.kategori.forEach(async (category_object, category_index) => {
+        master_category_data.forEach(async (category_object, category_index) => {
             const sub_total: MasterSubTotal = Array.from(set_sub_totals).find((sub_total) => sub_total.category_id === category_object.id);
             let item_count: number = 0;
 

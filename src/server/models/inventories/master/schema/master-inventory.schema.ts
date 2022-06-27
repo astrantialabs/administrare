@@ -62,6 +62,9 @@ export class MasterBarang {
 
     @Prop({ type: MongooseSchema.Types.String, required: false })
     keterangan: string | null;
+
+    @Prop({ type: MongooseSchema.Types.Boolean, required: true })
+    active: boolean;
 }
 
 export class MasterKategori {
@@ -80,6 +83,9 @@ export class MasterKategori {
 
     @Prop({ type: MongooseSchema.Types.Array, required: true, ref: "MasterBarang" })
     barang: MasterBarang[];
+
+    @Prop({ type: MongooseSchema.Types.Boolean, required: true })
+    active: boolean;
 }
 
 @Schema()

@@ -24,7 +24,6 @@
 import { currentDate, readJSON, slugifyDate } from "@/shared/utils/util";
 import { RequestBarangExtended, RequestCreateBarang } from "@/shared/typings/types/inventory";
 import { Body, Controller, Get, Logger, Param, ParseIntPipe, Post, Put, StreamableFile, UseInterceptors, Response } from "@nestjs/common";
-import { MasterInventoryService } from "../master/master-inventory.service";
 import { RequestInventoryService } from "./request-inventory.service";
 import { RequestBarang } from "./schema/request-inventory.schema";
 import { ResponseFormat, ResponseFormatInterceptor } from "@/server/common/interceptors/response-format.interceptor";
@@ -46,7 +45,7 @@ export class RequestInventoryController {
      * @description Creates a new request inventory controller.
      * @param {RequestInventoryService} requestInventoryService - The request inventory service.
      */
-    constructor(private readonly requestInventoryService: RequestInventoryService, private readonly masterInventoryService: MasterInventoryService) {}
+    constructor(private readonly requestInventoryService: RequestInventoryService) {}
 
     /**
      * @description Get every request barang object
@@ -111,7 +110,7 @@ export class RequestInventoryController {
     /* -------------------------------- DOWNLOAD -------------------------------- */
 
     @Get("download/option")
-    public async masterDownloadOption() {
+    public async requestDownloadOption() {
         const response = await pythonAxiosInstance.post("/__api/inventory/request/update/option");
 
         if (response.data.success) {
@@ -120,7 +119,7 @@ export class RequestInventoryController {
     }
 
     @Get("download/user/:user_id/date/:date_id")
-    public async masterDownloadByUserIdAndDateId(
+    public async requestDownloadByUserIdAndDateId(
         @Param("user_id") user_id: number,
         @Param("date_id") date_id: number,
         @Response({ passthrough: true }) res: any
