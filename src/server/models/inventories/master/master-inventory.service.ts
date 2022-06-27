@@ -24,11 +24,23 @@
 import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
 import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payload.interface";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
-import { ItemSearchData, JumlahData, MasterParameterBarang, MasterParameterKategori, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
-import { calculateSaldoAkhirJumlahSatuan, currentDate, responseFormat, romanizeNumber } from "@/shared/utils/util";
-import { Injectable, Logger } from "@nestjs/common";
+import {
+    ItemSearchData,
+    JumlahData,
+    MasterParameterBarang,
+    MasterParameterDependency,
+    MasterParameterKategori,
+    MasterSubTotal,
+    MasterTotal,
+} from "@/shared/typings/types/inventory";
+import { calculateSaldoAkhirJumlahSatuan, currentDate, readJSON, responseFormat, romanizeNumber, slugifyDate } from "@/shared/utils/util";
+import { Injectable, Logger, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
+import { createReadStream } from "fs";
 import { Model } from "mongoose";
+import { join } from "path";
 import { MasterBarang, MasterKategori, MasterInventoryData, MasterInventoryDataDocument } from "./schema/master-inventory.schema";
 
 /**
@@ -1220,5 +1232,104 @@ export class MasterInventoryService {
         );
 
         Logger.log(JSON.stringify(master_category_data, null, 2));
+    }
+
+    /* -------------------------------- DOWNLOAD -------------------------------- */
+
+    public async masterUpdateDependency(dependency: MasterParameterDependency) {
+        const response = await pythonAxiosInstance.post("__api/inventory/master/update/dependency", dependency);
+
+        return response.data;
+    }
+
+    public async masterDownloadOption() {
+        const response = await pythonAxiosInstance.post("/__api/inventory/master/update/option");
+
+        if (response.data.success) {
+            return readJSON("./scripts/json/master_option_data.json");
+        }
+    }
+
+    public async masterDownloadByUserIdAndDateId(user_id: number, date_id: number, res: any): Promise<StreamableFile> {
+        const option_data = readJSON("./scripts/json/master_option_data.json");
+
+        let username_value: string;
+        let date_value: string;
+        let is_creatable: boolean;
+        option_data.forEach((user_object: any) => {
+            if (user_object.id == user_id) {
+                username_value = user_object.name;
+
+                user_object.date.forEach((date_object: any) => {
+                    if (date_object.id == date_id) {
+                        date_value = date_object.date;
+                        is_creatable = date_object.creatable;
+                    }
+                });
+            }
+        });
+
+        const slugified_date = slugifyDate(date_value);
+
+        if (username_value == "Mentah") {
+            if (date_value == "Terbaru" && is_creatable == true) {
+                const current_date = slugifyDate(currentDate());
+                const response = await pythonAxiosInstance.post(`/__api/inventory/master/download/raw/${current_date}`);
+
+                if (response.data.success) {
+                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${username_value} ${current_date}.xlsx`));
+                    res.set({
+                        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Content-Disposition": `attachment; filename="Laporan ${username_value} Inventarisasi ${current_date}.xlsx"`,
+                    });
+
+                    return new StreamableFile(file);
+                }
+            } else if (date_value != "Terbaru" && is_creatable == false) {
+                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${username_value} ${slugified_date}.xlsx`));
+                res.set({
+                    "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "Content-Disposition": `attachment; filename="Laporan ${username_value} Inventarisasi ${slugified_date}.xlsx"`,
+                });
+
+                return new StreamableFile(file);
+            }
+        } else if (username_value == "Format") {
+            const dependency_data = readJSON("./scripts/json/master_dependency_data.json");
+
+            if (date_value == "Terbaru" && is_creatable == true) {
+                const current_date = slugifyDate(currentDate());
+                const response = await pythonAxiosInstance.post(`/__api/inventory/master/download/format/${current_date}`);
+
+                if (response.data.success) {
+                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${username_value} ${current_date}.xlsx`));
+                    res.set({
+                        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Content-Disposition": `attachment; filename="LAPORAN INVENTARISASI PERSEDIAAN SEMESTERAN ${dependency_data.tahun_akhir}.xlsx"`,
+                    });
+
+                    return new StreamableFile(file);
+                }
+            } else if (date_value != "Terbaru" && is_creatable == false) {
+                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${username_value} ${slugified_date}.xlsx`));
+                res.set({
+                    "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "Content-Disposition": `attachment; filename="LAPORAN INVENTARISASI PERSEDIAAN SEMESTERAN ${dependency_data.tahun_akhir}.xlsx"`,
+                });
+
+                return new StreamableFile(file);
+            }
+        }
+    }
+
+    @Cron(CronExpression.EVERY_12_HOURS)
+    public async masterScheduledDownload() {
+        const current_date = slugifyDate(currentDate());
+        const rawResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/raw/${current_date}`);
+        const formatResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/format/${current_date}`);
+
+        if (rawResponse.data.success && formatResponse.data.success) {
+            pythonAxiosInstance.post("/__api/inventory/master/update/option");
+        }
     }
 }

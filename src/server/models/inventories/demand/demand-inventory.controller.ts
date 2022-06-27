@@ -22,10 +22,6 @@
  */
 
 import { Body, Controller, Get, Logger, Param, ParseIntPipe, Post, Put, Response, StreamableFile, UseInterceptors } from "@nestjs/common";
-import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
-import { currentDate, readJSON, slugifyDate } from "@/shared/utils/util";
-import { createReadStream } from "fs";
-import { join } from "path";
 import { DemandInventoryService } from "./demand-inventory.service";
 import { DemandBarang, DemandKategori } from "./schema/demand-inventory.schema";
 import { ResponseFormat, ResponseFormatInterceptor } from "@/server/common/interceptors/response-format.interceptor";
@@ -46,6 +42,8 @@ export class DemandInventoryController {
      * @param {DemandInventoryService} demandInventoryService - The demand inventory service.
      */
     constructor(private readonly demandInventoryService: DemandInventoryService) {}
+
+    /* ---------------------------------- MAIN ---------------------------------- */
 
     /**
      * @description Get every category demand object
@@ -170,11 +168,7 @@ export class DemandInventoryController {
 
     @Get("download/option")
     public async demandDownloadOption() {
-        const response = await pythonAxiosInstance.post("/__api/inventory/demand/update/option");
-
-        if (response.data.success) {
-            return readJSON("./scripts/json/demand_option_data.json");
-        }
+        return await this.demandInventoryService.demandDownloadOption();
     }
 
     @Get("download/user/:user_id/date/:date_id")
@@ -183,49 +177,6 @@ export class DemandInventoryController {
         @Param("date_id") date_id: number,
         @Response({ passthrough: true }) res: any
     ): Promise<StreamableFile> {
-        const option_data = readJSON("./scripts/json/demand_option_data.json");
-
-        let username_value: string;
-        let date_value: string;
-        let is_creatable: boolean;
-        option_data.forEach((user_object: any) => {
-            if (user_object.id == user_id) {
-                username_value = user_object.name;
-
-                user_object.date.forEach((date_object: any) => {
-                    if (date_object.id == date_id) {
-                        date_value = date_object.date;
-                        is_creatable = date_object.creatable;
-                    }
-                });
-            }
-        });
-
-        const slugified_date = slugifyDate(date_value);
-
-        if (username_value == "Mentah") {
-            if (date_value == "Terbaru" && is_creatable == true) {
-                const current_date = slugifyDate(currentDate());
-                const response = await pythonAxiosInstance.post(`/__api/inventory/demand/download/raw/${current_date}`);
-
-                if (response.data.success) {
-                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/demand/${username_value} ${current_date}.xlsx`));
-                    res.set({
-                        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Kategori dan Barang Baru ${current_date}.xlsx"`,
-                    });
-
-                    return new StreamableFile(file);
-                }
-            } else if (date_value != "Terbaru" && is_creatable == false) {
-                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/demand/${username_value} ${slugified_date}.xlsx`));
-                res.set({
-                    "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Kategori dan Barang Baru ${slugified_date}.xlsx"`,
-                });
-
-                return new StreamableFile(file);
-            }
-        }
+        return await this.demandInventoryService.demandDownloadByUserIdAndDateId(user_id, date_id, res);
     }
 }

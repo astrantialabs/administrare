@@ -21,16 +21,12 @@
  * @author Rizky Irswanda <rizky.irswanda115@gmail.com>
  */
 
-import { currentDate, readJSON, slugifyDate } from "@/shared/utils/util";
 import { RequestBarangExtended, RequestCreateBarang } from "@/shared/typings/types/inventory";
 import { Body, Controller, Get, Logger, Param, ParseIntPipe, Post, Put, StreamableFile, UseInterceptors, Response } from "@nestjs/common";
 import { RequestInventoryService } from "./request-inventory.service";
 import { RequestBarang } from "./schema/request-inventory.schema";
 import { ResponseFormat, ResponseFormatInterceptor } from "@/server/common/interceptors/response-format.interceptor";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
-import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
-import { createReadStream } from "fs";
-import { join } from "path";
 
 /**
  * @class RequestInventoryDataController
@@ -46,6 +42,8 @@ export class RequestInventoryController {
      * @param {RequestInventoryService} requestInventoryService - The request inventory service.
      */
     constructor(private readonly requestInventoryService: RequestInventoryService) {}
+
+    /* ---------------------------------- CRUD ---------------------------------- */
 
     /**
      * @description Get every request barang object
@@ -111,11 +109,7 @@ export class RequestInventoryController {
 
     @Get("download/option")
     public async requestDownloadOption() {
-        const response = await pythonAxiosInstance.post("/__api/inventory/request/update/option");
-
-        if (response.data.success) {
-            return readJSON("./scripts/json/request_option_data.json");
-        }
+        return await this.requestInventoryService.requestDownloadOption();
     }
 
     @Get("download/user/:user_id/date/:date_id")
@@ -124,71 +118,6 @@ export class RequestInventoryController {
         @Param("date_id") date_id: number,
         @Response({ passthrough: true }) res: any
     ): Promise<StreamableFile> {
-        const option_data = readJSON("./scripts/json/request_option_data.json");
-
-        let username_value: string;
-        let date_value: string;
-        let is_creatable: boolean;
-        option_data.forEach((user_object: any) => {
-            if (user_object.id == user_id) {
-                username_value = user_object.name;
-
-                user_object.date.forEach((date_object: any) => {
-                    if (date_object.id == date_id) {
-                        date_value = date_object.date;
-                        is_creatable = date_object.creatable;
-                    }
-                });
-            }
-        });
-
-        const slugified_date = slugifyDate(date_value);
-
-        if (username_value == "Mentah") {
-            if (date_value == "Terbaru" && is_creatable == true) {
-                const current_date = slugifyDate(currentDate());
-                const response = await pythonAxiosInstance.post(`/__api/inventory/request/download/raw/${current_date}`);
-
-                if (response.data.success) {
-                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${current_date}.xlsx`));
-                    res.set({
-                        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${current_date}.xlsx"`,
-                    });
-
-                    return new StreamableFile(file);
-                }
-            } else if (date_value != "Terbaru" && is_creatable == false) {
-                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${slugified_date}.xlsx`));
-                res.set({
-                    "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${slugified_date}.xlsx"`,
-                });
-
-                return new StreamableFile(file);
-            }
-        } else if (username_value != "Mentah") {
-            if (is_creatable) {
-                const response = await pythonAxiosInstance.post(`/__api/inventory/request/download/user/${user_id}/date/${date_id}`);
-
-                if (response.data.success) {
-                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${slugified_date}.docx`));
-                    res.set({
-                        "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${slugified_date}.docx"`,
-                    });
-
-                    return new StreamableFile(file);
-                }
-            } else if (!is_creatable) {
-                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/request/${username_value} ${slugified_date}.docx`));
-                res.set({
-                    "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Barang ${slugified_date}.docx"`,
-                });
-
-                return new StreamableFile(file);
-            }
-        }
+        return await this.requestInventoryService.requestDownloadByUserIdAndDateId(user_id, date_id, res);
     }
 }

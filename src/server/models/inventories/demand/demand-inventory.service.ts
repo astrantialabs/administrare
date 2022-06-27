@@ -24,13 +24,17 @@
 import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 import { DemandBarangWithCategoryName, DemandCreateBarang, DemandCreateKategori } from "@/shared/typings/types/inventory";
-import { currentDate, responseFormat } from "@/shared/utils/util";
-import { Injectable } from "@nestjs/common";
+import { currentDate, readJSON, responseFormat, slugifyDate } from "@/shared/utils/util";
+import { Injectable, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
+import { createReadStream } from "fs";
 import { Model } from "mongoose";
+import { join } from "path";
 import { MasterInventoryService } from "../master/master-inventory.service";
 import { MasterInventoryDataDocument, MasterKategori } from "../master/schema/master-inventory.schema";
 import { DemandBarang, DemandInventoryData, DemandInventoryDataDocument, DemandKategori } from "./schema/demand-inventory.schema";
+import { Cron, CronExpression } from "@nestjs/schedule";
 
 /**
  * @class DemandInventoryService
@@ -49,7 +53,7 @@ export class DemandInventoryService {
         private readonly masterInventoryService: MasterInventoryService
     ) {}
 
-    //#region main
+    /* ---------------------------------- MAIN ---------------------------------- */
 
     /**
      * @description Find demand documnet based on year
@@ -60,9 +64,7 @@ export class DemandInventoryService {
         return await this.demandInventoryDataModel.findOne({ tahun: year }).exec();
     }
 
-    //#endregion main
-
-    //#region utility
+    /* --------------------------------- UTILITY -------------------------------- */
 
     public async demandBarangWithCategoryName(demand_barang_data: DemandBarang[]): Promise<DemandBarangWithCategoryName[]> {
         let demand_barang_data_with_category_name: DemandBarangWithCategoryName[] = await Promise.all(
@@ -78,9 +80,7 @@ export class DemandInventoryService {
         return demand_barang_data_with_category_name;
     }
 
-    //#endregion utility
-
-    //#region crud
+    /* ---------------------------------- CRUD ---------------------------------- */
 
     /**
      * @description Get every category demand object
@@ -167,7 +167,8 @@ export class DemandInventoryService {
             } else if (demand_barang != undefined) {
                 let demand_barang_with_category_name: DemandBarangWithCategoryName = {
                     ...demand_barang,
-                    kategori_name: (await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id)).result.master_category_name,
+                    kategori_name: (await this.masterInventoryService.masterGetKategoriNameByKategoriId(2022, demand_barang.kategori_id)).result
+                        .master_category_name,
                 };
 
                 return responseFormat<ResponseObject<DemandBarangWithCategoryName>>(true, 200, `Pengajuan barang dengan id ${id} berhasil ditemukan.`, {
@@ -445,5 +446,70 @@ export class DemandInventoryService {
         }
     }
 
-    //#endregion crud
+    /* -------------------------------- DOWNLOAD -------------------------------- */
+
+    public async demandDownloadOption() {
+        const response = await pythonAxiosInstance.post("/__api/inventory/demand/update/option");
+
+        if (response.data.success) {
+            return readJSON("./scripts/json/demand_option_data.json");
+        }
+    }
+
+    public async demandDownloadByUserIdAndDateId(user_id: number, date_id: number, res: any) {
+        const option_data = readJSON("./scripts/json/demand_option_data.json");
+
+        let username_value: string;
+        let date_value: string;
+        let is_creatable: boolean;
+        option_data.forEach((user_object: any) => {
+            if (user_object.id == user_id) {
+                username_value = user_object.name;
+
+                user_object.date.forEach((date_object: any) => {
+                    if (date_object.id == date_id) {
+                        date_value = date_object.date;
+                        is_creatable = date_object.creatable;
+                    }
+                });
+            }
+        });
+
+        const slugified_date = slugifyDate(date_value);
+
+        if (username_value == "Mentah") {
+            if (date_value == "Terbaru" && is_creatable == true) {
+                const current_date = slugifyDate(currentDate());
+                const response = await pythonAxiosInstance.post(`/__api/inventory/demand/download/raw/${current_date}`);
+
+                if (response.data.success) {
+                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/demand/${username_value} ${current_date}.xlsx`));
+                    res.set({
+                        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Kategori dan Barang Baru ${current_date}.xlsx"`,
+                    });
+
+                    return new StreamableFile(file);
+                }
+            } else if (date_value != "Terbaru" && is_creatable == false) {
+                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/demand/${username_value} ${slugified_date}.xlsx`));
+                res.set({
+                    "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "Content-Disposition": `attachment; filename="Laporan ${username_value} Permintaan Kategori dan Barang Baru ${slugified_date}.xlsx"`,
+                });
+
+                return new StreamableFile(file);
+            }
+        }
+    }
+
+    @Cron(CronExpression.EVERY_12_HOURS)
+    public async demandScheduledDownload() {
+        const current_date = slugifyDate(currentDate());
+        const response = await pythonAxiosInstance.post(`/__api/inventory/demand/download/raw/${current_date}`);
+
+        if (response.data.success) {
+            pythonAxiosInstance.post("/__api/inventory/demand/update/option");
+        }
+    }
 }

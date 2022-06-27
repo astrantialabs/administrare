@@ -24,6 +24,7 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
+import { ScheduleModule } from "@nestjs/schedule";
 import { RenderModule } from "nest-next";
 import Next from "next";
 
@@ -55,7 +56,7 @@ export class AppModule {
 
         return {
             module: AppModule,
-            imports: [renderModule, ConfigModule, MongoDBProviderModule, UserModule, AuthModule, FinanceModule, InventoryModule],
+            imports: [renderModule, ScheduleModule.forRoot(), ConfigModule, MongoDBProviderModule, UserModule, AuthModule, FinanceModule, InventoryModule],
             exports: [ConfigService],
             controllers: [AppController],
             providers: [
