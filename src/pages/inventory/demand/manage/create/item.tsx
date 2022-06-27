@@ -125,6 +125,17 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                 >
                     {(props: FormikProps<InventoryDemandManageCreateItemValidationModel>) => (
                         <Form>
+                            <Field name="username">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                    <FormControl mb={4}>
+                                        <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Nama
+                                        </FormLabel>
+                                        <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Nama disini.." />
+                                        <FormErrorMessage>{form.errors.username}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
                             <Field name="kategori_id">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl my={4}>
@@ -146,17 +157,6 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                                             )}
                                         </Select>
                                         <FormErrorMessage>{form.errors.kategori_id}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
-                            <Field name="username">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl mb={4}>
-                                        <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Username
-                                        </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Username disini.." />
-                                        <FormErrorMessage>{form.errors.username}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>

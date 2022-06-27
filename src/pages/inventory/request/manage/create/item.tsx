@@ -224,7 +224,20 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                     >
                         {(props: FormikProps<InventoryRequestManageCreateItemValidationModel>) => (
                             <Form>
+                                <Field name="username">
+                                    {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                        <FormControl mb={4}>
+                                            <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                                Nama
+                                            </FormLabel>
+                                            <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Nama disini.." />
+                                            <FormErrorMessage>{form.errors.username}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
+
                                 <InputAutoComplete formikFields={undefined} formContext={undefined} />
+
                                 <Field name="search">
                                     {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                         <FormControl mb={4}>
@@ -233,18 +246,6 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                                             </FormLabel>
                                             <Input {...field} disabled={props.isSubmitting} id="search" name="search" value={selection} />
                                             <FormErrorMessage>{form.errors.deskripsi}</FormErrorMessage>
-                                        </FormControl>
-                                    )}
-                                </Field>
-
-                                <Field name="username">
-                                    {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                        <FormControl mb={4}>
-                                            <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                                Username
-                                            </FormLabel>
-                                            <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Username disini.." />
-                                            <FormErrorMessage>{form.errors.username}</FormErrorMessage>
                                         </FormControl>
                                     )}
                                 </Field>

@@ -122,9 +122,9 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageCreateCategoryParameter> }) => (
                                     <FormControl>
                                         <FormLabel htmlFor="username" fontWeight={`medium`} color={`blackAlpha.700`} mb={4}>
-                                            Username
+                                            Nama
                                         </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Nama username disini.." />
+                                        <Input {...field} disabled={props.isSubmitting} id="username" placeholder="Nama disini.." />
                                         <FormErrorMessage>{form.errors.username}</FormErrorMessage>
                                     </FormControl>
                                 )}
