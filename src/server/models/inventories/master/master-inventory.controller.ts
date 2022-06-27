@@ -260,6 +260,23 @@ export class MasterInventoryController {
         return await this.masterInventoryService.masterDeleteBarangByKategoriIdAndBarangId(2022, category_id, item_id);
     }
 
+    @Put("kategori/:category_id/recover")
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterRecoverKategoriByKategoriId(
+        @Param("category_id", new ParseIntPipe()) category_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        return await this.masterInventoryService.masterRecoverKategoriByKategoriId(2022, category_id);
+    }
+
+    @Put("kategori/:category_id/barang/:item_id/recover")
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async masterRecoverBarangByKategoriIdAndBarangId(
+        @Param("category_id", new ParseIntPipe()) category_id: number,
+        @Param("item_id", new ParseIntPipe()) item_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        return await this.masterInventoryService.masterRecoverBarangByKategoriIdAndBarangId(2022, category_id, item_id);
+    }
+
     /* ---------------------------------- TABLE --------------------------------- */
 
     /**
@@ -277,6 +294,11 @@ export class MasterInventoryController {
     @Get("table/all")
     public async masterTableGetAll(): Promise<any> {
         return await this.masterInventoryService.masterTableGetAll();
+    }
+
+    @Get("table/recover")
+    public async masterTableGetRecover(): Promise<any> {
+        return await this.masterInventoryService.masterTableGetRecover();
     }
 
     /* -------------------------------- DOWNLOAD -------------------------------- */

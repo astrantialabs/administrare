@@ -26,7 +26,7 @@ import { CategoriesPayload } from "@/shared/typings/interfaces/categories-payloa
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 import { ItemSearchData, JumlahData, MasterParameterBarang, MasterParameterKategori, MasterSubTotal, MasterTotal } from "@/shared/typings/types/inventory";
 import { calculateSaldoAkhirJumlahSatuan, currentDate, responseFormat, romanizeNumber } from "@/shared/utils/util";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { MasterBarang, MasterKategori, MasterInventoryData, MasterInventoryDataDocument } from "./schema/master-inventory.schema";
@@ -789,7 +789,7 @@ export class MasterInventoryService {
 
                     if (deletion_is_valid) {
                         let deleted_category_object: MasterKategori;
-                        master_inventory_data.kategori.forEach((category_object: MasterKategori, index: number) => {
+                        master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                             if (category_object.id == category_id) {
                                 category_object.active = false;
                                 deleted_category_object = category_object;
@@ -919,6 +919,111 @@ export class MasterInventoryService {
         }
     }
 
+    public async masterRecoverKategoriByKategoriId(year: number, category_id: number): Promise<ResponseFormat<ResponseObject<MasterKategori>>> {
+        try {
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+
+            let category_id_is_valid: boolean = false;
+            let category_id_is_active: boolean;
+            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == category_id) {
+                    category_id_is_valid = true;
+                    category_id_is_active = category_object.active;
+                }
+            });
+
+            if (category_id_is_valid) {
+                if (!category_id_is_active) {
+                    let recovered_category_object: MasterKategori;
+                    master_inventory_data.kategori.forEach((category_object: MasterKategori, index: number) => {
+                        if (category_object.id == category_id) {
+                            category_object.active = true;
+                            recovered_category_object = category_object;
+
+                            this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                        }
+                    });
+
+                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil dipulihkan.`, {
+                        master_category: recovered_category_object,
+                    });
+                } else if (category_id_is_active) {
+                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} masih ada.`, null);
+                }
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
+    }
+
+    public async masterRecoverBarangByKategoriIdAndBarangId(
+        year: number,
+        category_id: number,
+        item_id: number
+    ): Promise<ResponseFormat<ResponseObject<MasterBarang>>> {
+        try {
+            const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+
+            let category_id_is_valid: boolean = false;
+            let item_id_is_valid: boolean = false;
+            let item_id_is_active: boolean;
+            master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
+                if (category_object.id == category_id) {
+                    category_id_is_valid = true;
+
+                    category_object.barang.forEach((item_object: MasterBarang) => {
+                        if (item_object.id == item_id) {
+                            item_id_is_valid = true;
+                            item_id_is_active = item_object.active;
+                        }
+                    });
+                }
+            });
+
+            if (category_id_is_valid) {
+                if (item_id_is_valid) {
+                    if (!item_id_is_active) {
+                        let recovered_item_object: MasterBarang;
+
+                        master_inventory_data.kategori.forEach((category_object) => {
+                            if (category_object.id == category_id) {
+                                category_object.active = true;
+
+                                category_object.barang.forEach((item_object) => {
+                                    if (item_object.id == item_id) {
+                                        item_object.active = true;
+                                        recovered_item_object = item_object;
+
+                                        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+                                    }
+                                });
+                            }
+                        });
+
+                        return responseFormat<ResponseObject<MasterBarang>>(
+                            true,
+                            202,
+                            `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil dipulihkan.`,
+                            {
+                                master_category: recovered_item_object,
+                            }
+                        );
+                    } else if (item_id_is_active) {
+                        return responseFormat<null>(false, 400, `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} masih ada.`, null);
+                    }
+                } else if (!item_id_is_valid) {
+                    return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                }
+            } else if (!category_id_is_valid) {
+                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
+    }
+
     /* ---------------------------------- TABLE --------------------------------- */
 
     public async masterTableGetKategoriAll(year: number): Promise<any> {
@@ -943,9 +1048,14 @@ export class MasterInventoryService {
     public async masterTableGetAll(): Promise<any> {
         const master_category_data: MasterKategori[] = (await this.masterGetKategoriAll(2022)).result.master_category.filter(
             (category_object: MasterKategori) => {
+                category_object.barang = category_object.barang.filter((item_object: MasterBarang) => {
+                    return item_object.active === true;
+                });
+
                 return category_object.active === true;
             }
         );
+
         let table_data: any[] = [];
 
         const sub_totals: MasterSubTotal[] = await Promise.all(
@@ -1094,5 +1204,21 @@ export class MasterInventoryService {
         });
 
         return table_data;
+    }
+
+    public async masterTableGetRecover(): Promise<any> {
+        const master_category_data: MasterKategori[] = (await this.masterGetKategoriAll(2022)).result.master_category.filter(
+            (category_object: MasterKategori) => {
+                category_object.barang = category_object.barang.filter((item_object: MasterBarang) => {
+                    return item_object.active === false;
+                });
+
+                if (category_object.barang.length > 0 || category_object.active === false) {
+                    return category_object;
+                }
+            }
+        );
+
+        Logger.log(JSON.stringify(master_category_data, null, 2));
     }
 }
