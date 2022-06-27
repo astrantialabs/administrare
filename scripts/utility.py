@@ -82,19 +82,23 @@ class Utility():
         return translation.get(rawMonth)
 
 
-    def convertStatus(rawStatus):
-        status = None
+    def convertStatus(status):
+        if(status == 0):
+            return "Belum direspon"
 
-        if(rawStatus == 0):
-            status = "Belum direspon"
+        elif(status == 1):
+            return "Diterima"
 
-        elif(rawStatus == 1):
-            status = "Diterima"
+        elif(status == 2):
+            return "Ditolak"
 
-        elif(rawStatus == 2):
-            status = "Ditolak"
 
-        return status
+    def convertActive(active):
+        if(active == True):
+            return "Iya"
+
+        elif(active == False):
+            return "Tidak"
 
 
     def readJSON(path):
