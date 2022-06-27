@@ -28,9 +28,9 @@ from inventories.demand.inventoryDemand import InventoryDemand
 
 class Test:
     def main():
-        # print(InventoryMaster.getDependencyData())
+        print(InventoryMaster.getDependencyData())
         # print(InventoryMaster.getTranslatedDependencyData())
-        InventoryMaster.writeRaw(Utility.currentDate())
+        # InventoryMaster.writeRaw(Utility.currentDate())
         # InventoryMaster.writeFormat(Utility.currentDate())
 
         # InventoryRequest.updateUserData()
