@@ -106,13 +106,14 @@ class InventoryMaster():
             "Jumlah Permintaan",
             "Dibuat",
             "Diupdate",
-            "Keterangan"
+            "Keterangan",
+            "Aktif"
         ]
 
-        workbook.write_value_multiple("A1", "L1", headerValue)
-        workbook.font_multiple("A1", "L1", bold = True, size = 12)
-        workbook.alignment_multiple("A1", "L1", horizontal = "center", vertical = "center")
-        workbook.border_multiple("A1", "L1", "all", style="thin")
+        workbook.write_value_multiple("A1", "M1", headerValue)
+        workbook.font_multiple("A1", "M1", bold = True, size = 12)
+        workbook.alignment_multiple("A1", "M1", horizontal = "center", vertical = "center")
+        workbook.border_multiple("A1", "M1", "all", style="thin")
 
 
     def writeMainRaw(workbook, inventoryMasterDocument):
@@ -120,48 +121,49 @@ class InventoryMaster():
 
         categoryCount = 1
         for categoryObject in inventoryMasterDocument.get("kategori"):
-            if(categoryObject.get("active")):
-                workbook.write_value_multiple(["A", rowCount], ["B", rowCount], [Utility.romanNumeral(categoryCount), categoryObject.get("kategori")])
-                workbook.write_value_multiple(["J", rowCount], ["K", rowCount], [categoryObject.get("created_at"), categoryObject.get("updated_at")])
+            workbook.write_value_multiple(["A", rowCount], ["B", rowCount], [Utility.romanNumeral(categoryCount), categoryObject.get("kategori")])
+            workbook.write_value_multiple(["J", rowCount], ["K", rowCount], [categoryObject.get("created_at"), categoryObject.get("updated_at")])
+            workbook.write_value_singular(["M", rowCount], Utility.convertActive(categoryObject.get("active")))
 
-                workbook.font_multiple(["A", rowCount], ["L", rowCount], bold = True)
-                workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical = "center")
-                workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
+
+            workbook.font_multiple(["A", rowCount], ["M", rowCount], bold = True)
+            workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical = "center")
+            workbook.border_multiple(["A", rowCount], ["M", rowCount], "all", style="thin")
+
+            rowCount += 1
+
+            itemCount = 1
+            for itemObject in categoryObject.get("barang"):
+                itemValue = [
+                    itemCount,
+                    itemObject.get("nama"),
+                    itemObject.get("satuan"),
+                    itemObject.get("harga_satuan"),
+                    itemObject.get("saldo_jumlah_satuan"),
+                    itemObject.get("mutasi_barang_masuk_jumlah_satuan"),
+                    itemObject.get("mutasi_barang_keluar_jumlah_satuan"),
+                    itemObject.get("saldo_akhir_jumlah_satuan"),
+                    itemObject.get("jumlah_permintaan"),
+                    itemObject.get("created_at"),
+                    itemObject.get("updated_at"),
+                    itemObject.get("keterangan"),
+                    Utility.convertActive(itemObject.get("active"))
+                ]
+
+                workbook.write_value_multiple(["A", rowCount], ["M", rowCount], itemValue)
+
+                workbook.font_multiple(["A", rowCount], ["M", rowCount], size = 10)
+                workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical="center")
+                workbook.alignment_multiple(["C", rowCount], ["I", rowCount], horizontal = "center", vertical="center")
+                workbook.border_multiple(["A", rowCount], ["M", rowCount], "all", style="thin")
 
                 rowCount += 1
-
-                itemCount = 1
-                for itemObject in categoryObject.get("barang"):
-                    if(itemObject.get("active")):
-                        itemValue = [
-                            itemCount,
-                            itemObject.get("nama"),
-                            itemObject.get("satuan"),
-                            itemObject.get("harga_satuan"),
-                            itemObject.get("saldo_jumlah_satuan"),
-                            itemObject.get("mutasi_barang_masuk_jumlah_satuan"),
-                            itemObject.get("mutasi_barang_keluar_jumlah_satuan"),
-                            itemObject.get("saldo_akhir_jumlah_satuan"),
-                            itemObject.get("jumlah_permintaan"),
-                            itemObject.get("created_at"),
-                            itemObject.get("updated_at"),
-                            itemObject.get("keterangan")
-                        ]
-
-                        workbook.write_value_multiple(["A", rowCount], ["L", rowCount], itemValue)
-        
-                        workbook.font_multiple(["A", rowCount], ["L", rowCount], size = 10)
-                        workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical="center")
-                        workbook.alignment_multiple(["C", rowCount], ["I", rowCount], horizontal = "center", vertical="center")
-                        workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
-
-                        rowCount += 1
-                        itemCount += 1
+                itemCount += 1
 
 
-                workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
-                rowCount += 1
-                categoryCount += 1
+            workbook.border_multiple(["A", rowCount], ["M", rowCount], "all", style="thin")
+            rowCount += 1
+            categoryCount += 1
 
 
         workbook.adjust_width("A1", ["C", rowCount], extra_width = 1, width_limit = 40)
@@ -170,7 +172,8 @@ class InventoryMaster():
         workbook.adjust_width("D1", ["I", rowCount], extra_width = 1, width_limit = 15)
         workbook.alignment_multiple("D1", ["I", rowCount], horizontal = "center", vertical = "center", wrap = True)
 
-        workbook.adjust_width("J1", ["L", rowCount], extra_width = 1)
+        workbook.adjust_width("J1", ["M", rowCount], extra_width = 1)
+        workbook.alignment_multiple("M1", ["M", rowCount], horizontal = "center", vertical = "center")
 
 
     def writeFormat(currentDate):
