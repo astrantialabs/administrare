@@ -118,44 +118,50 @@ class InventoryMaster():
     def writeMainRaw(workbook, inventoryMasterDocument):
         rowCount = 2
 
-        for categoryIndex, categoryObject in enumerate(inventoryMasterDocument.get("kategori")):
-            workbook.write_value_multiple(["A", rowCount], ["B", rowCount], [Utility.romanNumeral(categoryIndex + 1), categoryObject.get("kategori")])
-            workbook.write_value_multiple(["J", rowCount], ["K", rowCount], [categoryObject.get("created_at"), categoryObject.get("updated_at")])
+        categoryCount = 1
+        for categoryObject in inventoryMasterDocument.get("kategori"):
+            if(categoryObject.get("active")):
+                workbook.write_value_multiple(["A", rowCount], ["B", rowCount], [Utility.romanNumeral(categoryCount), categoryObject.get("kategori")])
+                workbook.write_value_multiple(["J", rowCount], ["K", rowCount], [categoryObject.get("created_at"), categoryObject.get("updated_at")])
 
-            workbook.font_multiple(["A", rowCount], ["L", rowCount], bold = True)
-            workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical = "center")
-            workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
-
-            rowCount += 1
-
-            for itemIndex, itemObject in enumerate(categoryObject.get("barang")):
-                itemValue = [
-                    itemIndex + 1,
-                    itemObject.get("nama"),
-                    itemObject.get("satuan"),
-                    itemObject.get("harga_satuan"),
-                    itemObject.get("saldo_jumlah_satuan"),
-                    itemObject.get("mutasi_barang_masuk_jumlah_satuan"),
-                    itemObject.get("mutasi_barang_keluar_jumlah_satuan"),
-                    itemObject.get("saldo_akhir_jumlah_satuan"),
-                    itemObject.get("jumlah_permintaan"),
-                    itemObject.get("created_at"),
-                    itemObject.get("updated_at"),
-                    itemObject.get("keterangan")
-                ]
-
-                workbook.write_value_multiple(["A", rowCount], ["L", rowCount], itemValue)
- 
-                workbook.font_multiple(["A", rowCount], ["L", rowCount], size = 10)
-                workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical="center")
-                workbook.alignment_multiple(["C", rowCount], ["I", rowCount], horizontal = "center", vertical="center")
+                workbook.font_multiple(["A", rowCount], ["L", rowCount], bold = True)
+                workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical = "center")
                 workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
 
                 rowCount += 1
 
+                itemCount = 1
+                for itemObject in categoryObject.get("barang"):
+                    if(itemObject.get("active")):
+                        itemValue = [
+                            itemCount,
+                            itemObject.get("nama"),
+                            itemObject.get("satuan"),
+                            itemObject.get("harga_satuan"),
+                            itemObject.get("saldo_jumlah_satuan"),
+                            itemObject.get("mutasi_barang_masuk_jumlah_satuan"),
+                            itemObject.get("mutasi_barang_keluar_jumlah_satuan"),
+                            itemObject.get("saldo_akhir_jumlah_satuan"),
+                            itemObject.get("jumlah_permintaan"),
+                            itemObject.get("created_at"),
+                            itemObject.get("updated_at"),
+                            itemObject.get("keterangan")
+                        ]
 
-            workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
-            rowCount += 1
+                        workbook.write_value_multiple(["A", rowCount], ["L", rowCount], itemValue)
+        
+                        workbook.font_multiple(["A", rowCount], ["L", rowCount], size = 10)
+                        workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical="center")
+                        workbook.alignment_multiple(["C", rowCount], ["I", rowCount], horizontal = "center", vertical="center")
+                        workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
+
+                        rowCount += 1
+                        itemCount += 1
+
+
+                workbook.border_multiple(["A", rowCount], ["L", rowCount], "all", style="thin")
+                rowCount += 1
+                categoryCount += 1
 
 
         workbook.adjust_width("A1", ["C", rowCount], extra_width = 1, width_limit = 40)
@@ -234,97 +240,103 @@ class InventoryMaster():
         mutasiBarangMasukJumlahTotal = 0
         mutasiBarangKeluarJumlahTotal = 0
         saldoAkhirJumlahTotal = 0
-        for categoryIndex, categoryObject in enumerate(inventoryMasterDocument.get("kategori")):
-            romanNumeral = Utility.romanNumeral(categoryIndex + 1)
-            workbook.write_value_singular(["A", rowCount], f"{romanNumeral}.")
-            workbook.write_value_singular(["B", rowCount], categoryObject.get("kategori"))
+        categoryCount = 1
+        for categoryObject in inventoryMasterDocument.get("kategori"):
+            if(categoryObject.get("active")):
+                romanNumeral = Utility.romanNumeral(categoryCount)
+                workbook.write_value_singular(["A", rowCount], f"{romanNumeral}.")
+                workbook.write_value_singular(["B", rowCount], categoryObject.get("kategori"))
 
-            workbook.font_multiple(["A", rowCount], ["B", rowCount], bold = True, size = 10)
-            workbook.alignment_singular(["A", rowCount], vertical = "top", horizontal = "center")
-            workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
-            workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
-
-            rowCount += 1
-
-            saldoJumlahSubTotal = 0
-            mutasiBarangMasukJumlahSubTotal = 0
-            mutasiBarangKeluarJumlahSubTotal = 0
-            saldoAkhirJumlahSubTotal = 0
-            for itemIndex, itemObject in enumerate(categoryObject.get("barang")):
-                hargaSatuan = itemObject.get("harga_satuan")
-
-                saldoJumlahSatuan = itemObject.get("saldo_jumlah_satuan")
-                saldoJumlah = saldoJumlahSatuan * hargaSatuan
-                saldoJumlahSubTotal += saldoJumlah
-
-                mutasiBarangMasukJumlahSatuan = itemObject.get("mutasi_barang_masuk_jumlah_satuan")
-                mutasiBarangMasukJumlah = mutasiBarangMasukJumlahSatuan * hargaSatuan
-                mutasiBarangMasukJumlahSubTotal += mutasiBarangMasukJumlah
-
-                mutasiBarangKeluarJumlahSatuan = itemObject.get("mutasi_barang_keluar_jumlah_satuan")
-                mutasiBarangKeluarJumlah = mutasiBarangKeluarJumlahSatuan * hargaSatuan
-                mutasiBarangKeluarJumlahSubTotal += mutasiBarangKeluarJumlah
-
-                saldoAkhirJumlahSatuan = itemObject.get("saldo_akhir_jumlah_satuan")
-                saldoAkhirJumlah = saldoAkhirJumlahSatuan * hargaSatuan
-                saldoAkhirJumlahSubTotal += saldoAkhirJumlah
-
-                workbook.write_value_singular(["A", rowCount], itemIndex + 1)
-                workbook.write_value_singular(["B", rowCount], itemObject.get("nama"))
-                workbook.write_value_singular(["C", rowCount], itemObject.get("satuan"))
-
-                workbook.write_value_singular(["D", rowCount], saldoJumlahSatuan)
-                workbook.write_value_singular(["E", rowCount], hargaSatuan)
-                workbook.write_value_singular(["F", rowCount], saldoJumlah)
-
-                workbook.write_value_singular(["G", rowCount], mutasiBarangMasukJumlahSatuan)
-                workbook.write_value_singular(["H", rowCount], hargaSatuan)
-                workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlah)
-
-                workbook.write_value_singular(["J", rowCount], mutasiBarangKeluarJumlahSatuan)
-                workbook.write_value_singular(["K", rowCount], hargaSatuan)
-                workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlah)
-
-                workbook.write_value_singular(["M", rowCount], saldoAkhirJumlahSatuan)
-                workbook.write_value_singular(["N", rowCount], hargaSatuan)
-                workbook.write_value_singular(["O", rowCount], saldoAkhirJumlah)
-
-                workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10)
-                workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top", horizontal = "center")
+                workbook.font_multiple(["A", rowCount], ["B", rowCount], bold = True, size = 10)
+                workbook.alignment_singular(["A", rowCount], vertical = "top", horizontal = "center")
                 workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
                 workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
 
                 rowCount += 1
+                categoryCount += 1
 
+                saldoJumlahSubTotal = 0
+                mutasiBarangMasukJumlahSubTotal = 0
+                mutasiBarangKeluarJumlahSubTotal = 0
+                saldoAkhirJumlahSubTotal = 0
+                itemCount = 1
+                for itemObject in categoryObject.get("barang"):
+                    if(itemObject.get("active")):
+                        hargaSatuan = itemObject.get("harga_satuan")
 
-            if(categoryObject.get("barang")):
+                        saldoJumlahSatuan = itemObject.get("saldo_jumlah_satuan")
+                        saldoJumlah = saldoJumlahSatuan * hargaSatuan
+                        saldoJumlahSubTotal += saldoJumlah
+
+                        mutasiBarangMasukJumlahSatuan = itemObject.get("mutasi_barang_masuk_jumlah_satuan")
+                        mutasiBarangMasukJumlah = mutasiBarangMasukJumlahSatuan * hargaSatuan
+                        mutasiBarangMasukJumlahSubTotal += mutasiBarangMasukJumlah
+
+                        mutasiBarangKeluarJumlahSatuan = itemObject.get("mutasi_barang_keluar_jumlah_satuan")
+                        mutasiBarangKeluarJumlah = mutasiBarangKeluarJumlahSatuan * hargaSatuan
+                        mutasiBarangKeluarJumlahSubTotal += mutasiBarangKeluarJumlah
+
+                        saldoAkhirJumlahSatuan = itemObject.get("saldo_akhir_jumlah_satuan")
+                        saldoAkhirJumlah = saldoAkhirJumlahSatuan * hargaSatuan
+                        saldoAkhirJumlahSubTotal += saldoAkhirJumlah
+
+                        workbook.write_value_singular(["A", rowCount], itemCount)
+                        workbook.write_value_singular(["B", rowCount], itemObject.get("nama"))
+                        workbook.write_value_singular(["C", rowCount], itemObject.get("satuan"))
+
+                        workbook.write_value_singular(["D", rowCount], saldoJumlahSatuan)
+                        workbook.write_value_singular(["E", rowCount], hargaSatuan)
+                        workbook.write_value_singular(["F", rowCount], saldoJumlah)
+
+                        workbook.write_value_singular(["G", rowCount], mutasiBarangMasukJumlahSatuan)
+                        workbook.write_value_singular(["H", rowCount], hargaSatuan)
+                        workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlah)
+
+                        workbook.write_value_singular(["J", rowCount], mutasiBarangKeluarJumlahSatuan)
+                        workbook.write_value_singular(["K", rowCount], hargaSatuan)
+                        workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlah)
+
+                        workbook.write_value_singular(["M", rowCount], saldoAkhirJumlahSatuan)
+                        workbook.write_value_singular(["N", rowCount], hargaSatuan)
+                        workbook.write_value_singular(["O", rowCount], saldoAkhirJumlah)
+
+                        workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10)
+                        workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top", horizontal = "center")
+                        workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
+                        workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+
+                        rowCount += 1
+                        itemCount += 1
+        
+
+                if(categoryObject.get("barang")):
+                    workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+                    rowCount += 1
+                    
+                workbook.write_value_singular(["B", rowCount], f"SUB TOTAL {categoryObject.get('kategori')}")
+                workbook.write_value_singular(["F", rowCount], saldoJumlahSubTotal)
+                workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlahSubTotal)
+                workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlahSubTotal)
+                workbook.write_value_singular(["O", rowCount], saldoAkhirJumlahSubTotal)
+
+                workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10, bold = True)
+                workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top")
+                workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+
+                if(categoryCount == 1):
+                    footerString += f" {romanNumeral}"
+
+                if(categoryCount != 1):
+                    footerString += f"+{romanNumeral}"
+
+                saldoJumlahTotal += saldoJumlahSubTotal
+                mutasiBarangMasukJumlahTotal += mutasiBarangMasukJumlahSubTotal
+                mutasiBarangKeluarJumlahTotal += mutasiBarangKeluarJumlahSubTotal
+                saldoAkhirJumlahTotal += saldoAkhirJumlahSubTotal
+
+                rowCount += 1
                 workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
                 rowCount += 1
-                
-            workbook.write_value_singular(["B", rowCount], f"SUB TOTAL {categoryObject.get('kategori')}")
-            workbook.write_value_singular(["F", rowCount], saldoJumlahSubTotal)
-            workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlahSubTotal)
-            workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlahSubTotal)
-            workbook.write_value_singular(["O", rowCount], saldoAkhirJumlahSubTotal)
-
-            workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10, bold = True)
-            workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top")
-            workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
-
-            if(categoryIndex == 0):
-                footerString += f" {romanNumeral}"
-
-            if(categoryIndex != 0):
-                footerString += f"+{romanNumeral}"
-
-            saldoJumlahTotal += saldoJumlahSubTotal
-            mutasiBarangMasukJumlahTotal += mutasiBarangMasukJumlahSubTotal
-            mutasiBarangKeluarJumlahTotal += mutasiBarangKeluarJumlahSubTotal
-            saldoAkhirJumlahTotal += saldoAkhirJumlahSubTotal
-
-            rowCount += 1
-            workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
-            rowCount += 1
                 
 
         workbook.write_value_singular(["A", rowCount], footerString)
