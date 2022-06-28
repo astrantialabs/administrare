@@ -1231,7 +1231,7 @@ export class MasterInventoryService {
             }
         );
 
-        Logger.log(JSON.stringify(master_category_data, null, 2));
+        return master_category_data;
     }
 
     /* -------------------------------- DOWNLOAD -------------------------------- */
