@@ -274,14 +274,14 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
 export const getServerSideProps = buildServerSideProps<PageProps, PageQuery>(async (ctx) => {
     const kategory_id = ctx.query.category_id;
     const barang_id = ctx.query.item_id;
-    let kategory_name = await fetch(`/__api/data/inventory/master/kategori/${parseInt(kategory_id)}/name`, {}, true);
+    let kategory_name = await fetch(`/__api/data/inventory/master/kategori/${parseInt(kategory_id)}/name`, {}, true, false);
 
-    let payload = await fetch(`/__api/data/inventory/master/kategori/${parseInt(kategory_id)}/barang/${parseInt(barang_id)}`);
+    let payload = await fetch(`/__api/data/inventory/master/kategori/${parseInt(kategory_id)}/barang/${parseInt(barang_id)}`, {}, false, false);
 
-    payload["kategory_id"] = kategory_id;
+    payload.result.master_item["kategory_id"] = kategory_id;
 
     return {
-        payload: payload,
+        payload: payload.result.master_item,
         category_id: kategory_id,
         item_id: barang_id,
         kategory_name: kategory_name,

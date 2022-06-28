@@ -159,7 +159,7 @@ export const getServerSideProps = buildServerSideProps<PageProps, PageQuery>(asy
     const payload = await fetch(`/__api/data/inventory/master/kategori/${parseInt(kategory_id)}`);
 
     return {
-        payload: payload,
+        payload: payload.result.master_category,
         category_id: kategory_id,
     };
 });
