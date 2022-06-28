@@ -17,18 +17,16 @@
  */
 
 import { NextPage } from "next";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Column, useTable } from "react-table";
 
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
-import { InventoryDataPayload } from "@/shared/typings/interfaces/inventory-payload.interface";
 import { Table } from "@/components/Table";
 import { fetch } from "@/shared/utils/fetch";
 import Sidebar from "@/components/Sidebar";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
-import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 
-import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure, ButtonGroup, useToast } from "@chakra-ui/react";
+import { Button, LinkOverlay, useDisclosure, ButtonGroup, useToast } from "@chakra-ui/react";
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody, PopoverArrow, PopoverCloseButton, Portal } from "@chakra-ui/react";
 import { MasterTotal } from "@/shared/typings/types/inventory";
 
@@ -442,13 +440,13 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
 
             <ButtonGroup marginTop={8}>
                 <Button>
-                    <LinkOverlay href="/inventory/master/recover">Pulihkan Data Terhapus</LinkOverlay>
+                    <LinkOverlay href="/inventory/recover">Pulihkan Data Terhapus</LinkOverlay>
                 </Button>
                 <Button>
-                    <LinkOverlay href="/inventory/master/download">Download Excel</LinkOverlay>
+                    <LinkOverlay href="/inventory/download">Download Excel</LinkOverlay>
                 </Button>
                 <Button>
-                    <LinkOverlay href="/inventory/update/dependency">Perbarui Excel Text</LinkOverlay>
+                    <LinkOverlay href="/inventory/update/dependency">Perbarui Teks Excel</LinkOverlay>
                 </Button>
             </ButtonGroup>
         </Sidebar>

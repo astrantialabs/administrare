@@ -108,7 +108,7 @@ export class InventoryController {
     @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
-    @Get("master/download")
+    @Get("download")
     @Render("inventory/master/download/main")
     @UseInterceptors(ParamsInterceptor)
     public inventoryMasterDownload(): {} {
@@ -118,7 +118,7 @@ export class InventoryController {
     @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
     @UseGuards(AuthGuard("jwt"))
     @UseFilters(ViewAuthFilter)
-    @Get("master/recover")
+    @Get("recover")
     @Render("inventory/master/recover/main")
     @UseInterceptors(ParamsInterceptor)
     public inventoryMasterRecover(): {} {

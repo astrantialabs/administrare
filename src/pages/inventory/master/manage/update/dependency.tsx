@@ -27,11 +27,9 @@ import { FormikValidatorBase, IsNotEmpty } from "formik-class-validator";
 import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps } from "formik";
 
 import Sidebar from "@/components/Sidebar";
-import { axiosInstance, pythonAxiosInstance } from "@/shared/utils/axiosInstance";
-import { MasterKategori } from "@/server/models/inventories/master/schema/master-inventory.schema";
+import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { buildServerSideProps } from "@/client/ssr/buildServerSideProps";
 import { fetch } from "@/shared/utils/fetch";
-import axios from "axios";
 
 export interface InventoryMasterUpdateDependencyParameter {
     semester: number;
