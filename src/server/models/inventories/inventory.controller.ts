@@ -115,6 +115,16 @@ export class InventoryController {
         return {};
     }
 
+    @Permission(PermissionLevel.ADMINISTRATOR, PermissionLevel.SUPERADMINISTRATOR)
+    @UseGuards(AuthGuard("jwt"))
+    @UseFilters(ViewAuthFilter)
+    @Get("master/recover")
+    @Render("inventory/master/recover/main")
+    @UseInterceptors(ParamsInterceptor)
+    public inventoryMasterRecover(): {} {
+        return {};
+    }
+
     /* -------------------------------------------------------------------------- */
     /*                              INVENTORY REQUEST                             */
     /* -------------------------------------------------------------------------- */

@@ -45,6 +45,7 @@ interface PayloadTest {
         item_id: string;
         isKategori: boolean;
         isWhiteSpace: boolean;
+        isRecoverable: boolean;
     };
     id: number;
     kategori: string;
@@ -61,56 +62,85 @@ interface PayloadTest {
     mutasi_barang_masuk_jumlah_satuan_rp: string | number;
     mutasi_barang_keluar_jumlah_satuan_rp: string | number;
     saldo_akhir_jumlah_satuan_rp: string | number;
-    isWhiteSpace: boolean;
 }
 
-const createArr = (n: number, tableData: any): PayloadTest[] => {
+const createArr = (n: number, tableData: any): any[] => {
     const data: any[] = [];
     for (let i = 0; i < n; i += 1) {
         tableData.map((item: any, index: any) => {
             data.push({
                 actions: {
-                    category_id: item.actions.category_id,
-                    item_id: item.actions.item_id,
-                    isKategori: item.actions.isKategori,
-                    isWhiteSpace: item.actions.isWhiteSpace,
+                    category_id: item.id,
+                    item_id: "",
+                    isKategori: true,
+                    isWhiteSpace: false,
+                    isRecoverable: item.active,
                 },
                 id: item.id,
                 kategori: item.kategori,
-                nama: item.nama,
-                satuan: item.satuan,
-                saldo_jumlah_satuan: item.saldo_jumlah_satuan,
-                mutasi_barang_masuk_jumlah_satuan: item.mutasi_barang_masuk_jumlah_satuan,
-                mutasi_barang_keluar_jumlah_satuan: item.mutasi_barang_keluar_jumlah_satuan,
-                saldo_akhir_jumlah_satuan: item.saldo_akhir_jumlah_satuan,
-                jumlah_permintaan: item.jumlah_permintaan,
-                harga_satuan: item.harga_satuan,
-                keterangan: item.keterangan,
-                saldo_jumlah_satuan_rp: item.saldo_jumlah_satuan_rp,
-                mutasi_barang_masuk_jumlah_satuan_rp: item.mutasi_barang_masuk_jumlah_satuan_rp,
-                mutasi_barang_keluar_jumlah_satuan_rp: item.mutasi_barang_keluar_jumlah_satuan_rp,
-                saldo_akhir_jumlah_satuan_rp: item.saldo_akhir_jumlah_satuan_rp,
+                nama: item.kategori,
+                satuan: "",
+                saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_jumlah_satuan: "",
+                mutasi_barang_keluar_jumlah_satuan: "",
+                saldo_akhir_jumlah_satuan: "",
+                jumlah_permintaan: "",
+                harga_satuan: "",
+                keterangan: "",
+                saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_jumlah_satuan_rp: "",
+                mutasi_barang_keluar_jumlah_satuan_rp: "",
+                saldo_akhir_jumlah_satuan_rp: "",
             });
+
+            if (typeof item.barang != "undefined" && item.barang != null && item.barang.length != null && item.barang.length > 0) {
+                item.barang.forEach((barangItem: any, index: any) => {
+                    data.push({
+                        actions: {
+                            category_id: item.id,
+                            item_id: barangItem.id,
+                            isKategori: false,
+                            isWhiteSpace: false,
+                            isRecoverable: barangItem.active,
+                        },
+                        id: barangItem.id,
+                        kategori: barangItem.nama,
+                        nama: barangItem.nama,
+                        satuan: barangItem.satuan,
+                        saldo_jumlah_satuan: barangItem.saldo_jumlah_satuan,
+                        mutasi_barang_masuk_jumlah_satuan: barangItem.mutasi_barang_masuk_jumlah_satuan,
+                        mutasi_barang_keluar_jumlah_satuan: barangItem.mutasi_barang_keluar_jumlah_satuan,
+                        saldo_akhir_jumlah_satuan: barangItem.saldo_akhir_jumlah_satuan,
+                        jumlah_permintaan: barangItem.jumlah_permintaan,
+                        harga_satuan: barangItem.harga_satuan,
+                        keterangan: barangItem.keterangan,
+                        saldo_jumlah_satuan_rp: "-",
+                        mutasi_barang_masuk_jumlah_satuan_rp: "-",
+                        mutasi_barang_keluar_jumlah_satuan_rp: "-",
+                        saldo_akhir_jumlah_satuan_rp: "-",
+                    });
+                });
+            }
         });
     }
     return data;
 };
 
-const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, categories_roman, total }) => {
+const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, categories_roman, total }) => {
     const { onOpen } = useDisclosure();
     const toast = useToast();
 
     const [loading, setLoading] = useState(false);
 
-    const deleteKategori = (type: any, kategoriId: any, itemId?: any) => {
+    const recoverKategoriBarang = (type: any, kategoriId: any, itemId?: any) => {
         if (type === "kategori") {
             setLoading(true);
             axiosInstance
-                .delete(`/__api/data/inventory/master/kategori/${kategoriId}`, { withCredentials: true })
+                .put(`/__api/data/inventory/master/kategori/${kategoriId}/recover`, { withCredentials: true })
                 .then((response) => {
                     if (response.data.success === true) {
                         toast({
-                            title: "Kategori berhasil dihapus!",
+                            title: "Kategori berhasil direcover!",
                             description: response.data.message,
                             status: "success",
                             position: "bottom-right",
@@ -130,7 +160,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     if (error.response) {
                         if (error.response.data.success === false) {
                             toast({
-                                title: "Kategori gagal dihapus!",
+                                title: "Kategori gagal direcover!",
                                 description: error.response.data.message,
                                 status: "error",
                                 position: "bottom-right",
@@ -140,8 +170,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                         }
                     } else {
                         toast({
-                            title: "Kategori gagal dihapus!",
-                            description: "Kategori baru gagal dihapus dari database.",
+                            title: "Kategori gagal direcover!",
+                            description: "Kategori baru gagal direcover dari database.",
                             status: "error",
                             position: "bottom-right",
                             duration: 5000,
@@ -160,13 +190,13 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
             setLoading(true);
 
             axiosInstance
-                .delete(`/__api/data/inventory/master/kategori/${kategoriId}/barang/${itemId}`, {
+                .put(`/__api/data/inventory/master/kategori/${kategoriId}/barang/${itemId}/recover`, {
                     withCredentials: true,
                 })
                 .then((response) => {
                     if (response.data.success === true) {
                         toast({
-                            title: "Barang berhasil dihapus!",
+                            title: "Barang berhasil direcover!",
                             description: response.data.message,
                             status: "success",
                             position: "bottom-right",
@@ -186,7 +216,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     if (error.response) {
                         if (error.response.data.success === false) {
                             toast({
-                                title: "Barang gagal dihapus!",
+                                title: "Barang gagal direcover!",
                                 description: error.response.data.message,
                                 status: "error",
                                 position: "bottom-right",
@@ -227,83 +257,32 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     }
 
                     if (value.isKategori === true) {
-                        return (
-                            <Popover>
-                                <PopoverTrigger>
-                                    <Button size="sm" zIndex={1}>
-                                        Actions
-                                    </Button>
-                                </PopoverTrigger>
-                                <Portal>
-                                    <PopoverContent>
-                                        <PopoverArrow />
-                                        <PopoverCloseButton />
-                                        <PopoverBody>
-                                            <Button mx={2} colorScheme="teal" onClick={onOpen}>
-                                                <LinkOverlay href={`/inventory/update/kategori/${value.category_id}`}>Update</LinkOverlay>
-                                            </Button>
-
-                                            <Button
-                                                mx={2}
-                                                colorScheme="red"
-                                                isLoading={loading}
-                                                disabled={loading}
-                                                onClick={() => deleteKategori("kategori", value.category_id, value.item_id)}
-                                            >
-                                                Delete
-                                            </Button>
-                                        </PopoverBody>
-                                    </PopoverContent>
-                                </Portal>
-                            </Popover>
-                        );
+                        if (value.isRecoverable === true) {
+                            return <span></span>;
+                        } else {
+                            return (
+                                <Button size="sm" zIndex={1} onClick={() => recoverKategoriBarang("kategori", value.category_id, value.item_id)}>
+                                    Recover
+                                </Button>
+                            );
+                        }
                     } else {
-                        return (
-                            <>
-                                <Popover>
-                                    <PopoverTrigger>
-                                        <Button size="sm" zIndex={1}>
-                                            Actions
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <Portal>
-                                        <PopoverContent>
-                                            <PopoverArrow />
-                                            <PopoverCloseButton />
-                                            <PopoverBody>
-                                                <Button mx={2} colorScheme="teal">
-                                                    <LinkOverlay href={`/inventory/update/kategori/${value.category_id}/barang/${value.item_id}`}>
-                                                        Update
-                                                    </LinkOverlay>
-                                                </Button>
-                                                <Button
-                                                    mx={2}
-                                                    colorScheme="red"
-                                                    isLoading={loading}
-                                                    disabled={loading}
-                                                    onClick={() => deleteKategori("barang", value.category_id, value.item_id)}
-                                                >
-                                                    Delete
-                                                </Button>
-                                            </PopoverBody>
-                                        </PopoverContent>
-                                    </Portal>
-                                </Popover>
-                            </>
-                        );
+                        if (value.isRecoverable === true) {
+                            return <span></span>;
+                        } else {
+                            return (
+                                <Button size="sm" zIndex={1} onClick={() => recoverKategoriBarang("barang", value.category_id, value.item_id)}>
+                                    Recover
+                                </Button>
+                            );
+                        }
                     }
                 },
             },
             {
                 Header: "No",
                 accessor: "id",
-                Footer: <strong>TOTAL</strong>,
-                Cell: ({ value }: any) => {
-                    if (categories.filter((item: any) => item.roman === value)) {
-                        return <strong>{value}</strong>;
-                    }
-                    return value;
-                },
+                Footer: "",
             },
             {
                 Header: "Uraian Barang",
@@ -333,7 +312,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_jumlah_satuan_rp",
-                        Footer: <strong>{total.saldo}</strong>,
+                        Footer: "",
                     },
                 ],
             },
@@ -355,7 +334,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_masuk_jumlah_satuan_rp",
-                        Footer: <strong>{total.mutasi_barang_masuk}</strong>,
+                        Footer: "",
                     },
                 ],
             },
@@ -377,7 +356,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_keluar_jumlah_satuan_rp",
-                        Footer: <strong>{total.mutasi_barang_keluar}</strong>,
+                        Footer: "",
                     },
                 ],
             },
@@ -399,7 +378,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_akhir_jumlah_satuan_rp",
-                        Footer: <strong>{total.saldo_akhir}</strong>,
+                        Footer: "",
                     },
                 ],
             },
@@ -422,15 +401,6 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
     });
     return (
         <Sidebar type="inventory">
-            <ButtonGroup marginBottom={8}>
-                <Button>
-                    <LinkOverlay href="/inventory/create/kategori">Create Kategori</LinkOverlay>
-                </Button>
-                <Button>
-                    <LinkOverlay href="/inventory/create/barang">Create Barang</LinkOverlay>
-                </Button>
-            </ButtonGroup>
-
             <Table<PayloadTest>
                 getTableProps={getTableProps}
                 getTableBodyProps={getTableBodyProps}
@@ -439,24 +409,12 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                 rows={rows}
                 prepareRow={prepareRow}
             />
-
-            <ButtonGroup marginTop={8}>
-                <Button>
-                    <LinkOverlay href="/inventory/master/recover">Recover Data Terhapus</LinkOverlay>
-                </Button>
-                <Button>
-                    <LinkOverlay href="/inventory/master/download">Download Excel</LinkOverlay>
-                </Button>
-                <Button>
-                    <LinkOverlay href="/inventory/update/dependency">Update Excel Text</LinkOverlay>
-                </Button>
-            </ButtonGroup>
         </Sidebar>
     );
 };
 
 export const getServerSideProps = buildServerSideProps<PageProps>(async () => {
-    const tableData = await fetch("/__api/data/inventory/master/table/all");
+    const tableData = await fetch("/__api/data/inventory/master/table/recover");
     const categories = await fetch("/__api/data/inventory/master/table/kategori/all");
     const categories_roman = await fetch("/__api/data/inventory/master/table/kategori/all");
     const total = await fetch("/__api/data/inventory/master/total");
@@ -464,4 +422,4 @@ export const getServerSideProps = buildServerSideProps<PageProps>(async () => {
     return { tableData, categories, categories_roman, total: total };
 });
 
-export default InventoryManageIndex;
+export default InventoryRecoverIndex;
