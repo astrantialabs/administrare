@@ -79,7 +79,7 @@ const InventoryRequestUserMain: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
-            <Heading>Inventory Request</Heading>
+            <Heading> Inventaris: Permintaan</Heading>
             {userQuery.isLoading ? (
                 <>
                     <Text fontSize="xs">Loading user data..</Text>
@@ -93,7 +93,7 @@ const InventoryRequestUserMain: NextPage = () => {
                             {userQuery.data.permissionLevel === "ADMINISTRATOR" || userQuery.data.permissionLevel === "SUPERADMINISTRATOR" ? (
                                 <>
                                     <Button marginBottom={8}>
-                                        <LinkOverlay href="/inventory/request/manage">Management</LinkOverlay>
+                                        <LinkOverlay href="/inventory/request/manage">Manajemen</LinkOverlay>
                                     </Button>
                                 </>
                             ) : (
@@ -156,7 +156,7 @@ const InventoryRequestUserMain: NextPage = () => {
                     <VStack>
                         <Menu>
                             <MenuButton as={Button} width="150px">
-                                Filters
+                                Filter Data
                             </MenuButton>
                             <MenuList>
                                 <MenuItem onClick={() => dispatch(setStatus(3))}>Semua</MenuItem>
@@ -166,7 +166,7 @@ const InventoryRequestUserMain: NextPage = () => {
                             </MenuList>
                         </Menu>
                         <Button width="150px">
-                            <Link href="/inventory/request/create/barang">Create Barang</Link>
+                            <Link href="/inventory/request/create/barang">Bikin Barang</Link>
                         </Button>
                     </VStack>
                 </Stack>

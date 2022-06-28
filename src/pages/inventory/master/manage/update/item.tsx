@@ -113,7 +113,7 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                     .then((response) => {
                         if (response.data.success === true) {
                             toast({
-                                title: "Barang berhasil diupdate!",
+                                title: "Barang berhasil diperbarui!",
                                 description: response.data.message,
                                 status: "success",
                                 position: "bottom-right",
@@ -129,7 +129,7 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                         if (error.response) {
                             if (error.response.data.success === false) {
                                 toast({
-                                    title: "Barang gagal diupdate!",
+                                    title: "Barang gagal diperbarui!",
                                     description: error.response.data.message,
                                     status: "error",
                                     position: "bottom-right",
@@ -139,8 +139,8 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                             }
                         } else {
                             toast({
-                                title: "Barang gagal diupdate!",
-                                description: "Barang baru gagal diupdate ke dalam database.",
+                                title: "Barang gagal diperbarui!",
+                                description: "Barang baru gagal diperbarui ke dalam database.",
                                 status: "error",
                                 position: "bottom-right",
                                 duration: 5000,
@@ -158,7 +158,7 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
     return (
         <Sidebar type="inventory">
             <Stack spacing={8} marginY={8} marginX={8}>
-                <Heading fontSize="xl">Barang</Heading>
+                <Heading fontSize="xl">Inventaris: Perbarui Barang</Heading>
                 <Formik
                     initialValues={new InventoryMasterManageUpdateItemValidationModel(true, payload)}
                     validate={InventoryMasterManageUpdateItemValidationModel.createValidator()}

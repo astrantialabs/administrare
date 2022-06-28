@@ -90,7 +90,7 @@ const InventoryDemandMain: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
-            <Heading>Inventory Demand</Heading>
+            <Heading>Inventaris: Pengajuan</Heading>
             {userQuery.isLoading ? (
                 <>
                     <Text fontSize="xs">Loading user data..</Text>
@@ -104,7 +104,7 @@ const InventoryDemandMain: NextPage = () => {
                             {userQuery.data.permissionLevel === "ADMINISTRATOR" || userQuery.data.permissionLevel === "SUPERADMINISTRATOR" ? (
                                 <>
                                     <Button marginBottom={8}>
-                                        <LinkOverlay href="/inventory/demand/manage">Management</LinkOverlay>
+                                        <LinkOverlay href="/inventory/demand/manage">Manajemen</LinkOverlay>
                                     </Button>
                                 </>
                             ) : (
@@ -189,7 +189,7 @@ const InventoryDemandMain: NextPage = () => {
                     <VStack>
                         <Menu>
                             <MenuButton as={Button} width="150px">
-                                Filters
+                                Filter Data
                             </MenuButton>
                             <MenuList>
                                 <MenuItem onClick={() => dispatch(setStatus(3))}>Semua</MenuItem>
@@ -199,10 +199,10 @@ const InventoryDemandMain: NextPage = () => {
                             </MenuList>
                         </Menu>
                         <Button width="150px">
-                            <Link href="/inventory/demand/create/kategori">Create Kategori</Link>
+                            <Link href="/inventory/demand/create/kategori">Bikin Kategori</Link>
                         </Button>
                         <Button width="150px">
-                            <Link href="/inventory/demand/create/barang">Create Barang</Link>
+                            <Link href="/inventory/demand/create/barang">Bikin Barang</Link>
                         </Button>
                     </VStack>
                 </Stack>

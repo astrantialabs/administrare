@@ -233,7 +233,7 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                             {userQuery.data.permissionLevel === "ADMINISTRATOR" || userQuery.data.permissionLevel === "SUPERADMINISTRATOR" ? (
                                 <>
                                     <Button marginBottom={8}>
-                                        <LinkOverlay href="/inventory/manage">Management</LinkOverlay>
+                                        <LinkOverlay href="/inventory/manage">Manajemen</LinkOverlay>
                                     </Button>
                                 </>
                             ) : (

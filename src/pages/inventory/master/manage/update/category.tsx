@@ -78,7 +78,7 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
                     .then((response) => {
                         if (response.data.success === true) {
                             toast({
-                                title: "Kategori berhasil diupdate!",
+                                title: "Kategori berhasil diperbarui!",
                                 description: response.data.message,
                                 status: "success",
                                 position: "bottom-right",
@@ -94,7 +94,7 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
                         if (error.response) {
                             if (error.response.data.success === false) {
                                 toast({
-                                    title: "Kategori gagal diupdate!",
+                                    title: "Kategori gagal diperbarui!",
                                     description: error.response.data.message,
                                     status: "error",
                                     position: "bottom-right",
@@ -104,8 +104,8 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
                             }
                         } else {
                             toast({
-                                title: "Kategori gagal diupdate!",
-                                description: "Kategori baru gagal diupdate ke dalam database.",
+                                title: "Kategori gagal diperbarui!",
+                                description: "Kategori baru gagal diperbarui ke dalam database.",
                                 status: "error",
                                 position: "bottom-right",
                                 duration: 5000,
@@ -123,7 +123,7 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
     return (
         <Sidebar type="inventory">
             <Stack spacing={8} marginY={8} marginX={8}>
-                <Heading fontSize="xl">Update Kategori</Heading>
+                <Heading fontSize="xl">Inventaris: Perbarui Kategori</Heading>
                 <Formik
                     initialValues={new InventoryMasterManageUpdateCategoryValidationModel(true, payload)}
                     validate={InventoryMasterManageUpdateCategoryValidationModel.createValidator()}

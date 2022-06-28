@@ -135,7 +135,7 @@ const InventoryMasterManageCreateItem: NextPage = () => {
     return (
         <Sidebar type="inventory">
             <Stack spacing={8} marginY={8} marginX={8}>
-                <Heading fontSize="xl">Barang</Heading>
+                <Heading fontSize="xl">Inventaris: Tambah Barang</Heading>
                 <Formik
                     initialValues={new InventoryMasterManageCreateItemValidationModel()}
                     validate={InventoryMasterManageCreateItemValidationModel.createValidator()}

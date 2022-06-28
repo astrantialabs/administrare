@@ -140,7 +140,7 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                 .then((response) => {
                     if (response.data.success === true) {
                         toast({
-                            title: "Kategori berhasil direcover!",
+                            title: "Kategori berhasil dipulihkan!",
                             description: response.data.message,
                             status: "success",
                             position: "bottom-right",
@@ -160,7 +160,7 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                     if (error.response) {
                         if (error.response.data.success === false) {
                             toast({
-                                title: "Kategori gagal direcover!",
+                                title: "Kategori gagal dipulihkan!",
                                 description: error.response.data.message,
                                 status: "error",
                                 position: "bottom-right",
@@ -170,8 +170,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                         }
                     } else {
                         toast({
-                            title: "Kategori gagal direcover!",
-                            description: "Kategori baru gagal direcover dari database.",
+                            title: "Kategori gagal dipulihkan!",
+                            description: "Kategori baru gagal dipulihkan dari database.",
                             status: "error",
                             position: "bottom-right",
                             duration: 5000,
@@ -196,7 +196,7 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                 .then((response) => {
                     if (response.data.success === true) {
                         toast({
-                            title: "Barang berhasil direcover!",
+                            title: "Barang berhasil dipulihkan!",
                             description: response.data.message,
                             status: "success",
                             position: "bottom-right",
@@ -216,7 +216,7 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                     if (error.response) {
                         if (error.response.data.success === false) {
                             toast({
-                                title: "Barang gagal direcover!",
+                                title: "Barang gagal dipulihkan!",
                                 description: error.response.data.message,
                                 status: "error",
                                 position: "bottom-right",
@@ -226,8 +226,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                         }
                     } else {
                         toast({
-                            title: "Barang gagal dihapus!",
-                            description: "Barang baru gagal dihapus dari database.",
+                            title: "Barang gagal dipulihkan!",
+                            description: "Barang baru gagal dipulihkan dari database.",
                             status: "error",
                             position: "bottom-right",
                             duration: 5000,
@@ -262,7 +262,7 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                         } else {
                             return (
                                 <Button size="sm" zIndex={1} onClick={() => recoverKategoriBarang("kategori", value.category_id, value.item_id)}>
-                                    Recover
+                                    Pulihkan
                                 </Button>
                             );
                         }
@@ -272,7 +272,7 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                         } else {
                             return (
                                 <Button size="sm" zIndex={1} onClick={() => recoverKategoriBarang("barang", value.category_id, value.item_id)}>
-                                    Recover
+                                    Pulihkan
                                 </Button>
                             );
                         }

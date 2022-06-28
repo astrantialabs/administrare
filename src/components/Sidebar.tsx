@@ -120,21 +120,21 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
             </Flex>
             <NavigationItem link={`/`} icon={FiHome}>
-                Home
+                Balik ke Utama
             </NavigationItem>
             <Divider mt={4} mb={4} bg={`gray.200`} />
 
             {SwitchType("inventory") && (
                 <>
                     <NavigationItem link={`/inventory`} icon={FiPieChart}>
-                        Inventory
+                        Inventaris
                     </NavigationItem>
 
                     <NavigationItem link={`/inventory/request`} icon={FiPieChart}>
-                        Inventory Request
+                        Inventaris: Permintaan
                     </NavigationItem>
                     <NavigationItem link={`/inventory/demand`} icon={FiPieChart}>
-                        Inventory Demand
+                        Inventaris: Pengajuan
                     </NavigationItem>
                 </>
             )}

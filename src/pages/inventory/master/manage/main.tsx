@@ -424,10 +424,10 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
         <Sidebar type="inventory">
             <ButtonGroup marginBottom={8}>
                 <Button>
-                    <LinkOverlay href="/inventory/create/kategori">Create Kategori</LinkOverlay>
+                    <LinkOverlay href="/inventory/create/kategori">Bikin Kategori</LinkOverlay>
                 </Button>
                 <Button>
-                    <LinkOverlay href="/inventory/create/barang">Create Barang</LinkOverlay>
+                    <LinkOverlay href="/inventory/create/barang">Bikin Barang</LinkOverlay>
                 </Button>
             </ButtonGroup>
 
@@ -442,13 +442,13 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
 
             <ButtonGroup marginTop={8}>
                 <Button>
-                    <LinkOverlay href="/inventory/master/recover">Recover Data Terhapus</LinkOverlay>
+                    <LinkOverlay href="/inventory/master/recover">Pulihkan Data Terhapus</LinkOverlay>
                 </Button>
                 <Button>
                     <LinkOverlay href="/inventory/master/download">Download Excel</LinkOverlay>
                 </Button>
                 <Button>
-                    <LinkOverlay href="/inventory/update/dependency">Update Excel Text</LinkOverlay>
+                    <LinkOverlay href="/inventory/update/dependency">Perbarui Excel Text</LinkOverlay>
                 </Button>
             </ButtonGroup>
         </Sidebar>

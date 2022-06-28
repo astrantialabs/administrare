@@ -213,7 +213,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                 <meta http-equiv="Expires" content="-1" />
             </Head>
             <Sidebar type="inventory">
-                <Heading>Inventory Request</Heading>
+                <Heading>Inventaris: Permintaan Bikin Barang</Heading>
                 <Stack spacing={8} marginY={8} marginX={8}>
                     <Heading fontSize="xl">Barang</Heading>
                     <Formik

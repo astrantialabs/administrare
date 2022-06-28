@@ -138,7 +138,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                     .then((response) => {
                         if (response.data.success) {
                             toast({
-                                title: "Excel text berhasil diupdate!",
+                                title: "Excel text berhasil diperbarui!",
                                 status: "success",
                                 position: "bottom-right",
                                 duration: 5000,
@@ -149,7 +149,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                             resolve();
                         } else if (!response.data.success) {
                             toast({
-                                title: "Excel text gagal diupdate!",
+                                title: "Excel text gagal diperbarui!",
                                 description: response.data.message,
                                 status: "error",
                                 position: "bottom-right",
@@ -164,7 +164,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                     .catch((error) => {
                         console.log(error);
                         toast({
-                            title: "Excel text gagal diupdate!",
+                            title: "Excel text gagal diperbarui!",
                             status: "error",
                             position: "bottom-right",
                             duration: 5000,
@@ -181,7 +181,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
     return (
         <Sidebar type="inventory">
             <Stack spacing={8} marginY={8} marginX={8}>
-                <Heading fontSize="xl">Update Excel Text</Heading>
+                <Heading fontSize="xl">Inventaris: Perbarui Excel Text</Heading>
                 <Formik
                     initialValues={new InventoryMasterUpdateDependencyValidationModel(true, payload)}
                     validate={InventoryMasterUpdateDependencyValidationModel.createValidator()}

@@ -42,7 +42,7 @@ const InventoryDemandDownloadMain: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
-            <Heading>Inventory Demand</Heading>
+            <Heading>Inventaris: Pengajuan</Heading>
             <Flex flexDirection={[`column`, `row`, `row`]}>
                 <Stack spacing={8} marginY={8} marginX={8}>
                     {downloadDemandQuery.isLoading ? (

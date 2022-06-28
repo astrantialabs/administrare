@@ -71,7 +71,7 @@ const InventoryRequestManageMain: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
-            <Heading>Inventory Request</Heading>
+            <Heading>Inventaris: Permintaan</Heading>
             <Flex flexDirection={[`column`, `row`, `row`]}>
                 <Stack spacing={8} marginY={8} marginX={8}>
                     <Heading fontSize="xl">Barang</Heading>
@@ -142,7 +142,7 @@ const InventoryRequestManageMain: NextPage = () => {
                                                                         type="submit"
                                                                         disabled={props.isSubmitting}
                                                                     >
-                                                                        Accept
+                                                                        Terima
                                                                     </Button>
                                                                 </Form>
                                                             )}
@@ -173,7 +173,7 @@ const InventoryRequestManageMain: NextPage = () => {
                                                                         type="submit"
                                                                         disabled={props.isSubmitting}
                                                                     >
-                                                                        Reject
+                                                                        Tolak
                                                                     </Button>
                                                                 </Form>
                                                             )}
@@ -195,7 +195,7 @@ const InventoryRequestManageMain: NextPage = () => {
                     <VStack>
                         <Menu>
                             <MenuButton as={Button} width="150px">
-                                Filters
+                                Filter Data
                             </MenuButton>
                             <MenuList>
                                 <MenuItem onClick={() => dispatch(setStatus(3))}>Semua</MenuItem>
@@ -205,7 +205,7 @@ const InventoryRequestManageMain: NextPage = () => {
                             </MenuList>
                         </Menu>
                         <Button width="150px">
-                            <Link href="/inventory/request/create/barang">Create Barang</Link>
+                            <Link href="/inventory/request/create/barang">Bikin Barang</Link>
                         </Button>
                         <Button width="150px" marginTop={8}>
                             <LinkOverlay href="/inventory/request/download">Download Excel</LinkOverlay>

@@ -115,7 +115,7 @@ const InventoryDemandManageCreateItem: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
-            <Heading>Inventory Demand</Heading>
+            <Heading>Inventaris: Pengajuan Bikin Barang</Heading>
             <Stack spacing={8} marginY={8} marginX={8}>
                 <Heading fontSize="xl">Barang</Heading>
                 <Formik
