@@ -24,7 +24,8 @@
 import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 import { JumlahData, RequestBarangExtended, RequestCreateBarang } from "@/shared/typings/types/inventory";
-import { currentDate, readJSON, responseFormat, slugifyDate } from "@/shared/utils/util";
+import { currentDate, responseFormat, slugifyDate } from "@/shared/utils/util";
+import { readJSON } from "@/shared/utils/json";
 import { Injectable, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
@@ -216,7 +217,7 @@ export class RequestInventoryService {
                                         kategori_id: item.kategori_id,
                                         barang_id: item.barang_id,
                                         username: item.username,
-                                        total: item.total,
+                                        total: parseInt(item.total as unknown as string),
                                         deskripsi: item.deskripsi,
                                         created_at: currentDate(),
                                         responded_at: null,

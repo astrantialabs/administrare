@@ -104,7 +104,7 @@ const InventoryMasterManageCreateCategory: NextPage = () => {
     return (
         <Sidebar type="inventory">
             <Stack spacing={8} marginY={8} marginX={8}>
-                <Heading fontSize="xl">Inventaris: Tambah Kategori</Heading>
+                <Heading fontSize="xl">Inventaris: Buat Kategori</Heading>
                 <Formik
                     initialValues={new InventoryMasterManageCreateCategoryValidationModel()}
                     validate={InventoryMasterManageCreateCategoryValidationModel.createValidator()}

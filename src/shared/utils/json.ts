@@ -16,8 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function slugifyDate(raw_date: any) {
-    const slugified_date = raw_date.replace(" ", "-").replace(":", "-").replace(":", "-");
+import { readFileSync } from "fs";
 
-    return slugified_date;
+export function readJSON(path: string) {
+    const json_file = readFileSync(path, { encoding: "utf8" });
+
+    return JSON.parse(json_file);
 }

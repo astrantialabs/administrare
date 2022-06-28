@@ -51,7 +51,7 @@ const Home: NextPage = () => {
                         <>
                             <Stack direction={{ base: "column", md: "row" }} spacing={4}>
                                 {userQuery.isLoading ? (
-                                    <Text>Loading user data...</Text>
+                                    <Text>Loading data user...</Text>
                                 ) : (
                                     <>
                                         {userQuery.isError ? (
@@ -68,7 +68,7 @@ const Home: NextPage = () => {
                                         ) : (
                                             <>
                                                 <Button rounded={"md"}>
-                                                    <LinkOverlay href="/inventory">Inventory</LinkOverlay>
+                                                    <LinkOverlay href="/inventory">Inventaris</LinkOverlay>
                                                 </Button>
                                                 <Button
                                                     rounded="md"

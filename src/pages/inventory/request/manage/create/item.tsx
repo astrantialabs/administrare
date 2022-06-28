@@ -19,18 +19,14 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import { Stack, Heading, FormControl, FormLabel, Input, Box, List, ListItem, FormErrorMessage, Button, Text, useToast } from "@chakra-ui/react";
-import { FormikValidatorBase, IsNotEmpty, IsEmpty, IsOptional } from "formik-class-validator";
-import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps, useFormikContext, useField, FieldHookConfig, FormikContext } from "formik";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+import { FormikValidatorBase, IsNotEmpty, IsOptional } from "formik-class-validator";
+import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps } from "formik";
 import Downshift from "downshift";
 
 import Sidebar from "@/components/Sidebar";
-import { InputAutoComplete } from "@/components/InputAutoComplete";
 import { axiosInstance } from "@/shared/utils/axiosInstance";
-import { useEffect, useState, useContext, createContext } from "react";
-import { slugify } from "@/shared/utils/util";
-import { useMutation, useQuery, UseQueryResult } from "react-query";
-import axios from "axios";
+import { useState } from "react";
+import { useQuery, UseQueryResult } from "react-query";
 import { matchSorter } from "match-sorter";
 
 export interface InventoryDemandManageItemParameter {
@@ -90,7 +86,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                 {({ getInputProps, getItemProps, getMenuProps, getLabelProps, getToggleButtonProps, inputValue, isOpen, getRootProps }: any) => (
                     <FormControl mb={4}>
                         <FormLabel {...getLabelProps()} fontWeight={`medium`} color={`blackAlpha.700`}>
-                            Search
+                            Cari
                         </FormLabel>
                         <Stack
                             direction="row"
@@ -213,7 +209,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                 <meta http-equiv="Expires" content="-1" />
             </Head>
             <Sidebar type="inventory">
-                <Heading>Inventaris: Permintaan Bikin Barang</Heading>
+                <Heading>Inventaris: Permintaan Barang</Heading>
                 <Stack spacing={8} marginY={8} marginX={8}>
                     <Heading fontSize="xl">Barang</Heading>
                     <Formik
@@ -242,7 +238,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                                     {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                         <FormControl mb={4}>
                                             <FormLabel htmlFor="deskripsi" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                                Hasil Search
+                                                Hasil Pencarian
                                             </FormLabel>
                                             <Input {...field} disabled={props.isSubmitting} id="search" name="search" value={selection} />
                                             <FormErrorMessage>{form.errors.deskripsi}</FormErrorMessage>

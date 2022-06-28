@@ -26,7 +26,7 @@ import { DownloadOptionData } from "@/shared/typings/interfaces/inventory.interf
 import Sidebar from "@/components/Sidebar";
 import axios from "axios";
 import { BASE_DOMAIN } from "@/shared/typings/constants";
-import { slugifyDate } from "@/shared/utils/slugifyDate";
+import { slugifyDate } from "@/shared/utils/util";
 
 const InventoryRequestDownloadMain: NextPage = () => {
     const router = useRouter();

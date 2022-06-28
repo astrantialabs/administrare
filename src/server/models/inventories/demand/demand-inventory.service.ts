@@ -24,7 +24,8 @@
 import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
 import { ResponseObject } from "@/shared/typings/interfaces/inventory.interface";
 import { DemandBarangWithCategoryName, DemandCreateBarang, DemandCreateKategori } from "@/shared/typings/types/inventory";
-import { currentDate, readJSON, responseFormat, slugifyDate } from "@/shared/utils/util";
+import { currentDate, responseFormat, slugifyDate } from "@/shared/utils/util";
+import { readJSON } from "@/shared/utils/json";
 import { Injectable, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";

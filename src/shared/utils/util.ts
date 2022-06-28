@@ -17,14 +17,13 @@
  */
 
 import { ResponseFormat } from "@/server/common/interceptors/response-format.interceptor";
-import { readFileSync } from "fs";
 
 /**
  * @description Roman number conversion.
  * @param {Number} number - The number to convert.
  * @returns {Promise<String>} The roman number.
  */
-export async function romanizeNumber(number: number): Promise<string> {
+export function romanizeNumber(number: number): string {
     let lookup: any = {
             M: 1000,
             CM: 900,
@@ -119,10 +118,4 @@ export function responseFormat<T>(success: boolean, statusCode: number, message:
         message: message,
         result: result,
     };
-}
-
-export function readJSON(path: string) {
-    const json_file = readFileSync(path, { encoding: "utf8" });
-
-    return JSON.parse(json_file);
 }

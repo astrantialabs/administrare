@@ -17,18 +17,15 @@
  */
 
 import { NextPage } from "next";
-import { Form, Formik } from "formik";
 import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer, LinkOverlay } from "@chakra-ui/react";
 import { useQuery, UseQueryResult } from "react-query";
 import dayjs from "dayjs";
-import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup, Link } from "@chakra-ui/react";
+import { Stat, StatLabel, StatNumber, StatGroup, Link } from "@chakra-ui/react";
 
-import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 import { useAppSelector } from "@/client/hooks/useAppSelector";
 import { RootState } from "@/client/redux/store";
 import { setStatus } from "@/client/redux/features/statusSlice";
-import { useInventoryDemandCategoriesQuery } from "@/client/queries/inventory-demand.query";
 import { InventoryRequestItem, InventoryRequestItems, useInventoryRequestItemsQuery } from "@/client/queries/inventory-request.payload";
 import Sidebar from "@/components/Sidebar";
 import axios from "axios";
@@ -166,7 +163,7 @@ const InventoryRequestUserMain: NextPage = () => {
                             </MenuList>
                         </Menu>
                         <Button width="150px">
-                            <Link href="/inventory/request/create/barang">Bikin Barang</Link>
+                            <Link href="/inventory/request/create/barang">Bikin Permintaan</Link>
                         </Button>
                     </VStack>
                 </Stack>

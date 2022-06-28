@@ -108,7 +108,7 @@ const InventoryDemandManageCreateCategory: NextPage = () => {
 
     return (
         <Sidebar type="inventory">
-            <Heading>Inventaris: Pengajuan Bikin Kategori</Heading>
+            <Heading>Inventaris: Pengajuan Kategori Baru</Heading>
             <Stack spacing={8} marginY={8} marginX={8}>
                 <Heading fontSize="xl">Kategori</Heading>
                 <Formik

@@ -17,11 +17,10 @@
  */
 
 import { NextPage } from "next";
-import { Form, Formik } from "formik";
-import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Center, Spacer, LinkOverlay } from "@chakra-ui/react";
+import { Flex, Box, Heading, Text, Button, Stack, Menu, MenuButton, MenuItem, MenuList, VStack, Spacer, LinkOverlay } from "@chakra-ui/react";
 import { useQuery, UseQueryResult } from "react-query";
 import dayjs from "dayjs";
-import { Stat, StatLabel, StatNumber, StatHelpText, StatGroup, Link } from "@chakra-ui/react";
+import { Stat, StatLabel, StatNumber, StatGroup, Link } from "@chakra-ui/react";
 
 import {
     InventoryDemandCategories,
@@ -31,7 +30,6 @@ import {
     useInventoryDemandCategoriesQuery,
     useInventoryDemandItemsQuery,
 } from "@/client/queries/inventory-demand.query";
-import { axiosInstance } from "@/shared/utils/axiosInstance";
 import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 import { useAppSelector } from "@/client/hooks/useAppSelector";
 import { RootState } from "@/client/redux/store";

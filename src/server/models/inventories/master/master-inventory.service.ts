@@ -33,8 +33,9 @@ import {
     MasterSubTotal,
     MasterTotal,
 } from "@/shared/typings/types/inventory";
-import { calculateSaldoAkhirJumlahSatuan, currentDate, readJSON, responseFormat, romanizeNumber, slugifyDate } from "@/shared/utils/util";
-import { Injectable, Logger, StreamableFile } from "@nestjs/common";
+import { calculateSaldoAkhirJumlahSatuan, currentDate, responseFormat, romanizeNumber, slugifyDate } from "@/shared/utils/util";
+import { readJSON } from "@/shared/utils/json";
+import { Injectable, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { pythonAxiosInstance } from "@/shared/utils/axiosInstance";
@@ -703,10 +704,10 @@ export class MasterInventoryService {
                                 kategori_id: category_id,
                                 nama: body.nama,
                                 satuan: body.satuan,
-                                saldo_jumlah_satuan: body.saldo_jumlah_satuan,
-                                mutasi_barang_masuk_jumlah_satuan: body.mutasi_barang_masuk_jumlah_satuan,
-                                mutasi_barang_keluar_jumlah_satuan: body.mutasi_barang_keluar_jumlah_satuan,
-                                harga_satuan: body.harga_satuan,
+                                saldo_jumlah_satuan: parseInt(body.saldo_jumlah_satuan as unknown as string),
+                                mutasi_barang_masuk_jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
+                                mutasi_barang_keluar_jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string),
+                                harga_satuan: parseInt(body.harga_satuan as unknown as string),
                                 keterangan: body.keterangan,
                             };
 
@@ -1046,11 +1047,11 @@ export class MasterInventoryService {
         );
         const categories: CategoriesPayload[] = [];
 
-        master_kategori_data.forEach(async (category_object: MasterKategori, index: number) => {
+        master_kategori_data.forEach((category_object: MasterKategori, index: number) => {
             categories.push({
                 id: category_object.id,
                 name: category_object.kategori,
-                roman: await romanizeNumber(index + 1),
+                roman: romanizeNumber(index + 1),
             });
         });
 
@@ -1080,7 +1081,7 @@ export class MasterInventoryService {
 
         const set_sub_totals: Set<MasterSubTotal> = new Set(sub_totals);
 
-        master_category_data.forEach(async (category_object, category_index) => {
+        master_category_data.forEach((category_object, category_index) => {
             const sub_total: MasterSubTotal = Array.from(set_sub_totals).find((sub_total) => sub_total.category_id === category_object.id);
             let item_count: number = 0;
 
@@ -1091,7 +1092,7 @@ export class MasterInventoryService {
                     isKategori: true,
                     isWhiteSpace: false,
                 },
-                id: await romanizeNumber(category_index + 1),
+                id: romanizeNumber(category_index + 1),
                 kategori: category_object.kategori,
                 nama: category_object.kategori,
                 satuan: "",

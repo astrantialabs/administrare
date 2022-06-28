@@ -31,6 +31,7 @@ import { useAppDispatch } from "@/client/hooks/useAppDispatch";
 import { Button, LinkOverlay, Menu, MenuButton, MenuItem, MenuList, useDisclosure, ButtonGroup, useToast } from "@chakra-ui/react";
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody, PopoverArrow, PopoverCloseButton, Portal } from "@chakra-ui/react";
 import { MasterTotal } from "@/shared/typings/types/inventory";
+import { romanizeNumber } from "@/shared/utils/util";
 
 type PageProps = {
     tableData: any;
@@ -68,6 +69,8 @@ const createArr = (n: number, tableData: any): any[] => {
     const data: any[] = [];
     for (let i = 0; i < n; i += 1) {
         tableData.map((item: any, index: any) => {
+            const romanNumber = romanizeNumber(index + 1);
+
             data.push({
                 actions: {
                     category_id: item.id,
@@ -76,7 +79,7 @@ const createArr = (n: number, tableData: any): any[] => {
                     isWhiteSpace: false,
                     isRecoverable: item.active,
                 },
-                id: item.id,
+                id: romanNumber,
                 kategori: item.kategori,
                 nama: item.kategori,
                 satuan: "",
@@ -103,7 +106,7 @@ const createArr = (n: number, tableData: any): any[] => {
                             isWhiteSpace: false,
                             isRecoverable: barangItem.active,
                         },
-                        id: barangItem.id,
+                        id: index + 1,
                         kategori: barangItem.nama,
                         nama: barangItem.nama,
                         satuan: barangItem.satuan,
@@ -121,6 +124,31 @@ const createArr = (n: number, tableData: any): any[] => {
                     });
                 });
             }
+
+            data.push({
+                actions: {
+                    category_id: "",
+                    item_id: "",
+                    isKategori: false,
+                    isWhiteSpace: true,
+                    isRecoverable: false,
+                },
+                id: "",
+                kategori: "",
+                nama: "",
+                satuan: "",
+                saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_jumlah_satuan: "",
+                mutasi_barang_keluar_jumlah_satuan: "",
+                saldo_akhir_jumlah_satuan: "",
+                jumlah_permintaan: "",
+                harga_satuan: "",
+                keterangan: "",
+                saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_jumlah_satuan_rp: "",
+                mutasi_barang_keluar_jumlah_satuan_rp: "",
+                saldo_akhir_jumlah_satuan_rp: "",
+            });
         });
     }
     return data;
@@ -248,7 +276,7 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
     const columns = React.useMemo<Column<PayloadTest>[]>(
         () => [
             {
-                Header: "Actions",
+                Header: "Aksi",
                 accessor: "actions",
                 Footer: "",
                 Cell: ({ value }) => {

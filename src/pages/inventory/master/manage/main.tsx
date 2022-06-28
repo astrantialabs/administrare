@@ -216,7 +216,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
     const columns = React.useMemo<Column<PayloadTest>[]>(
         () => [
             {
-                Header: "Actions",
+                Header: "Aksi",
                 accessor: "actions",
                 Footer: "",
                 Cell: ({ value }) => {
@@ -229,7 +229,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                             <Popover>
                                 <PopoverTrigger>
                                     <Button size="sm" zIndex={1}>
-                                        Actions
+                                        Aksi
                                     </Button>
                                 </PopoverTrigger>
                                 <Portal>
@@ -238,7 +238,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                         <PopoverCloseButton />
                                         <PopoverBody>
                                             <Button mx={2} colorScheme="teal" onClick={onOpen}>
-                                                <LinkOverlay href={`/inventory/update/kategori/${value.category_id}`}>Update</LinkOverlay>
+                                                <LinkOverlay href={`/inventory/update/kategori/${value.category_id}`}>Perbarui</LinkOverlay>
                                             </Button>
 
                                             <Button
@@ -248,7 +248,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                                 disabled={loading}
                                                 onClick={() => deleteKategori("kategori", value.category_id, value.item_id)}
                                             >
-                                                Delete
+                                                Hapus
                                             </Button>
                                         </PopoverBody>
                                     </PopoverContent>
@@ -261,7 +261,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 <Popover>
                                     <PopoverTrigger>
                                         <Button size="sm" zIndex={1}>
-                                            Actions
+                                            Aksi
                                         </Button>
                                     </PopoverTrigger>
                                     <Portal>
@@ -271,7 +271,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                             <PopoverBody>
                                                 <Button mx={2} colorScheme="teal">
                                                     <LinkOverlay href={`/inventory/update/kategori/${value.category_id}/barang/${value.item_id}`}>
-                                                        Update
+                                                        Perbarui
                                                     </LinkOverlay>
                                                 </Button>
                                                 <Button
@@ -281,7 +281,7 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                                     disabled={loading}
                                                     onClick={() => deleteKategori("barang", value.category_id, value.item_id)}
                                                 >
-                                                    Delete
+                                                    Hapus
                                                 </Button>
                                             </PopoverBody>
                                         </PopoverContent>
