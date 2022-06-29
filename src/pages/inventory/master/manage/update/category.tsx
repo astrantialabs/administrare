@@ -34,17 +34,22 @@ import { fetch } from "@/shared/utils/fetch";
 
 export interface InventoryMasterManageUpdateCategoryParameter {
     kategori: string;
+    rekening: string;
 }
 
 export class InventoryMasterManageUpdateCategoryValidationModel extends FormikValidatorBase implements InventoryMasterManageUpdateCategoryParameter {
     @IsNotEmpty({ message: "Kategori tidak boleh kosong!" })
     kategori: string;
 
+    @IsNotEmpty({ message: "Rekening tidak boleh kosong!" })
+    rekening: string;
+
     constructor(isUpdate: boolean, data: InventoryMasterManageUpdateCategoryParameter) {
         super();
 
         if (isUpdate) {
             this.kategori = data.kategori;
+            this.rekening = data.rekening;
         }
     }
 }
@@ -69,6 +74,7 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
 
         const payload: InventoryMasterManageUpdateCategoryParameter = {
             kategori: values.kategori,
+            rekening: values.rekening,
         };
 
         new Promise<void>((resolve) => {
@@ -139,6 +145,17 @@ const InventoryMasterManageUpdateCategory: NextPage<PageProps> = ({ payload, cat
                                         </FormLabel>
                                         <Input {...field} disabled={props.isSubmitting} id="kategori" placeholder="Nama kategori disini.." />
                                         <FormErrorMessage>{form.errors.kategori}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name="rekening">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageUpdateCategoryParameter> }) => (
+                                    <FormControl>
+                                        <FormLabel htmlFor="rekening" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Rekening
+                                        </FormLabel>
+                                        <Input {...field} disabled={props.isSubmitting} id="rekening" placeholder="Nama rekening disini.." />
+                                        <FormErrorMessage>{form.errors.rekening}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>

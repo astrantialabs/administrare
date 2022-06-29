@@ -34,6 +34,7 @@ export interface InventoryDemandManageItemParameter {
     mutasi_barang_keluar_jumlah_satuan: string;
     harga_satuan: string;
     keterangan: string;
+    rekening: string;
 }
 
 export class InventoryMasterManageCreateItemValidationModel extends FormikValidatorBase implements InventoryDemandManageItemParameter {
@@ -59,6 +60,9 @@ export class InventoryMasterManageCreateItemValidationModel extends FormikValida
 
     @IsOptional()
     keterangan: string = "";
+
+    @IsNotEmpty({ message: "Rekening tidak boleh kosong!" })
+    rekening: string;
 }
 
 const InventoryMasterManageCreateItem: NextPage = () => {
@@ -80,6 +84,7 @@ const InventoryMasterManageCreateItem: NextPage = () => {
             mutasi_barang_keluar_jumlah_satuan: values.mutasi_barang_keluar_jumlah_satuan,
             harga_satuan: values.harga_satuan,
             keterangan: values.keterangan,
+            rekening: values.rekening,
         };
 
         new Promise<void>((resolve) => {
@@ -253,6 +258,17 @@ const InventoryMasterManageCreateItem: NextPage = () => {
                                         </FormLabel>
                                         <Input {...field} disabled={props.isSubmitting} id="keterangan" placeholder="Keterangan disini.." />
                                         <FormErrorMessage>{form.errors.keterangan}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name="rekening">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                    <FormControl my={4}>
+                                        <FormLabel htmlFor="rekening" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Rekening
+                                        </FormLabel>
+                                        <Input {...field} disabled={props.isSubmitting} id="rekening" placeholder="Rekening disini.." />
+                                        <FormErrorMessage>{form.errors.rekening}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>

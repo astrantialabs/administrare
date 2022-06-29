@@ -31,11 +31,15 @@ import { axiosInstance } from "@/shared/utils/axiosInstance";
 
 export interface InventoryMasterManageCreateCategoryParameter {
     kategori: string;
+    rekening: string;
 }
 
 export class InventoryMasterManageCreateCategoryValidationModel extends FormikValidatorBase implements InventoryMasterManageCreateCategoryParameter {
     @IsNotEmpty({ message: "Kategori tidak boleh kosong!" })
     kategori: string;
+
+    @IsNotEmpty({ message: "Rekening tidak boleh kosong!" })
+    rekening: string;
 }
 
 const InventoryMasterManageCreateCategory: NextPage = () => {
@@ -49,6 +53,7 @@ const InventoryMasterManageCreateCategory: NextPage = () => {
 
         const payload: InventoryMasterManageCreateCategoryParameter = {
             kategori: values.kategori,
+            rekening: values.rekening,
         };
 
         new Promise<void>((resolve) => {
@@ -120,6 +125,17 @@ const InventoryMasterManageCreateCategory: NextPage = () => {
                                         </FormLabel>
                                         <Input {...field} disabled={props.isSubmitting} id="kategori" placeholder="Nama kategori disini.." />
                                         <FormErrorMessage>{form.errors.kategori}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name="rekening">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterManageCreateCategoryParameter> }) => (
+                                    <FormControl>
+                                        <FormLabel htmlFor="rekening" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Rekening
+                                        </FormLabel>
+                                        <Input {...field} disabled={props.isSubmitting} id="rekening" placeholder="Nama rekening disini.." />
+                                        <FormErrorMessage>{form.errors.rekening}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
