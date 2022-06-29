@@ -479,6 +479,7 @@ class InventoryMaster():
             "bulan_akhir" : Utility.translateMonthName(Utility.convertNumberToMonthName(rawDependencyData.get("bulan_akhir"))),
             "tahun_akhir": rawDependencyData.get("tahun_akhir"),
             "pengurus_barang_pengguna": rawDependencyData.get("pengurus_barang_pengguna"),
+            "kasubag_program_dan_keuangan": rawDependencyData.get("kasubag_program_dan_keuangan"),
             "plt_kasubag_umum": rawDependencyData.get("plt_kasubag_umum"),
             "sekretaris_dinas": rawDependencyData.get("sekretaris_dinas"),
             "kepala_dinas_ketenagakerjaan": rawDependencyData.get("kepala_dinas_ketenagakerjaan")
@@ -509,6 +510,7 @@ class InventoryMaster():
             "bulan_akhir" : int(dependencyData.bulan_akhir),
             "tahun_akhir": int(dependencyData.tahun_akhir),
             "pengurus_barang_pengguna": dependencyData.pengurus_barang_pengguna,
+            "kasubag_program_dan_keuangan": dependencyData.kasubag_program_dan_keuangan,
             "plt_kasubag_umum": dependencyData.plt_kasubag_umum,
             "sekretaris_dinas": dependencyData.sekretaris_dinas,
             "kepala_dinas_ketenagakerjaan": dependencyData.kepala_dinas_ketenagakerjaan

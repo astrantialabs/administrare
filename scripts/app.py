@@ -38,6 +38,7 @@ class DependencyData(BaseModel):
     bulan_akhir: int
     tahun_akhir: int
     pengurus_barang_pengguna: str
+    kasubag_program_dan_keuangan: str
     plt_kasubag_umum: str
     sekretaris_dinas: str
     kepala_dinas_ketenagakerjaan: str
@@ -79,6 +80,15 @@ def test():
 def inventoryMasterGetDependencyData():
     try:
         return {"success": True, "result": {"dependencyData": InventoryMaster.getDependencyData()}}
+
+    except:
+        return {"success": False}
+
+
+@app.get("/__api/inventory/master/get/translated-dependency")
+def inventoryMasterGetDependencyData():
+    try:
+        return {"success": True, "result": {"dependencyData": InventoryMaster.getTranslatedDependencyData()}}
 
     except:
         return {"success": False}

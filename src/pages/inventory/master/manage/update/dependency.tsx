@@ -40,6 +40,7 @@ export interface InventoryMasterUpdateDependencyParameter {
     bulan_akhir: number;
     tahun_akhir: number;
     pengurus_barang_pengguna: string;
+    kasubag_program_dan_keuangan: string;
     plt_kasubag_umum: string;
     sekretaris_dinas: string;
     kepala_dinas_ketenagakerjaan: string;
@@ -71,6 +72,9 @@ export class InventoryMasterUpdateDependencyValidationModel extends FormikValida
     pengurus_barang_pengguna: string;
 
     @IsNotEmpty({ message: "" })
+    kasubag_program_dan_keuangan: string;
+
+    @IsNotEmpty({ message: "" })
     plt_kasubag_umum: string;
 
     @IsNotEmpty({ message: "" })
@@ -91,6 +95,7 @@ export class InventoryMasterUpdateDependencyValidationModel extends FormikValida
             this.bulan_akhir = data.bulan_akhir;
             this.tahun_akhir = data.tahun_akhir;
             this.pengurus_barang_pengguna = data.pengurus_barang_pengguna;
+            this.kasubag_program_dan_keuangan = data.kasubag_program_dan_keuangan;
             this.plt_kasubag_umum = data.plt_kasubag_umum;
             this.sekretaris_dinas = data.sekretaris_dinas;
             this.kepala_dinas_ketenagakerjaan = data.kepala_dinas_ketenagakerjaan;
@@ -124,6 +129,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
             bulan_akhir: parseInt(values.bulan_akhir as unknown as string),
             tahun_akhir: parseInt(values.tahun_akhir as unknown as string),
             pengurus_barang_pengguna: values.pengurus_barang_pengguna,
+            kasubag_program_dan_keuangan: values.kasubag_program_dan_keuangan,
             plt_kasubag_umum: values.plt_kasubag_umum,
             sekretaris_dinas: values.sekretaris_dinas,
             kepala_dinas_ketenagakerjaan: values.kepala_dinas_ketenagakerjaan,
@@ -272,6 +278,22 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                         </FormLabel>
                                         <Input {...field} disabled={props.isSubmitting} id="kategori" placeholder="Nama pengurus barang pengguna disini.." />
                                         <FormErrorMessage>{form.errors.pengurus_barang_pengguna}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name="kasubag_program_dan_keuangan">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
+                                    <FormControl my={2}>
+                                        <FormLabel htmlFor="kasubag_program_dan_keuangan" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Kasubag Program Dan Keuangan
+                                        </FormLabel>
+                                        <Input
+                                            {...field}
+                                            disabled={props.isSubmitting}
+                                            id="kategori"
+                                            placeholder="Nama kasubag program dan keuangan disini.."
+                                        />
+                                        <FormErrorMessage>{form.errors.kasubag_program_dan_keuangan}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>

@@ -84,6 +84,7 @@ export type MasterParameterDependency = {
     bulan_akhir: number;
     tahun_akhir: number;
     pengurus_barang_pengguna: string;
+    kasubag_program_dan_keuangan: string;
     plt_kasubag_umum: string;
     sekretaris_dinas: string;
     kepala_dinas_ketenagakerjaan: string;
