@@ -1321,12 +1321,12 @@ export class MasterInventoryService {
 
                 return new StreamableFile(file);
             }
-        } else if (username_value == "Format") {
+        } else if (username_value == "Inventarisasi") {
             const dependency_data = readJSON("./scripts/json/master_dependency_data.json");
 
             if (date_value == "Terbaru" && is_creatable == true) {
                 const current_date = slugifyDate(currentDate());
-                const response = await pythonAxiosInstance.post(`/__api/inventory/master/download/format/${current_date}`);
+                const response = await pythonAxiosInstance.post(`/__api/inventory/master/download/inventory/${current_date}`);
 
                 if (response.data.success) {
                     const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${username_value} ${current_date}.xlsx`));
@@ -1353,9 +1353,9 @@ export class MasterInventoryService {
     public async masterScheduledDownload() {
         const current_date = slugifyDate(currentDate());
         const rawResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/raw/${current_date}`);
-        const formatResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/format/${current_date}`);
+        const inventoryResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/inventory/${current_date}`);
 
-        if (rawResponse.data.success && formatResponse.data.success) {
+        if (rawResponse.data.success && inventoryResponse.data.success) {
             pythonAxiosInstance.post("/__api/inventory/master/update/option");
         }
     }

@@ -176,8 +176,8 @@ class InventoryMaster():
         workbook.alignment_multiple("M1", ["M", rowCount], horizontal = "center", vertical = "center")
 
 
-    def writeFormat(currentDate):
-        filePath = f"../{Dependency.inventoryMasterFolderPath}/Format {currentDate}.xlsx"
+    def writeInventory(currentDate):
+        filePath = f"../{Dependency.inventoryMasterFolderPath}/Inventarisasi {currentDate}.xlsx"
 
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = collection.find_one({"tahun": 2022})
@@ -189,29 +189,31 @@ class InventoryMaster():
         workbook.change_sheet_name("Sheet", f"Semester {dependencyData['semester']}")
         workbook.set_zoom(85)
 
-        InventoryMaster.writeHeaderFormat(workbook, dependencyData)
-        InventoryMaster.writeMainFormat(workbook, inventoryMasterDocument, dependencyData)
+        InventoryMaster.writeHeaderInventory(workbook, dependencyData)
+        InventoryMaster.writeMainInventory(workbook, inventoryMasterDocument, dependencyData)
 
         workbook.save()
 
 
-    def writeHeaderFormat(workbook, dependencyData):
+    def writeHeaderInventory(workbook, dependencyData):
         workbook.write_value_multiple("A1", "A3", [f"LAPORAN INVENTARISASI PERSEDIAAN SEMESTER {dependencyData['semester']} TAHUN {dependencyData['tahun_akhir']}", f"PER {dependencyData['tanggal_akhir']} {(dependencyData['bulan_akhir']).upper()} {dependencyData['tahun_akhir']}", "DINAS KETENAGAKERJAAN KOTA BALIKPAPAN"])
         workbook.write_value_multiple("A4", "C4", ["No", "Uraian Barang", "Satuan"])
 
         workbook.write_value_singular("D4", f"Saldo (Per {dependencyData['tanggal_awal']} {dependencyData['bulan_awal']} {dependencyData['tahun_awal']})")
-        workbook.write_value_singular("G4", "Mutasi Barang Masuk")
-        workbook.write_value_singular("J4", "Mutasi Barang Keluar")
-        workbook.write_value_singular("M4", f"Saldo Akhir (Per {dependencyData['tanggal_akhir']} {dependencyData['bulan_akhir']} {dependencyData['tahun_akhir']})")
+        workbook.write_value_singular("G4", "Mutasi Barang Masuk (PISAH PPN)")
+        workbook.write_value_singular("J4", "Mutasi Barang Masuk")
+        workbook.write_value_singular("M4", "Mutasi Barang Keluar")
+        workbook.write_value_singular("P4", f"Saldo Akhir (Per {dependencyData['tanggal_akhir']} {dependencyData['bulan_akhir']} {dependencyData['tahun_akhir']})")
 
         d5O5Value = ["Jumlah Satuan", "Harga Satuan (Rp)", "Jumlah (Rp)"]
         workbook.write_value_multiple("D5", "F5", d5O5Value)
         workbook.write_value_multiple("G5", "I5", d5O5Value)
         workbook.write_value_multiple("J5", "L5", d5O5Value)
         workbook.write_value_multiple("M5", "O5", d5O5Value)
+        workbook.write_value_multiple("P5", "R5", d5O5Value)
 
-        workbook.merge("A1", "O1")
-        workbook.merge("A2", "O2")
+        workbook.merge("A1", "R1")
+        workbook.merge("A2", "R2")
 
         workbook.merge("A4", "A5")
         workbook.merge("B4", "B5")
@@ -221,6 +223,7 @@ class InventoryMaster():
         workbook.merge("G4", "I4")
         workbook.merge("J4", "L4")
         workbook.merge("M4", "O4")
+        workbook.merge("P4", "R4")
 
         workbook.font_singular("A1", bold = True, size = 12)
         workbook.alignment_singular("A1", vertical = "top", horizontal = "center")
@@ -229,17 +232,18 @@ class InventoryMaster():
 
         workbook.alignment_singular("A3", vertical = "top", horizontal = "left")
 
-        workbook.font_multiple("A4", "O5", bold = True, size = 10)
-        workbook.alignment_multiple("A4", "O5", vertical = "center", horizontal = "center")
-        workbook.border_multiple("A4", "O5", "all", style = "thin")
+        workbook.font_multiple("A4", "R5", bold = True, size = 10)
+        workbook.alignment_multiple("A4", "R5", vertical = "center", horizontal = "center")
+        workbook.border_multiple("A4", "R5", "all", style = "thin")
 
 
-    def writeMainFormat(workbook, inventoryMasterDocument, dependencyData): 
+    def writeMainInventory(workbook, inventoryMasterDocument, dependencyData): 
         rowCount = 6
 
         footerString = "Total"
 
         saldoJumlahTotal = 0
+        mutasiBarangMasukSebelumPajakJumlahTotal = 0
         mutasiBarangMasukJumlahTotal = 0
         mutasiBarangKeluarJumlahTotal = 0
         saldoAkhirJumlahTotal = 0
@@ -253,23 +257,29 @@ class InventoryMaster():
                 workbook.font_multiple(["A", rowCount], ["B", rowCount], bold = True, size = 10)
                 workbook.alignment_singular(["A", rowCount], vertical = "top", horizontal = "center")
                 workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
-                workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+                workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
 
                 rowCount += 1
                 categoryCount += 1
 
                 saldoJumlahSubTotal = 0
+                mutasiBarangMasukSebelumPajakJumlahSubTotal = 0
                 mutasiBarangMasukJumlahSubTotal = 0
                 mutasiBarangKeluarJumlahSubTotal = 0
                 saldoAkhirJumlahSubTotal = 0
                 itemCount = 1
                 for itemObject in categoryObject.get("barang"):
                     if(itemObject.get("active")):
+                        hargaSatuanSebelumPajak = itemObject.get("harga_satuan_sebelum_pajak")
                         hargaSatuan = itemObject.get("harga_satuan")
 
                         saldoJumlahSatuan = itemObject.get("saldo_jumlah_satuan")
                         saldoJumlah = saldoJumlahSatuan * hargaSatuan
                         saldoJumlahSubTotal += saldoJumlah
+
+                        mutasiBarangMasukSebelumPajakJumlahSatuan = itemObject.get("mutasi_barang_masuk_jumlah_satuan")
+                        mutasiBarangMasukSebelumPajakJumlah = mutasiBarangMasukSebelumPajakJumlahSatuan * hargaSatuanSebelumPajak
+                        mutasiBarangMasukSebelumPajakJumlahSubTotal += mutasiBarangMasukSebelumPajakJumlah
 
                         mutasiBarangMasukJumlahSatuan = itemObject.get("mutasi_barang_masuk_jumlah_satuan")
                         mutasiBarangMasukJumlah = mutasiBarangMasukJumlahSatuan * hargaSatuan
@@ -291,40 +301,45 @@ class InventoryMaster():
                         workbook.write_value_singular(["E", rowCount], hargaSatuan)
                         workbook.write_value_singular(["F", rowCount], saldoJumlah)
 
-                        workbook.write_value_singular(["G", rowCount], mutasiBarangMasukJumlahSatuan)
-                        workbook.write_value_singular(["H", rowCount], hargaSatuan)
-                        workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlah)
+                        workbook.write_value_singular(["G", rowCount], mutasiBarangMasukSebelumPajakJumlahSatuan)
+                        workbook.write_value_singular(["H", rowCount], hargaSatuanSebelumPajak)
+                        workbook.write_value_singular(["I", rowCount], mutasiBarangMasukSebelumPajakJumlah)
 
-                        workbook.write_value_singular(["J", rowCount], mutasiBarangKeluarJumlahSatuan)
+                        workbook.write_value_singular(["J", rowCount], mutasiBarangMasukJumlahSatuan)
                         workbook.write_value_singular(["K", rowCount], hargaSatuan)
-                        workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlah)
+                        workbook.write_value_singular(["L", rowCount], mutasiBarangMasukJumlah)
 
-                        workbook.write_value_singular(["M", rowCount], saldoAkhirJumlahSatuan)
+                        workbook.write_value_singular(["M", rowCount], mutasiBarangKeluarJumlahSatuan)
                         workbook.write_value_singular(["N", rowCount], hargaSatuan)
-                        workbook.write_value_singular(["O", rowCount], saldoAkhirJumlah)
+                        workbook.write_value_singular(["O", rowCount], mutasiBarangKeluarJumlah)
 
-                        workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10)
-                        workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top", horizontal = "center")
+                        workbook.write_value_singular(["P", rowCount], saldoAkhirJumlahSatuan)
+                        workbook.write_value_singular(["Q", rowCount], hargaSatuan)
+                        workbook.write_value_singular(["R", rowCount], saldoAkhirJumlah)
+
+                        workbook.font_multiple(["A", rowCount], ["R", rowCount], size = 10)
+                        workbook.alignment_multiple(["A", rowCount], ["R", rowCount], vertical = "top", horizontal = "center")
                         workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
-                        workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+                        workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
 
                         rowCount += 1
                         itemCount += 1
         
 
                 if(categoryObject.get("barang")):
-                    workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+                    workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
                     rowCount += 1
                     
                 workbook.write_value_singular(["B", rowCount], f"SUB TOTAL {categoryObject.get('kategori')}")
                 workbook.write_value_singular(["F", rowCount], saldoJumlahSubTotal)
-                workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlahSubTotal)
-                workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlahSubTotal)
-                workbook.write_value_singular(["O", rowCount], saldoAkhirJumlahSubTotal)
+                workbook.write_value_singular(["I", rowCount], mutasiBarangMasukSebelumPajakJumlahSubTotal)
+                workbook.write_value_singular(["L", rowCount], mutasiBarangMasukJumlahSubTotal)
+                workbook.write_value_singular(["O", rowCount], mutasiBarangKeluarJumlahSubTotal)
+                workbook.write_value_singular(["R", rowCount], saldoAkhirJumlahSubTotal)
 
-                workbook.font_multiple(["A", rowCount], ["O", rowCount], size = 10, bold = True)
-                workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top")
-                workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+                workbook.font_multiple(["A", rowCount], ["R", rowCount], size = 10, bold = True)
+                workbook.alignment_multiple(["A", rowCount], ["R", rowCount], vertical = "top")
+                workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
 
                 if(categoryCount == 1):
                     footerString += f" {romanNumeral}"
@@ -333,64 +348,72 @@ class InventoryMaster():
                     footerString += f"+{romanNumeral}"
 
                 saldoJumlahTotal += saldoJumlahSubTotal
+                mutasiBarangMasukSebelumPajakJumlahTotal += mutasiBarangMasukSebelumPajakJumlahSubTotal
                 mutasiBarangMasukJumlahTotal += mutasiBarangMasukJumlahSubTotal
                 mutasiBarangKeluarJumlahTotal += mutasiBarangKeluarJumlahSubTotal
                 saldoAkhirJumlahTotal += saldoAkhirJumlahSubTotal
 
                 rowCount += 1
-                workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+                workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
                 rowCount += 1
                 
+
+        #region total
 
         workbook.write_value_singular(["A", rowCount], footerString)
 
         workbook.write_value_singular(["F", rowCount], saldoJumlahTotal)
-        workbook.write_value_singular(["I", rowCount], mutasiBarangMasukJumlahTotal)
-        workbook.write_value_singular(["L", rowCount], mutasiBarangKeluarJumlahTotal)
-        workbook.write_value_singular(["O", rowCount], saldoAkhirJumlahTotal)
+        workbook.write_value_singular(["I", rowCount], mutasiBarangMasukSebelumPajakJumlahTotal)
+        workbook.write_value_singular(["L", rowCount], mutasiBarangMasukJumlahTotal)
+        workbook.write_value_singular(["O", rowCount], mutasiBarangKeluarJumlahTotal)
+        workbook.write_value_singular(["R", rowCount], saldoAkhirJumlahTotal)
 
         workbook.font_multiple(["A", rowCount], ["C", rowCount], size = 10, bold = True)
-        workbook.font_multiple(["D", rowCount], ["O", rowCount], size = 11, bold = True)
-        workbook.alignment_multiple(["A", rowCount], ["O", rowCount], vertical = "top")
-        workbook.border_multiple(["A", rowCount], ["O", rowCount], "all", style = "thin")
+        workbook.font_multiple(["D", rowCount], ["R", rowCount], size = 11, bold = True)
+        workbook.alignment_multiple(["A", rowCount], ["R", rowCount], vertical = "top")
+        workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
         
-        workbook.adjust_width("A4", ["O", rowCount - 1], width_limit = 35)
+        workbook.adjust_width("A4", ["R", rowCount - 1], width_limit = 35)
         workbook.alignment_singular("B4", vertical = "center", horizontal = "center")
 
+        #endregion total
+
+        #region footer
+
         rowCount += 2
-        workbook.write_value_singular(["L", rowCount], f"Balikpapan, {dependencyData['tanggal_akhir']} {dependencyData['bulan_akhir']} {dependencyData['tahun_akhir']}")
-        workbook.alignment_singular(["L", rowCount], horizontal = "center")
-        workbook.merge(["L", rowCount], ["N", rowCount])
+        workbook.write_value_singular(["O", rowCount], f"Balikpapan, {dependencyData['tanggal_akhir']} {dependencyData['bulan_akhir']} {dependencyData['tahun_akhir']}")
+        workbook.alignment_singular(["O", rowCount], horizontal = "center")
+        workbook.merge(["O", rowCount], ["Q", rowCount])
 
         rowCount += 1
-        workbook.write_value_singular(["B", rowCount], "Plt. Kasubag Umum")
+        workbook.write_value_singular(["B", rowCount], "Kasubag Umum")
         workbook.alignment_singular(["B", rowCount], horizontal = "center")
         workbook.merge(["B", rowCount], ["C", rowCount])
 
-        workbook.write_value_singular(["L", rowCount], "Pengurus Barang Pengguna")
-        workbook.alignment_singular(["L", rowCount], horizontal = "center")
-        workbook.merge(["L", rowCount], ["N", rowCount])
+        workbook.write_value_singular(["O", rowCount], "Pengurus Barang Pengguna")
+        workbook.alignment_singular(["O", rowCount], horizontal = "center")
+        workbook.merge(["O", rowCount], ["Q", rowCount])
 
         rowCount += 4
         workbook.write_value_singular(["B", rowCount], dependencyData['plt_kasubag_umum'])
         workbook.alignment_singular(["B", rowCount], horizontal = "center")
         workbook.merge(["B", rowCount], ["C", rowCount])
 
-        workbook.write_value_singular(["L", rowCount], dependencyData['pengurus_barang_pengguna'])
-        workbook.alignment_singular(["L", rowCount], horizontal = "center")
-        workbook.merge(["L", rowCount], ["N", rowCount])
+        workbook.write_value_singular(["O", rowCount], dependencyData['pengurus_barang_pengguna'])
+        workbook.alignment_singular(["O", rowCount], horizontal = "center")
+        workbook.merge(["O", rowCount], ["Q", rowCount])
 
         rowCount += 1
         workbook.write_value_singular(["F", rowCount], "Mengetahui,")
         workbook.font_singular(["F", rowCount], bold = True)
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
-        workbook.merge(["F", rowCount], ["H", rowCount])
+        workbook.merge(["F", rowCount], ["K", rowCount])
 
         rowCount += 1
         workbook.write_value_singular(["F", rowCount], "Kepala Dinas Ketenagakerjaan")
         workbook.font_singular(["F", rowCount], bold = True)
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
-        workbook.merge(["F", rowCount], ["H", rowCount])
+        workbook.merge(["F", rowCount], ["K", rowCount])
 
         InventoryMaster.generateFooterImage(dependencyData["sekretaris_dinas"])
         excelImage = ExcelImage("./media/master footer/Master Footer Image.png")
@@ -400,13 +423,15 @@ class InventoryMaster():
         workbook.write_value_singular(["F", rowCount], "Kota Balikpapan")
         workbook.font_singular(["F", rowCount], bold = True)
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
-        workbook.merge(["F", rowCount], ["H", rowCount])
+        workbook.merge(["F", rowCount], ["K", rowCount])
 
         rowCount += 4
         workbook.write_value_singular(["F", rowCount], dependencyData['kepala_dinas_ketenagakerjaan'])
         workbook.font_singular(["F", rowCount], bold = True)
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
-        workbook.merge(["F", rowCount], ["H", rowCount])
+        workbook.merge(["F", rowCount], ["K", rowCount])
+
+        #endregion footer
 
 
     def generateFooterImage(text):
@@ -527,7 +552,7 @@ class InventoryMaster():
 
         files.remove(".gitkeep")
         
-        fileOptionArray = [["Mentah", [["Terbaru", True]]], ["Format", [["Terbaru", True]]]]
+        fileOptionArray = [["Mentah", [["Terbaru", True]]], ["Inventarisasi", [["Terbaru", True]]]]
 
         for file in files:
             fileNameArray = file.split(".")[0].split(" ")

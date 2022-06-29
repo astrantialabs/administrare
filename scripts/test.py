@@ -31,7 +31,7 @@ class Test:
         # print(InventoryMaster.getDependencyData())
         # print(InventoryMaster.getTranslatedDependencyData())
         # InventoryMaster.writeRaw(Utility.currentDate())
-        InventoryMaster.writeFormat(Utility.currentDate())
+        InventoryMaster.writeInventory(Utility.currentDate())
 
         # InventoryRequest.updateUserData()
         # InventoryRequest.updateOptionData()

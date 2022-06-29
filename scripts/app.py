@@ -119,10 +119,10 @@ def inventoryMasterRawDownload(currentDate):
         return {"success": False}
 
     
-@app.post("/__api/inventory/master/download/format/{currentDate}")
-def inventoryMasterFormatDownload(currentDate):
+@app.post("/__api/inventory/master/download/inventory/{currentDate}")
+def inventoryMasterInventoryDownload(currentDate):
     try:
-        InventoryMaster.writeFormat(currentDate)
+        InventoryMaster.writeInventory(currentDate)
 
         return {"success": True}
     except:
