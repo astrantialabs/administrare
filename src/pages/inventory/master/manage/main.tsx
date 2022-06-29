@@ -49,13 +49,16 @@ interface PayloadTest {
     nama: string;
     satuan: string;
     saldo_jumlah_satuan: number;
+    mutasi_barang_masuk_sebelum_pajak_jumlah_satuan: number;
     mutasi_barang_masuk_jumlah_satuan: number;
     mutasi_barang_keluar_jumlah_satuan: number;
     saldo_akhir_jumlah_satuan: number;
     jumlah_permintaan: number;
+    harga_satuan_sebelum_pajak: number;
     harga_satuan: number;
     keterangan: string;
     saldo_jumlah_satuan_rp: string | number;
+    mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp: number;
     mutasi_barang_masuk_jumlah_satuan_rp: string | number;
     mutasi_barang_keluar_jumlah_satuan_rp: string | number;
     saldo_akhir_jumlah_satuan_rp: string | number;
@@ -78,13 +81,16 @@ const createArr = (n: number, tableData: any): PayloadTest[] => {
                 nama: item.nama,
                 satuan: item.satuan,
                 saldo_jumlah_satuan: item.saldo_jumlah_satuan,
+                mutasi_barang_masuk_sebelum_pajak_jumlah_satuan: item.mutasi_barang_masuk_sebelum_pajak_jumlah_satuan,
                 mutasi_barang_masuk_jumlah_satuan: item.mutasi_barang_masuk_jumlah_satuan,
                 mutasi_barang_keluar_jumlah_satuan: item.mutasi_barang_keluar_jumlah_satuan,
                 saldo_akhir_jumlah_satuan: item.saldo_akhir_jumlah_satuan,
                 jumlah_permintaan: item.jumlah_permintaan,
+                harga_satuan_sebelum_pajak: item.harga_satuan_sebelum_pajak,
                 harga_satuan: item.harga_satuan,
                 keterangan: item.keterangan,
                 saldo_jumlah_satuan_rp: item.saldo_jumlah_satuan_rp,
+                mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp: item.mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp,
                 mutasi_barang_masuk_jumlah_satuan_rp: item.mutasi_barang_masuk_jumlah_satuan_rp,
                 mutasi_barang_keluar_jumlah_satuan_rp: item.mutasi_barang_keluar_jumlah_satuan_rp,
                 saldo_akhir_jumlah_satuan_rp: item.saldo_akhir_jumlah_satuan_rp,
@@ -332,6 +338,28 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_jumlah_satuan_rp",
                         Footer: <strong>{total.saldo}</strong>,
+                    },
+                ],
+            },
+            {
+                Header: "Mutasi Barang Masuk (PISAH PPN)",
+                Footer: "",
+                columns: [
+                    {
+                        Header: "Jumlah Satuan",
+                        accessor: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan",
+                        Footer: "",
+                    },
+                    {
+                        Header: "Harga Satuan (Rp)",
+                        accessor: "harga_satuan_sebelum_pajak",
+                        id: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp_id",
+                        Footer: "",
+                    },
+                    {
+                        Header: "Jumlah (Rp)",
+                        accessor: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp",
+                        Footer: "",
                     },
                 ],
             },
