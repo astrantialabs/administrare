@@ -23,7 +23,7 @@
 
 import { NextPage } from "next";
 import { Stack, Heading, FormControl, FormLabel, Input, FormErrorMessage, Button, useToast } from "@chakra-ui/react";
-import { FormikValidatorBase, IsNotEmpty } from "formik-class-validator";
+import { FormikValidatorBase, IsNotEmpty, IsOptional } from "formik-class-validator";
 import { Form, Formik, Field, FormikHelpers, FieldInputProps, FormikProps } from "formik";
 
 import Sidebar from "@/components/Sidebar";
@@ -31,15 +31,15 @@ import { axiosInstance } from "@/shared/utils/axiosInstance";
 
 export interface InventoryMasterManageCreateCategoryParameter {
     kategori: string;
-    rekening: string;
+    rekening?: string;
 }
 
 export class InventoryMasterManageCreateCategoryValidationModel extends FormikValidatorBase implements InventoryMasterManageCreateCategoryParameter {
     @IsNotEmpty({ message: "Kategori tidak boleh kosong!" })
     kategori: string;
 
-    @IsNotEmpty({ message: "Rekening tidak boleh kosong!" })
-    rekening: string;
+    @IsOptional()
+    rekening?: string;
 }
 
 const InventoryMasterManageCreateCategory: NextPage = () => {
