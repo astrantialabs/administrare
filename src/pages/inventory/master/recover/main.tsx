@@ -53,13 +53,16 @@ interface PayloadTest {
     nama: string;
     satuan: string;
     saldo_jumlah_satuan: number;
+    mutasi_barang_masuk_sebelum_pajak_jumlah_satuan: number;
     mutasi_barang_masuk_jumlah_satuan: number;
     mutasi_barang_keluar_jumlah_satuan: number;
     saldo_akhir_jumlah_satuan: number;
     jumlah_permintaan: number;
+    harga_satuan_sebelum_pajak: number;
     harga_satuan: number;
     keterangan: string;
     saldo_jumlah_satuan_rp: string | number;
+    mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp: number;
     mutasi_barang_masuk_jumlah_satuan_rp: string | number;
     mutasi_barang_keluar_jumlah_satuan_rp: string | number;
     saldo_akhir_jumlah_satuan_rp: string | number;
@@ -84,13 +87,16 @@ const createArr = (n: number, tableData: any): any[] => {
                 nama: item.kategori,
                 satuan: "",
                 saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_sebelum_pajak_jumlah_satuan: "",
                 mutasi_barang_masuk_jumlah_satuan: "",
                 mutasi_barang_keluar_jumlah_satuan: "",
                 saldo_akhir_jumlah_satuan: "",
                 jumlah_permintaan: "",
+                harga_satuan_sebelum_pajak: "",
                 harga_satuan: "",
                 keterangan: "",
                 saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp: "",
                 mutasi_barang_masuk_jumlah_satuan_rp: "",
                 mutasi_barang_keluar_jumlah_satuan_rp: "",
                 saldo_akhir_jumlah_satuan_rp: "",
@@ -111,16 +117,20 @@ const createArr = (n: number, tableData: any): any[] => {
                         nama: barangItem.nama,
                         satuan: barangItem.satuan,
                         saldo_jumlah_satuan: barangItem.saldo_jumlah_satuan,
+                        mutasi_barang_masuk_sebelum_pajak_jumlah_satuan: barangItem.mutasi_barang_masuk_jumlah_satuan,
                         mutasi_barang_masuk_jumlah_satuan: barangItem.mutasi_barang_masuk_jumlah_satuan,
                         mutasi_barang_keluar_jumlah_satuan: barangItem.mutasi_barang_keluar_jumlah_satuan,
                         saldo_akhir_jumlah_satuan: barangItem.saldo_akhir_jumlah_satuan,
                         jumlah_permintaan: barangItem.jumlah_permintaan,
+                        harga_satuan_sebelum_pajak: barangItem.harga_satuan_sebelum_pajak,
                         harga_satuan: barangItem.harga_satuan,
                         keterangan: barangItem.keterangan,
-                        saldo_jumlah_satuan_rp: "-",
-                        mutasi_barang_masuk_jumlah_satuan_rp: "-",
-                        mutasi_barang_keluar_jumlah_satuan_rp: "-",
-                        saldo_akhir_jumlah_satuan_rp: "-",
+                        saldo_jumlah_satuan_rp: barangItem.saldo_jumlah_satuan * barangItem.harga_satuan,
+                        mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp:
+                            barangItem.mutasi_barang_masuk_jumlah_satuan * barangItem.harga_satuan_sebelum_pajak,
+                        mutasi_barang_masuk_jumlah_satuan_rp: barangItem.mutasi_barang_masuk_jumlah_satuan * barangItem.harga_satuan,
+                        mutasi_barang_keluar_jumlah_satuan_rp: barangItem.mutasi_barang_keluar_jumlah_satuan * barangItem.harga_satuan,
+                        saldo_akhir_jumlah_satuan_rp: barangItem.saldo_akhir_jumlah_satuan * barangItem.harga_satuan,
                     });
                 });
             }
@@ -134,17 +144,20 @@ const createArr = (n: number, tableData: any): any[] => {
                     isRecoverable: false,
                 },
                 id: "",
-                kategori: "",
-                nama: "",
+                kategori: item.kategori,
+                nama: item.kategori,
                 satuan: "",
                 saldo_jumlah_satuan: "",
+                mutasi_barang_masuk_sebelum_pajak_jumlah_satuan: "",
                 mutasi_barang_masuk_jumlah_satuan: "",
                 mutasi_barang_keluar_jumlah_satuan: "",
                 saldo_akhir_jumlah_satuan: "",
                 jumlah_permintaan: "",
+                harga_satuan_sebelum_pajak: "",
                 harga_satuan: "",
                 keterangan: "",
                 saldo_jumlah_satuan_rp: "",
+                mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp: "",
                 mutasi_barang_masuk_jumlah_satuan_rp: "",
                 mutasi_barang_keluar_jumlah_satuan_rp: "",
                 saldo_akhir_jumlah_satuan_rp: "",
@@ -340,6 +353,28 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_jumlah_satuan_rp",
+                        Footer: "",
+                    },
+                ],
+            },
+            {
+                Header: "Mutasi Barang Masuk (PISAH PPN)",
+                Footer: "",
+                columns: [
+                    {
+                        Header: "Jumlah Satuan",
+                        accessor: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan",
+                        Footer: "",
+                    },
+                    {
+                        Header: "Harga Satuan (Rp)",
+                        accessor: "harga_satuan_sebelum_pajak",
+                        id: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp_id",
+                        Footer: "",
+                    },
+                    {
+                        Header: "Jumlah (Rp)",
+                        accessor: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp",
                         Footer: "",
                     },
                 ],
