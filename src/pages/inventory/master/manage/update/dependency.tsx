@@ -279,9 +279,9 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryMasterUpdateDependencyParameter> }) => (
                                     <FormControl my={2}>
                                         <FormLabel htmlFor="plt_kasubag_umum" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            PLT Kasubag Umum
+                                            Kasubag Umum
                                         </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="kategori" placeholder="Nama plt kasubag umu disini.." />
+                                        <Input {...field} disabled={props.isSubmitting} id="kategori" placeholder="Nama kasubag umum disini.." />
                                         <FormErrorMessage>{form.errors.plt_kasubag_umum}</FormErrorMessage>
                                     </FormControl>
                                 )}
