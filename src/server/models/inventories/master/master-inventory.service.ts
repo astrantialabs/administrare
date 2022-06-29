@@ -310,6 +310,7 @@ export class MasterInventoryService {
         const sub_total: MasterSubTotal = {
             category_id: category_id,
             saldo: 0,
+            mutasi_barang_masuk_sebelum_pajak: 0,
             mutasi_barang_masuk: 0,
             mutasi_barang_keluar: 0,
             saldo_akhir: 0,
@@ -317,6 +318,7 @@ export class MasterInventoryService {
 
         category_object.barang.forEach((item_object: MasterBarang) => {
             sub_total.saldo += item_object.saldo_jumlah_satuan * item_object.harga_satuan;
+            sub_total.mutasi_barang_masuk_sebelum_pajak += item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan_sebelum_pajak;
             sub_total.mutasi_barang_masuk += item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan;
             sub_total.mutasi_barang_keluar += item_object.mutasi_barang_keluar_jumlah_satuan * item_object.harga_satuan;
             sub_total.saldo_akhir += item_object.saldo_akhir_jumlah_satuan * item_object.harga_satuan;
@@ -340,6 +342,7 @@ export class MasterInventoryService {
 
         const total: MasterTotal = {
             saldo: 0,
+            mutasi_barang_masuk_sebelum_pajak: 0,
             mutasi_barang_masuk: 0,
             mutasi_barang_keluar: 0,
             saldo_akhir: 0,
@@ -347,6 +350,7 @@ export class MasterInventoryService {
 
         sub_totals.forEach((sub_total: MasterSubTotal) => {
             total.saldo += sub_total.saldo;
+            total.mutasi_barang_masuk_sebelum_pajak += sub_total.mutasi_barang_masuk_sebelum_pajak;
             total.mutasi_barang_masuk += sub_total.mutasi_barang_masuk;
             total.mutasi_barang_keluar += sub_total.mutasi_barang_keluar;
             total.saldo_akhir += sub_total.saldo_akhir;
@@ -583,6 +587,7 @@ export class MasterInventoryService {
                             parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string)
                         ),
                         jumlah_permintaan: 0,
+                        harga_satuan_sebelum_pajak: parseInt(body.harga_satuan_sebelum_pajak as unknown as string),
                         harga_satuan: parseInt(body.harga_satuan as unknown as string),
                         keterangan: body.keterangan,
                         active: true,
@@ -709,6 +714,7 @@ export class MasterInventoryService {
                                 saldo_jumlah_satuan: parseInt(body.saldo_jumlah_satuan as unknown as string),
                                 mutasi_barang_masuk_jumlah_satuan: parseInt(body.mutasi_barang_masuk_jumlah_satuan as unknown as string),
                                 mutasi_barang_keluar_jumlah_satuan: parseInt(body.mutasi_barang_keluar_jumlah_satuan as unknown as string),
+                                harga_satuan_sebelum_pajak: parseInt(body.harga_satuan_sebelum_pajak as unknown as string),
                                 harga_satuan: parseInt(body.harga_satuan as unknown as string),
                                 keterangan: body.keterangan,
                             };
@@ -729,6 +735,7 @@ export class MasterInventoryService {
                                                 item.mutasi_barang_masuk_jumlah_satuan,
                                                 item.mutasi_barang_keluar_jumlah_satuan
                                             );
+                                            item_object.harga_satuan_sebelum_pajak = item.harga_satuan_sebelum_pajak;
                                             item_object.harga_satuan = item.harga_satuan;
                                             item_object.keterangan = item.keterangan;
 

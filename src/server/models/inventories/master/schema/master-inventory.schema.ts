@@ -58,6 +58,9 @@ export class MasterBarang {
     jumlah_permintaan: number;
 
     @Prop({ type: MongooseSchema.Types.Number, required: true })
+    harga_satuan_sebelum_pajak: number;
+
+    @Prop({ type: MongooseSchema.Types.Number, required: true })
     harga_satuan: number;
 
     @Prop({ type: MongooseSchema.Types.String, required: false })

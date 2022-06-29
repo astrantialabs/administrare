@@ -71,6 +71,7 @@ export type MasterParameterBarang = {
     mutasi_barang_masuk_jumlah_satuan: number;
     mutasi_barang_keluar_jumlah_satuan: number;
     harga_satuan: number;
+    harga_satuan_sebelum_pajak: number;
     keterangan: string | null;
 };
 
@@ -90,6 +91,7 @@ export type MasterParameterDependency = {
 
 export type MasterTotal = {
     saldo: number;
+    mutasi_barang_masuk_sebelum_pajak: number;
     mutasi_barang_masuk: number;
     mutasi_barang_keluar: number;
     saldo_akhir: number;
