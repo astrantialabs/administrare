@@ -317,11 +317,13 @@ export class MasterInventoryService {
         };
 
         category_object.barang.forEach((item_object: MasterBarang) => {
-            sub_total.saldo += item_object.saldo_jumlah_satuan * item_object.harga_satuan;
-            sub_total.mutasi_barang_masuk_sebelum_pajak += item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan_sebelum_pajak;
-            sub_total.mutasi_barang_masuk += item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan;
-            sub_total.mutasi_barang_keluar += item_object.mutasi_barang_keluar_jumlah_satuan * item_object.harga_satuan;
-            sub_total.saldo_akhir += item_object.saldo_akhir_jumlah_satuan * item_object.harga_satuan;
+            if (item_object.active === true) {
+                sub_total.saldo += item_object.saldo_jumlah_satuan * item_object.harga_satuan;
+                sub_total.mutasi_barang_masuk_sebelum_pajak += item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan_sebelum_pajak;
+                sub_total.mutasi_barang_masuk += item_object.mutasi_barang_masuk_jumlah_satuan * item_object.harga_satuan;
+                sub_total.mutasi_barang_keluar += item_object.mutasi_barang_keluar_jumlah_satuan * item_object.harga_satuan;
+                sub_total.saldo_akhir += item_object.saldo_akhir_jumlah_satuan * item_object.harga_satuan;
+            }
         });
 
         return sub_total;
