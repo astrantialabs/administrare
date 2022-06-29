@@ -60,6 +60,7 @@ export type RequestCreateBarang = {
 
 export type MasterParameterKategori = {
     kategori: string;
+    rekening: string | null;
 };
 
 export type MasterParameterBarang = {

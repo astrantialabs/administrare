@@ -523,6 +523,7 @@ export class MasterInventoryService {
             const category: MasterKategori = {
                 id: await this.masterGetNewKategoriId(2022),
                 kategori: body.kategori,
+                rekening: body.rekening,
                 created_at: currentDate(),
                 updated_at: currentDate(),
                 barang: [],
@@ -640,6 +641,7 @@ export class MasterInventoryService {
                     master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                         if (category_object.id == category_id) {
                             category_object.kategori = body.kategori;
+                            category_object.rekening = body.rekening;
                             category_object.updated_at = currentDate();
 
                             updated_category_object = category_object;

@@ -76,6 +76,9 @@ export class MasterKategori {
     kategori: string;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
+    rekening: string | null;
+
+    @Prop({ type: MongooseSchema.Types.String, required: true })
     created_at: string;
 
     @Prop({ type: MongooseSchema.Types.String, required: true })
