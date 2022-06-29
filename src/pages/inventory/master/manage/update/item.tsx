@@ -33,8 +33,8 @@ export interface InventoryDemandManageItemParameter {
     saldo_jumlah_satuan: string;
     mutasi_barang_masuk_jumlah_satuan: string;
     mutasi_barang_keluar_jumlah_satuan: string;
-    harga_satuan: string;
     harga_satuan_sebelum_pajak: string;
+    harga_satuan: string;
     keterangan?: string;
 }
 
@@ -54,11 +54,11 @@ export class InventoryMasterManageUpdateItemValidationModel extends FormikValida
     @IsNotEmpty({ message: "Mutasi barang keluar barang tidak boleh kosong!" })
     mutasi_barang_keluar_jumlah_satuan: string;
 
-    @IsNotEmpty({ message: "Harga satuan barang tidak boleh kosong!" })
-    harga_satuan: string;
-
     @IsNotEmpty({ message: "Harga satuan sebelum pajak barang tidak boleh kosong!" })
     harga_satuan_sebelum_pajak: string;
+
+    @IsNotEmpty({ message: "Harga satuan barang tidak boleh kosong!" })
+    harga_satuan: string;
 
     @IsOptional()
     keterangan?: string;
@@ -72,8 +72,8 @@ export class InventoryMasterManageUpdateItemValidationModel extends FormikValida
             this.saldo_jumlah_satuan = data.saldo_jumlah_satuan;
             this.mutasi_barang_masuk_jumlah_satuan = data.mutasi_barang_masuk_jumlah_satuan;
             this.mutasi_barang_keluar_jumlah_satuan = data.mutasi_barang_keluar_jumlah_satuan;
-            this.harga_satuan = data.harga_satuan;
             this.harga_satuan_sebelum_pajak = data.harga_satuan_sebelum_pajak;
+            this.harga_satuan = data.harga_satuan;
             this.keterangan = data.keterangan;
         }
     }
@@ -107,8 +107,8 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
             saldo_jumlah_satuan: values.saldo_jumlah_satuan,
             mutasi_barang_masuk_jumlah_satuan: values.mutasi_barang_masuk_jumlah_satuan,
             mutasi_barang_keluar_jumlah_satuan: values.mutasi_barang_keluar_jumlah_satuan,
-            harga_satuan: values.harga_satuan,
             harga_satuan_sebelum_pajak: values.harga_satuan_sebelum_pajak,
+            harga_satuan: values.harga_satuan,
             keterangan: values.keterangan,
         };
 
@@ -211,22 +211,6 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                                     </FormControl>
                                 )}
                             </Field>
-                            <Field name="harga_satuan_sebelum_pajak">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl my={4}>
-                                        <FormLabel htmlFor="harga_satuan_sebelum_pajak" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Harga Satuan Sebelum Pajak
-                                        </FormLabel>
-                                        <Input
-                                            {...field}
-                                            disabled={props.isSubmitting}
-                                            id="harga_satuan_sebelum_pajak"
-                                            placeholder="Harga satuan sebelum pajak barang disini.."
-                                        />
-                                        <FormErrorMessage>{form.errors.harga_satuan_sebelum_pajak}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
                             <Field name="mutasi_barang_masuk_jumlah_satuan">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl my={4}>
@@ -256,6 +240,22 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                                             placeholder="Mutasi barang keluar jumlah satuan barang disini.."
                                         />
                                         <FormErrorMessage>{form.errors.mutasi_barang_keluar_jumlah_satuan}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name="harga_satuan_sebelum_pajak">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                    <FormControl my={4}>
+                                        <FormLabel htmlFor="harga_satuan_sebelum_pajak" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Harga Satuan Sebelum Pajak
+                                        </FormLabel>
+                                        <Input
+                                            {...field}
+                                            disabled={props.isSubmitting}
+                                            id="harga_satuan_sebelum_pajak"
+                                            placeholder="Harga satuan sebelum pajak barang disini.."
+                                        />
+                                        <FormErrorMessage>{form.errors.harga_satuan_sebelum_pajak}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>

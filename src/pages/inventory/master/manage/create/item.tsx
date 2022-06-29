@@ -32,8 +32,8 @@ export interface InventoryDemandManageItemParameter {
     saldo_jumlah_satuan: string;
     mutasi_barang_masuk_jumlah_satuan: string;
     mutasi_barang_keluar_jumlah_satuan: string;
-    harga_satuan: string;
     harga_satuan_sebelum_pajak: string;
+    harga_satuan: string;
     keterangan: string;
 }
 
@@ -55,11 +55,11 @@ export class InventoryMasterManageCreateItemValidationModel extends FormikValida
     @IsNotEmpty({ message: "Mutasi barang keluar barang tidak boleh kosong!" })
     mutasi_barang_keluar_jumlah_satuan: string;
 
-    @IsNotEmpty({ message: "Harga satuan barang tidak boleh kosong!" })
-    harga_satuan: string;
-
     @IsNotEmpty({ message: "Harga satuan sebelum pajak barang tidak boleh kosong!" })
     harga_satuan_sebelum_pajak: string;
+
+    @IsNotEmpty({ message: "Harga satuan barang tidak boleh kosong!" })
+    harga_satuan: string;
 
     @IsOptional()
     keterangan: string = "";
@@ -82,8 +82,8 @@ const InventoryMasterManageCreateItem: NextPage = () => {
             saldo_jumlah_satuan: values.saldo_jumlah_satuan,
             mutasi_barang_masuk_jumlah_satuan: values.mutasi_barang_masuk_jumlah_satuan,
             mutasi_barang_keluar_jumlah_satuan: values.mutasi_barang_keluar_jumlah_satuan,
-            harga_satuan: values.harga_satuan,
             harga_satuan_sebelum_pajak: values.harga_satuan_sebelum_pajak,
+            harga_satuan: values.harga_satuan,
             keterangan: values.keterangan,
         };
 
@@ -239,17 +239,6 @@ const InventoryMasterManageCreateItem: NextPage = () => {
                                     </FormControl>
                                 )}
                             </Field>
-                            <Field name="harga_satuan">
-                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
-                                    <FormControl my={4}>
-                                        <FormLabel htmlFor="satuan" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Harga Satuan
-                                        </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="harga_satuan" placeholder="Harga satuan barang disini.." />
-                                        <FormErrorMessage>{form.errors.harga_satuan}</FormErrorMessage>
-                                    </FormControl>
-                                )}
-                            </Field>
                             <Field name="harga_satuan_sebelum_pajak">
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl my={4}>
@@ -263,6 +252,17 @@ const InventoryMasterManageCreateItem: NextPage = () => {
                                             placeholder="Harga satuan sebelum pajak barang disini.."
                                         />
                                         <FormErrorMessage>{form.errors.harga_satuan_sebelum_pajak}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name="harga_satuan">
+                                {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
+                                    <FormControl my={4}>
+                                        <FormLabel htmlFor="satuan" fontWeight={`medium`} color={`blackAlpha.700`}>
+                                            Harga Satuan
+                                        </FormLabel>
+                                        <Input {...field} disabled={props.isSubmitting} id="harga_satuan" placeholder="Harga satuan barang disini.." />
+                                        <FormErrorMessage>{form.errors.harga_satuan}</FormErrorMessage>
                                     </FormControl>
                                 )}
                             </Field>
