@@ -1346,6 +1346,31 @@ export class MasterInventoryService {
 
                 return new StreamableFile(file);
             }
+        } else if (username_value == "Stok") {
+            const dependency_data = readJSON("./scripts/json/master_dependency_data.json");
+
+            if (date_value == "Terbaru" && is_creatable == true) {
+                const current_date = slugifyDate(currentDate());
+                const response = await pythonAxiosInstance.post(`/__api/inventory/master/download/stock/${current_date}`);
+
+                if (response.data.success) {
+                    const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${username_value} ${current_date}.xlsx`));
+                    res.set({
+                        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Content-Disposition": `attachment; filename="LAPORAN STOK OPNAME DISNAKER ${dependency_data.tahun_akhir}.xlsx"`,
+                    });
+
+                    return new StreamableFile(file);
+                }
+            } else if (date_value != "Terbaru" && is_creatable == false) {
+                const file = createReadStream(join(process.cwd(), `spreadsheets/inventories/master/${username_value} ${slugified_date}.xlsx`));
+                res.set({
+                    "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "Content-Disposition": `attachment; filename="LAPORAN STOK OPNAME DISNAKER ${dependency_data.tahun_akhir}.xlsx"`,
+                });
+
+                return new StreamableFile(file);
+            }
         }
     }
 

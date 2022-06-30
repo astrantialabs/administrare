@@ -129,6 +129,16 @@ def inventoryMasterInventoryDownload(currentDate):
         return {"success": False}
 
 
+@app.post("/__api/inventory/master/download/stock/{currentDate}")
+def inventoryMasterStockDownload(currentDate):
+    try:
+        InventoryMaster.writeStock(currentDate)
+
+        return {"success": True}
+    except:
+        return {"success": False}
+
+
 # ---------------------------------- REQUEST --------------------------------- #
 
 @app.post("/__api/inventory/request/update/option")

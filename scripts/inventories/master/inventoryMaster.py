@@ -473,7 +473,7 @@ class InventoryMaster():
     # ------------------------------------ STOCK ----------------------------------- #
 
     def writeStock(currentDate):
-        filePath = f"../{Dependency.inventoryMasterFolderPath}/Stock {currentDate}.xlsx"
+        filePath = f"../{Dependency.inventoryMasterFolderPath}/Stok {currentDate}.xlsx"
 
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
         inventoryMasterDocument = collection.find_one({"tahun": 2022})
@@ -833,7 +833,7 @@ class InventoryMaster():
 
         files.remove(".gitkeep")
         
-        fileOptionArray = [["Mentah", [["Terbaru", True]]], ["Inventarisasi", [["Terbaru", True]]]]
+        fileOptionArray = [["Mentah", [["Terbaru", True]]], ["Inventarisasi", [["Terbaru", True]]], ["Stok", [["Terbaru", True]]]]
 
         for file in files:
             fileNameArray = file.split(".")[0].split(" ")
