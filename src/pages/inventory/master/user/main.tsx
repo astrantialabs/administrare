@@ -127,11 +127,46 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                         accessor: "harga_satuan",
                         id: "harga_satuan_id",
                         Footer: "",
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_jumlah_satuan_rp",
-                        Footer: <strong>{total.saldo}</strong>,
+                        Footer: () => {
+                            return (
+                                <strong>
+                                    {Intl.NumberFormat("en-US", {
+                                        style: "currency",
+                                        currency: "IDR",
+                                    })
+                                        .format(total.saldo)
+                                        .replace(/\IDR/g, "")}
+                                </strong>
+                            );
+                        },
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                 ],
             },
@@ -149,11 +184,46 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                         accessor: "harga_satuan_sebelum_pajak",
                         id: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp_id",
                         Footer: "",
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_masuk_sebelum_pajak_jumlah_satuan_rp",
-                        Footer: "",
+                        Footer: () => {
+                            return (
+                                <strong>
+                                    {Intl.NumberFormat("en-US", {
+                                        style: "currency",
+                                        currency: "IDR",
+                                    })
+                                        .format(total.mutasi_barang_masuk_sebelum_pajak)
+                                        .replace(/\IDR/g, "")}
+                                </strong>
+                            );
+                        },
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                 ],
             },
@@ -171,11 +241,46 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                         accessor: "harga_satuan",
                         id: "mutasi_barang_masuk_jumlah_satuan_rp_id",
                         Footer: "",
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_masuk_jumlah_satuan_rp",
-                        Footer: <strong>{total.mutasi_barang_masuk}</strong>,
+                        Footer: () => {
+                            return (
+                                <strong>
+                                    {Intl.NumberFormat("en-US", {
+                                        style: "currency",
+                                        currency: "IDR",
+                                    })
+                                        .format(total.mutasi_barang_masuk)
+                                        .replace(/\IDR/g, "")}
+                                </strong>
+                            );
+                        },
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                 ],
             },
@@ -197,7 +302,30 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "mutasi_barang_keluar_jumlah_satuan_rp",
-                        Footer: <strong>{total.mutasi_barang_keluar}</strong>,
+                        Footer: () => {
+                            return (
+                                <strong>
+                                    {Intl.NumberFormat("en-US", {
+                                        style: "currency",
+                                        currency: "IDR",
+                                    })
+                                        .format(total.mutasi_barang_keluar)
+                                        .replace(/\IDR/g, "")}
+                                </strong>
+                            );
+                        },
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                 ],
             },
@@ -219,7 +347,30 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                     {
                         Header: "Jumlah (Rp)",
                         accessor: "saldo_akhir_jumlah_satuan_rp",
-                        Footer: <strong>{total.saldo_akhir}</strong>,
+                        Footer: () => {
+                            return (
+                                <strong>
+                                    {Intl.NumberFormat("en-US", {
+                                        style: "currency",
+                                        currency: "IDR",
+                                    })
+                                        .format(total.saldo_akhir)
+                                        .replace(/\IDR/g, "")}
+                                </strong>
+                            );
+                        },
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                 ],
             },
