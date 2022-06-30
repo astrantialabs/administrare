@@ -76,6 +76,9 @@ class Pillow():
     
 
 class InventoryMaster():
+
+    # ------------------------------------ RAW ----------------------------------- #
+
     def writeRaw(currentDate):
         filePath = f"../{Dependency.inventoryMasterFolderPath}/Mentah {currentDate}.xlsx"
 
@@ -176,6 +179,8 @@ class InventoryMaster():
         workbook.alignment_multiple("M1", ["M", rowCount], horizontal = "center", vertical = "center")
 
 
+    # ------------------------------------ INVENTORY ----------------------------------- #
+
     def writeInventory(currentDate):
         filePath = f"../{Dependency.inventoryMasterFolderPath}/Inventarisasi {currentDate}.xlsx"
 
@@ -191,6 +196,28 @@ class InventoryMaster():
 
         InventoryMaster.writeHeaderInventory(workbook, dependencyData)
         InventoryMaster.writeMainInventory(workbook, inventoryMasterDocument, dependencyData)
+
+        workbook.set_width("A", 59)
+        workbook.set_width("B", 320)
+        workbook.set_width("C", 87)
+        workbook.set_width("D", 68)
+        workbook.set_width("E", 106)
+        workbook.set_width("F", 141)
+        workbook.set_width("G", 77)
+        workbook.set_width("H", 109)
+        workbook.set_width("I", 141)
+        workbook.set_width("J", 71)
+        workbook.set_width("K", 116)
+        workbook.set_width("L", 141) 
+        workbook.set_width("M", 73) 
+        workbook.set_width("N", 111) 
+        workbook.set_width("O", 141) 
+        workbook.set_width("P", 69) 
+        workbook.set_width("Q", 111) 
+        workbook.set_width("R", 141) 
+
+        workbook.set_height(4, 43)
+        workbook.set_height(5, 61)
 
         workbook.save()
 
@@ -233,7 +260,7 @@ class InventoryMaster():
         workbook.alignment_singular("A3", vertical = "top", horizontal = "left")
 
         workbook.font_multiple("A4", "R5", bold = True, size = 10)
-        workbook.alignment_multiple("A4", "R5", vertical = "center", horizontal = "center")
+        workbook.alignment_multiple("A4", "R5", vertical = "center", horizontal = "center", wrap = True)
         workbook.border_multiple("A4", "R5", "all", style = "thin")
 
 
@@ -319,7 +346,7 @@ class InventoryMaster():
 
                         workbook.font_multiple(["A", rowCount], ["R", rowCount], size = 10)
                         workbook.alignment_multiple(["A", rowCount], ["R", rowCount], vertical = "top", horizontal = "center")
-                        workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left")
+                        workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left", wrap = True)
                         workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
 
                         rowCount += 1
@@ -372,9 +399,6 @@ class InventoryMaster():
         workbook.font_multiple(["D", rowCount], ["R", rowCount], size = 11, bold = True)
         workbook.alignment_multiple(["A", rowCount], ["R", rowCount], vertical = "top")
         workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
-        
-        workbook.adjust_width("A4", ["R", rowCount - 1], width_limit = 35)
-        workbook.alignment_singular("B4", vertical = "center", horizontal = "center")
 
         #endregion total
 
@@ -415,7 +439,7 @@ class InventoryMaster():
         workbook.alignment_singular(["F", rowCount], horizontal = "center")
         workbook.merge(["F", rowCount], ["K", rowCount])
 
-        InventoryMaster.generateFooterImage(dependencyData["sekretaris_dinas"])
+        InventoryMaster.generateFooterImage(dependencyData["sekretaris_dinas"], (420, 89))
         excelImage = ExcelImage("./media/master footer/Master Footer Image.png")
         workbook.active_sheet.add_image(excelImage, f"B{rowCount}")
 
@@ -433,8 +457,10 @@ class InventoryMaster():
 
         #endregion footer
 
+        
+    # ------------------------------------ UTILITY ----------------------------------- #
 
-    def generateFooterImage(text):
+    def generateFooterImage(text, finalSize):
         middleHeaderMasterFooterObject = Pillow("./media/master footer/Middle Header Master Footer Image.png")
         middleTemplateMasterFooterObject = Pillow("./media/master footer/Middle Template Master Footer Image.png", (191, 77))
 
@@ -481,9 +507,11 @@ class InventoryMaster():
         masterFooterObject.image.paste(middleMasterFooterObject.image, ((masterFooterObject.width - middleMasterFooterObject.width - rightMasterFooterObject.width + 1), 0))
         masterFooterObject.image.paste(leftMasterFooterObject.image, ((masterFooterObject.width - leftMasterFooterObject.width - middleMasterFooterObject.width - rightMasterFooterObject.width + 2), 0))
 
-        masterFooterObject.resize((420, 89))
+        masterFooterObject.resize(finalSize)
         masterFooterObject.save()
 
+
+    # ------------------------------------ DEPENDENCY ----------------------------------- #
 
     def getDependencyData():
         collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryDependency)
@@ -547,6 +575,8 @@ class InventoryMaster():
         return {"success": True}
 
     
+    # ------------------------------------ DOWNLOAD ----------------------------------- #
+
     def updateOptionData():
         files = os.listdir("../spreadsheets/inventories/master")
 

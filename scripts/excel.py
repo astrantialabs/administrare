@@ -76,6 +76,14 @@ class Excel():
         self.active_sheet.sheet_view.zoomScale = value
 
 
+    def set_height(self, row, height):
+        self.active_sheet.row_dimensions[row].height = height * 121 / 200
+
+
+    def set_width(self, column, width):
+        self.active_sheet.column_dimensions[column].width = width * 111 / 1000
+    
+
     def adjust_width(self, start_range: any, end_range: any, extra_width: int = 0, width_limit: int = 0):
         start_column, start_row = Excel.convert_range(start_range)
         end_column, end_row = Excel.convert_range(end_range)
@@ -637,8 +645,8 @@ class Excel():
             
         attributes_string = Excel.border_attributes(**attributes)
         
-        side = eval(f"Side({attributes_string})")
-        border = Excel.border_set(side)
+        attribute = eval(f"Side({attributes_string})")
+        border = Excel.border_set(side, attribute)
         self.active_sheet.cell(row = row, column = column).border = border
 
     
@@ -655,6 +663,15 @@ class Excel():
             for column in range(start_column, end_column + 1):
                 self.active_sheet.cell(row = row, column = column).border = border
     
+
+    def side_thick_border(self, start_range: any, end_range: any):
+        start_column, start_row = Excel.convert_range(start_range)
+        end_column, end_row = Excel.convert_range(end_range)
+
+        self.active_sheet.cell(row = start_row, column = start_column).border = Border(left=Side(style='thick'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+        self.active_sheet.cell(row = end_row, column = end_column).border = Border(left=Side(style='thin'), right=Side(style='thick'), top=Side(style='thin'), bottom=Side(style='thin'))
+
+
     #endregion
 
 
