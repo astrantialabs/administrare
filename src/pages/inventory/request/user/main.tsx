@@ -30,6 +30,8 @@ import { InventoryRequestItem, InventoryRequestItems, useInventoryRequestItemsQu
 import Sidebar from "@/components/Sidebar";
 import axios from "axios";
 import { BASE_DOMAIN } from "@/shared/typings/constants";
+import { setDateType } from "@/client/redux/features/dateType";
+import { currentDate } from "@/shared/utils/util";
 
 export const BoxStatusBackgroundSwitch = (str: string | number): string =>
     ({
@@ -39,16 +41,20 @@ export const BoxStatusBackgroundSwitch = (str: string | number): string =>
     }[str] || "");
 
 export const QueryDataFilter = <T extends unknown[]>(status: number, query: UseQueryResult<T, unknown>): any[] => {
+    const current = currentDate();
+    const currentDateObject = new Date(current);
+    let data = query.data.filter((item: any) => new Date(item.created_at) >= currentDateObject);
+
     switch (status) {
         case 0:
             query.refetch();
-            return query.data.filter((item: any) => item.status === status);
+            return data.filter((item: any) => item.status === status);
         case 1:
             query.refetch();
-            return query.data.filter((item: any) => item.status === status);
+            return data.filter((item: any) => item.status === status);
         case 2:
             query.refetch();
-            return query.data.filter((item: any) => item.status === status);
+            return data.filter((item: any) => item.status === status);
         default:
             return query.data;
     }
@@ -64,6 +70,7 @@ export const ConvertDate = (date: string) => {
 
 const InventoryRequestUserMain: NextPage = () => {
     const status = useAppSelector((state: RootState) => state.status.value);
+    const dateType = useAppSelector((state: RootState) => state.dateType.value);
     const dispatch = useAppDispatch();
 
     const items = useInventoryRequestItemsQuery();

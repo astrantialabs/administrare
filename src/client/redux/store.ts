@@ -17,6 +17,7 @@
  */
 
 import { configureStore } from "@reduxjs/toolkit";
+import { dateTypeSlice } from "./features/dateType";
 import { loadingSlice } from "./features/loadingSlice";
 import { statusSlice } from "./features/statusSlice";
 import { tableDataSlice } from "./features/tableDataSlice";
@@ -25,6 +26,7 @@ export const store = configureStore({
     reducer: {
         status: statusSlice.reducer,
         tabelData: tableDataSlice.reducer,
+        dateType: dateTypeSlice.reducer,
         loading: loadingSlice.reducer,
     },
 });
