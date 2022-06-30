@@ -70,7 +70,6 @@ export const ConvertDate = (date: string) => {
 
 const InventoryRequestUserMain: NextPage = () => {
     const status = useAppSelector((state: RootState) => state.status.value);
-    const dateType = useAppSelector((state: RootState) => state.dateType.value);
     const dispatch = useAppDispatch();
 
     const items = useInventoryRequestItemsQuery();
