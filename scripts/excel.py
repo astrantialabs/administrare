@@ -560,6 +560,7 @@ class Excel():
         end_column, end_row = Excel.convert_range(end_range)
             
         main_attributes_string = Excel.fill_attributes(**attributes)
+        main_pattern_fill = eval(f"PatternFill({main_attributes_string})")
 
         shade = False
         if("shade" in attributes):
@@ -567,15 +568,21 @@ class Excel():
 
         if(shade):    
             second_attributes_string = Excel.shade_attributes(**attributes)
+            second_pattern_fill = eval(f"PatternFill({second_attributes_string})")
 
-        main_pattern_fill = eval(f"PatternFill({main_attributes_string})")
-        second_pattern_fill = eval(f"PatternFill({second_attributes_string})")
-        for row in range(start_row, end_row + 1):
-            for column in range(start_column, end_column + 1):
-                self.active_sheet.cell(row = row, column = column).fill = main_pattern_fill
+            for row in range(start_row, end_row + 1):
+                for column in range(start_column, end_column + 1):
+                    if(column % 2 != 0):
+                        self.active_sheet.cell(row = row, column = column).fill = main_pattern_fill
 
-                if(shade and column % 2 == 0):
-                    self.active_sheet.cell(row = row, column = column).fill = second_pattern_fill
+                    elif(column % 2 == 0):
+                        self.active_sheet.cell(row = row, column = column).fill = second_pattern_fill
+
+
+        elif(not shade):
+            for row in range(start_row, end_row + 1):
+                for column in range(start_column, end_column + 1):
+                    self.active_sheet.cell(row = row, column = column).fill = main_pattern_fill
     
 
     #endregion Fill

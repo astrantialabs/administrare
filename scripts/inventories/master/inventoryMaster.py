@@ -197,27 +197,39 @@ class InventoryMaster():
         InventoryMaster.writeHeaderInventory(workbook, dependencyData)
         InventoryMaster.writeMainInventory(workbook, inventoryMasterDocument, dependencyData)
 
-        workbook.set_width("A", 59)
-        workbook.set_width("B", 320)
-        workbook.set_width("C", 87)
-        workbook.set_width("D", 68)
-        workbook.set_width("E", 106)
-        workbook.set_width("F", 141)
-        workbook.set_width("G", 77)
-        workbook.set_width("H", 109)
-        workbook.set_width("I", 141)
-        workbook.set_width("J", 71)
-        workbook.set_width("K", 116)
-        workbook.set_width("L", 141) 
-        workbook.set_width("M", 73) 
-        workbook.set_width("N", 111) 
-        workbook.set_width("O", 141) 
-        workbook.set_width("P", 69) 
-        workbook.set_width("Q", 111) 
-        workbook.set_width("R", 141) 
+        setWidthArray = [
+            ["A", 59],
+            ["B", 320],
+            ["C", 87],
+            ["D", 68],
+            ["E", 106],
+            ["F", 141],
+            ["G", 77],
+            ["H", 109],
+            ["I", 141],
+            ["J", 71],
+            ["K", 116],
+            ["L", 141],
+            ["M", 73],
+            ["N", 111],
+            ["O", 141],
+            ["P", 69],
+            ["Q", 111],
+            ["R", 141]
+        ]
 
-        workbook.set_height(4, 43)
-        workbook.set_height(5, 61)
+        for setWidthItem in setWidthArray:
+            workbook.set_width(setWidthItem[0], setWidthItem[1])
+
+
+        setHeightArray = [
+            [4, 43],
+            [5, 61]
+        ]
+
+        for setHeightItem in setHeightArray:
+            workbook.set_height(setHeightItem[0], setHeightItem[1])
+
 
         workbook.save()
 
@@ -457,7 +469,246 @@ class InventoryMaster():
 
         #endregion footer
 
+
+    # ------------------------------------ STOCK ----------------------------------- #
+
+    def writeStock(currentDate):
+        filePath = f"../{Dependency.inventoryMasterFolderPath}/Stock {currentDate}.xlsx"
+
+        collection = Database.getCollection(Dependency.mongoDBURI, Dependency.databaseInventory, Dependency.collectionInventoryMaster)
+        inventoryMasterDocument = collection.find_one({"tahun": 2022})
+
+        dependencyData = InventoryMaster.getTranslatedDependencyData()
+
+        Excel.create_file(filePath)
+        workbook = Excel(filePath)
+        workbook.change_sheet_name("Sheet", f"Stok Opname TW {dependencyData['semester']} {dependencyData['tahun_akhir']}")
+        workbook.set_zoom(85)
+
+        InventoryMaster.writeHeaderStock(workbook, dependencyData)
+        heightRowCount = InventoryMaster.writeMainStock(workbook, inventoryMasterDocument, dependencyData)
+
+        setWidthArray = [
+            ["A", 31],
+            ["B", 99],
+            ["C", 356],
+            ["D", 95],
+            ["E", 91],
+            ["F", 99],
+            ["G", 121],
+            ["H", 185],
+            ["I", 185]
+        ]
+
+        for setWidthItem in setWidthArray:
+            workbook.set_width(setWidthItem[0], setWidthItem[1])
+
+
+        setHeightArray = [
+            [6, 53]
+        ]
+
+        for setHeightItem in setHeightArray:
+            workbook.set_height(setHeightItem[0], setHeightItem[1])
+
         
+        for setHeightItem in [[x, 40] for x in range(7, heightRowCount + 1)]:
+            workbook.set_height(setHeightItem[0], setHeightItem[1])
+
+
+        workbook.fill_multiple(["A", 1], ["I", heightRowCount], type = "solid", main_color = "ffffff")
+    
+        workbook.save()
+
+
+    def writeHeaderStock(workbook, dependencyData):
+        workbook.write_value_singular("B2", "RINCIAN HASIL PEMERIKSAAN BARANG PERSEDIAAN (STOK OPNAME)")
+        workbook.font_singular("B2", bold = True, size = 12)
+        workbook.alignment_singular("B2", horizontal = "center", vertical = "center")
+        workbook.merge("B2", "H2")
+
+        workbook.write_value_singular("B3", f"TAHUN {dependencyData['tahun_akhir']}")
+        workbook.font_singular("B3", bold = True, size = 12)
+        workbook.alignment_singular("B3", horizontal = "center", vertical = "center")
+        workbook.merge("B3", "H3")
+
+        workbook.write_value_singular("B4", "Dinas Ketenagakerjaan Kota Balikpapan")
+        workbook.font_singular("B4", bold = True, size = 14)
+        workbook.alignment_singular("B4", horizontal = "center", vertical = "bottom")
+        workbook.merge("B4", "H4")
+
+        workbook.write_value_multiple("B6", "H6", ["KODE", "NAMA REKENING/BARANG", "VOLUME", "SATUAN", "SATUAN HARGA", "NILAI", "KETERANGAN"])
+        workbook.font_multiple("B6", "H6", bold = True, size = 12)
+        workbook.alignment_multiple("B6", "H6", horizontal = "center", vertical = "center", wrap = True)
+        workbook.border_multiple("B6", "H6", "all", style = "thick")
+
+
+    def writeMainStock(workbook, inventoryMasterDocument, dependencyData):
+        rowCount = 7
+
+        InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
+        rowCount += 1
+
+        InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
+        workbook.write_value_singular(["C", rowCount], "Persediaan")
+        workbook.font_singular(["C", rowCount], bold = True)
+        workbook.alignment_singular(["C", rowCount], horizontal = "left", vertical = "center")
+        workbook.merge(["C", rowCount], ["E", rowCount])
+        rowCount += 1
+
+        InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
+        workbook.write_value_singular(["C", rowCount], "Persediaan Bahan Pakai Habis")
+        workbook.font_singular(["C", rowCount], bold = True)
+        workbook.alignment_singular(["C", rowCount], horizontal = "left",  vertical = "center")
+        workbook.merge(["C", rowCount], ["E", rowCount])
+        rowCount += 1
+
+        saldoAkhirTotal = 0
+        categoryCount = 0
+        for category in inventoryMasterDocument["kategori"]:
+            if(category["active"] == True):
+                InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
+                workbook.write_value_multiple(["B", rowCount], ["C", rowCount], [category["rekening"], f"Persediaan {category['kategori']}"])
+                workbook.font_multiple(["B", rowCount], ["C", rowCount], bold = True)
+                workbook.alignment_singular(["B", rowCount], horizontal = "left", vertical = "center", wrap = True)
+                workbook.alignment_singular(["C", rowCount], horizontal = "left", vertical = "center")
+                workbook.merge(["C", rowCount], ["E", rowCount])
+                categoryCount += 1
+                rowCount += 1
+
+                saldoAkhirSubTotal = 0
+                itemCount = 0
+                for item in category["barang"]:
+                    if(item["active"] == True):
+                        InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
+
+                        value = [
+                            item["nama"],
+                            item["saldo_akhir_jumlah_satuan"],
+                            item["satuan"],
+                            item["harga_satuan"],
+                            item["saldo_akhir_jumlah_satuan"] * item["harga_satuan"]
+                        ]
+
+                        workbook.write_value_multiple(["C", rowCount], ["G", rowCount], value)
+                       
+                        workbook.font_multiple(["C", rowCount], ["F", rowCount], size = 10)
+                        workbook.font_singular(["G", rowCount], size = 11)
+
+                        workbook.alignment_singular(["C", rowCount], horizontal = "left", vertical = "center")
+                        workbook.alignment_multiple(["D", rowCount], ["F", rowCount], horizontal = "center", vertical = "center")
+                        workbook.alignment_singular(["G", rowCount], horizontal = "left", vertical = "center")
+
+                        saldoAkhirSubTotal += value[4]
+                        itemCount += 1
+                        categoryCount += 1
+                        rowCount += 1
+
+
+                saldoAkhirSubTotalTop = rowCount - itemCount - 1
+                workbook.write_value_singular(["G", saldoAkhirSubTotalTop], saldoAkhirSubTotal)
+                workbook.font_singular(["G", saldoAkhirSubTotalTop], bold = True)
+                workbook.alignment_singular(["G", saldoAkhirSubTotalTop], horizontal = "left",  vertical = "center")
+
+                InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
+                workbook.write_value_singular(["G", rowCount], saldoAkhirSubTotal)
+                workbook.alignment_singular(["G", rowCount], horizontal = "left",  vertical = "center")
+                categoryCount += 1
+                rowCount += 1
+
+                InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
+                saldoAkhirTotal += saldoAkhirSubTotal
+                categoryCount += 1
+                rowCount += 1
+        
+
+        heightRowCount = rowCount
+
+        saldoAkhirTotalTop = rowCount - categoryCount - 1
+        workbook.write_value_singular(["G", saldoAkhirTotalTop], saldoAkhirTotal)
+        workbook.font_singular(["G", saldoAkhirTotalTop], bold = True)
+        workbook.alignment_singular(["G", saldoAkhirTotalTop], horizontal = "left",  vertical = "center")
+        rowCount += 1
+
+        #region footer
+
+        workbook.write_value_singular(["E", rowCount], f"Balikpapan, {dependencyData['tanggal_akhir']} {dependencyData['bulan_akhir']} {dependencyData['tahun_akhir']}")
+        workbook.font_singular(["E", rowCount], bold = True)
+        workbook.alignment_singular(["E", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["E", rowCount], ["H", rowCount])
+        rowCount += 2
+
+        workbook.write_value_singular(["B", rowCount], "KASUBAG PROGRAM DAN KEUANGAN")
+        workbook.font_singular(["B", rowCount], bold = True)
+        workbook.alignment_singular(["B", rowCount], horizontal = "center", vertical = "center")
+        workbook.merge(["B", rowCount], ["C", rowCount])
+
+        workbook.write_value_singular(["E", rowCount], "Pengurus Barang Pengguna")
+        workbook.font_singular(["E", rowCount], bold = True)
+        workbook.alignment_singular(["E", rowCount], horizontal = "center", vertical = "center")
+        workbook.merge(["E", rowCount], ["H", rowCount])
+        rowCount += 4
+
+        workbook.write_value_singular(["B", rowCount], f"{dependencyData['kasubag_program_dan_keuangan'].upper()}")
+        workbook.font_singular(["B", rowCount], bold = True, underline = "single")
+        workbook.alignment_singular(["B", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["B", rowCount], ["C", rowCount])
+
+        workbook.write_value_singular(["E", rowCount], f"{dependencyData['pengurus_barang_pengguna'].upper()}")
+        workbook.font_singular(["E", rowCount], bold = True, underline = "single")
+        workbook.alignment_singular(["E", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["E", rowCount], ["H", rowCount])
+        rowCount += 1
+
+        workbook.write_value_singular(["D", rowCount], f"Mengetahui :")
+        workbook.font_singular(["D", rowCount], bold = True)
+        workbook.alignment_singular(["D", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["D", rowCount], ["E", rowCount])
+        rowCount += 2
+
+        workbook.write_value_singular(["B", rowCount], "KEPALA DINAS KETENAGAKERJAAN")
+        workbook.font_singular(["B", rowCount], bold = True)
+        workbook.alignment_singular(["B", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["B", rowCount], ["C", rowCount])
+
+        workbook.write_value_singular(["E", rowCount], "KASUBAG UMUM")
+        workbook.font_singular(["E", rowCount], bold = True)
+        workbook.alignment_singular(["E", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["E", rowCount], ["H", rowCount])
+        rowCount += 1
+
+        workbook.write_value_singular(["B", rowCount], "KOTA BALIKPAPAN")
+        workbook.font_singular(["B", rowCount], bold = True)
+        workbook.alignment_singular(["B", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["B", rowCount], ["C", rowCount])
+        rowCount += 4
+
+        workbook.write_value_singular(["B", rowCount], f"{dependencyData['kepala_dinas_ketenagakerjaan'].upper()}")
+        workbook.font_singular(["B", rowCount], bold = True, underline = "single")
+        workbook.alignment_singular(["B", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["B", rowCount], ["C", rowCount])
+
+        workbook.write_value_singular(["E", rowCount], f"{dependencyData['plt_kasubag_umum'].upper()}")
+        workbook.font_singular(["E", rowCount], bold = True, underline = "single")
+        workbook.alignment_singular(["E", rowCount], horizontal = "center", vertical = "bottom")
+        workbook.merge(["E", rowCount], ["H", rowCount])
+        rowCount += 3
+
+        InventoryMaster.generateFooterImage(dependencyData["sekretaris_dinas"], (344, 73))
+        excelImage = ExcelImage("./media/master footer/Master Footer Image.png")
+        workbook.active_sheet.add_image(excelImage, f"C{rowCount}")
+
+        #endregion footer
+
+        return heightRowCount
+
+    
+    def borderSideThick(workbook, start_range, end_range):
+        workbook.border_multiple(start_range, end_range, "all", style = "thin")
+
+        workbook.side_thick_border(start_range, end_range)
+
+
     # ------------------------------------ UTILITY ----------------------------------- #
 
     def generateFooterImage(text, finalSize):
