@@ -72,8 +72,16 @@ const AuthenticationLogin: NextPage<PageProps> = () => {
                                     axios
                                         .post("/__api/auth/user/login", payload, { withCredentials: true })
                                         .then((response) => {
-                                            action.setSubmitting(false);
-                                            Router.push("/");
+                                            if (response.data == "Invalid username or password.") {
+                                                action.setSubmitting(false);
+                                                action.setErrors({
+                                                    username: "Username atau password salah",
+                                                    password: "Username atau password salah",
+                                                });
+                                            } else if (response.data != "Invalid username or password.") {
+                                                action.setSubmitting(false);
+                                                Router.push("/");
+                                            }
                                         })
                                         .catch((error) => {
                                             action.setSubmitting(false);
