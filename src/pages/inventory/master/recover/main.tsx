@@ -356,6 +356,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -373,6 +375,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -402,6 +406,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -419,6 +425,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -448,6 +456,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -465,6 +475,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -494,6 +506,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -511,6 +525,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -540,6 +556,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -557,6 +575,8 @@ const InventoryRecoverIndex: NextPage<PageProps> = ({ tableData, categories, cat
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");

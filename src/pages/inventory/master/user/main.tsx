@@ -134,6 +134,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -149,6 +151,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.saldo)
                                         .replace(/\IDR/g, "")}
@@ -162,6 +166,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -191,6 +197,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -206,6 +214,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.mutasi_barang_masuk_sebelum_pajak)
                                         .replace(/\IDR/g, "")}
@@ -219,6 +229,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -248,6 +260,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -263,6 +277,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.mutasi_barang_masuk)
                                         .replace(/\IDR/g, "")}
@@ -276,6 +292,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -298,6 +316,20 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                         accessor: "harga_satuan",
                         id: "mutasi_barang_keluar_jumlah_satuan_rp_id",
                         Footer: "",
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                     {
                         Header: "Jumlah (Rp)",
@@ -308,6 +340,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.mutasi_barang_keluar)
                                         .replace(/\IDR/g, "")}
@@ -321,6 +355,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -343,6 +379,20 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                         accessor: "harga_satuan",
                         id: "saldo_akhir_jumlah_satuan_rp_id",
                         Footer: "",
+                        Cell: ({ value }: any) => {
+                            if (value === "") {
+                                return <span></span>;
+                            } else {
+                                return Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
+                                })
+                                    .format(value)
+                                    .replace(/\IDR/g, "");
+                            }
+                        },
                     },
                     {
                         Header: "Jumlah (Rp)",
@@ -353,6 +403,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.saldo_akhir)
                                         .replace(/\IDR/g, "")}
@@ -366,6 +418,8 @@ const InventoryIndex: NextPage<PageProps> = ({ tableData, categories, categories
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");

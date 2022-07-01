@@ -340,6 +340,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -355,6 +357,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.saldo)
                                         .replace(/\IDR/g, "")}
@@ -368,6 +372,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -397,6 +403,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -412,6 +420,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.mutasi_barang_masuk_sebelum_pajak)
                                         .replace(/\IDR/g, "")}
@@ -425,6 +435,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -454,6 +466,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -469,6 +483,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.mutasi_barang_masuk)
                                         .replace(/\IDR/g, "")}
@@ -482,6 +498,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -511,6 +529,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -526,6 +546,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.mutasi_barang_keluar)
                                         .replace(/\IDR/g, "")}
@@ -539,6 +561,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
