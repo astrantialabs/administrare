@@ -1379,8 +1379,9 @@ export class MasterInventoryService {
         const current_date = slugifyDate(currentDate());
         const rawResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/raw/${current_date}`);
         const inventoryResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/inventory/${current_date}`);
+        const stockResponse = await pythonAxiosInstance.post(`/__api/inventory/master/download/stock/${current_date}`);
 
-        if (rawResponse.data.success && inventoryResponse.data.success) {
+        if (rawResponse.data.success && inventoryResponse.data.success && stockResponse.data.success) {
             pythonAxiosInstance.post("/__api/inventory/master/update/option");
         }
     }
