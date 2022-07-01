@@ -161,6 +161,7 @@ class InventoryMaster():
                 workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical="center")
                 workbook.alignment_multiple(["C", rowCount], ["J", rowCount], horizontal = "center", vertical="center")
                 workbook.border_multiple(["A", rowCount], ["N", rowCount], "all", style="thin")
+                workbook.change_cell_number_format_multiple(["D", rowCount], ["E", rowCount], '#,##0')
 
                 rowCount += 1
                 itemCount += 1
@@ -363,6 +364,19 @@ class InventoryMaster():
                         workbook.alignment_singular(["B", rowCount], vertical = "top", horizontal = "left", wrap = True)
                         workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
 
+                        numberFormatArray = [
+                            ["E", "F"],
+                            ["H", "I"],
+                            ["K", "L"],
+                            ["N", "O"],
+                            ["Q", "R"]
+                        ]
+
+                        for numberFormatItem in numberFormatArray:
+                            workbook.alignment_multiple([numberFormatItem[0], rowCount], [numberFormatItem[1], rowCount], horizontal = "right", vertical = "center")
+                            workbook.change_cell_number_format_multiple([numberFormatItem[0], rowCount], [numberFormatItem[1], rowCount], '#,##0')
+
+
                         rowCount += 1
                         itemCount += 1
         
@@ -381,6 +395,12 @@ class InventoryMaster():
                 workbook.font_multiple(["A", rowCount], ["R", rowCount], size = 10, bold = True)
                 workbook.alignment_multiple(["A", rowCount], ["R", rowCount], vertical = "top")
                 workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
+
+                numberFormatArray = ["F", "I", "L", "O", "R"]
+                for numberFormatItem in numberFormatArray:
+                    workbook.alignment_singular([numberFormatItem, rowCount], horizontal = "right", vertical = "center")
+                    workbook.change_cell_number_format_singular([numberFormatItem, rowCount], '#,##0')
+
 
                 if(categoryCount == 1):
                     footerString += f" {romanNumeral}"
@@ -413,6 +433,11 @@ class InventoryMaster():
         workbook.font_multiple(["D", rowCount], ["R", rowCount], size = 11, bold = True)
         workbook.alignment_multiple(["A", rowCount], ["R", rowCount], vertical = "top")
         workbook.border_multiple(["A", rowCount], ["R", rowCount], "all", style = "thin")
+
+        numberFormatArray = ["F", "I", "L", "O", "R"]
+        for numberFormatItem in numberFormatArray:
+            workbook.alignment_singular([numberFormatItem, rowCount], horizontal = "right", vertical = "center")
+            workbook.change_cell_number_format_singular([numberFormatItem, rowCount], '#,##0')
 
         #endregion total
 
@@ -598,8 +623,9 @@ class InventoryMaster():
                         workbook.font_singular(["G", rowCount], size = 11)
 
                         workbook.alignment_singular(["C", rowCount], horizontal = "left", vertical = "center")
-                        workbook.alignment_multiple(["D", rowCount], ["F", rowCount], horizontal = "center", vertical = "center")
-                        workbook.alignment_singular(["G", rowCount], horizontal = "left", vertical = "center")
+                        workbook.alignment_multiple(["D", rowCount], ["E", rowCount], horizontal = "center", vertical = "center")
+                        workbook.alignment_multiple(["F", rowCount], ["G", rowCount], horizontal = "right", vertical = "center")
+                        workbook.change_cell_number_format_multiple(["F", rowCount], ["G", rowCount], '#,##0')
 
                         saldoAkhirSubTotal += value[4]
                         itemCount += 1
@@ -610,11 +636,13 @@ class InventoryMaster():
                 saldoAkhirSubTotalTop = rowCount - itemCount - 1
                 workbook.write_value_singular(["G", saldoAkhirSubTotalTop], saldoAkhirSubTotal)
                 workbook.font_singular(["G", saldoAkhirSubTotalTop], bold = True)
-                workbook.alignment_singular(["G", saldoAkhirSubTotalTop], horizontal = "left",  vertical = "center")
+                workbook.alignment_singular(["G", saldoAkhirSubTotalTop], horizontal = "right",  vertical = "center")
+                workbook.change_cell_number_format_singular(["G", saldoAkhirSubTotalTop], '#,##0')
 
                 InventoryMaster.borderSideThick(workbook, ["B", rowCount], ["H", rowCount])
                 workbook.write_value_singular(["G", rowCount], saldoAkhirSubTotal)
-                workbook.alignment_singular(["G", rowCount], horizontal = "left",  vertical = "center")
+                workbook.alignment_singular(["G", rowCount], horizontal = "right",  vertical = "center")
+                workbook.change_cell_number_format_singular(["G", rowCount], '#,##0')
                 categoryCount += 1
                 rowCount += 1
 
@@ -629,7 +657,8 @@ class InventoryMaster():
         saldoAkhirTotalTop = rowCount - categoryCount - 1
         workbook.write_value_singular(["G", saldoAkhirTotalTop], saldoAkhirTotal)
         workbook.font_singular(["G", saldoAkhirTotalTop], bold = True)
-        workbook.alignment_singular(["G", saldoAkhirTotalTop], horizontal = "left",  vertical = "center")
+        workbook.alignment_singular(["G", saldoAkhirTotalTop], horizontal = "right",  vertical = "center")
+        workbook.change_cell_number_format_singular(["G", saldoAkhirTotalTop], '#,##0')
         rowCount += 1
 
         #region footer
