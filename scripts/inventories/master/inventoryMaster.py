@@ -101,6 +101,7 @@ class InventoryMaster():
             "No.",
             "Nama",
             "Satuan",
+            "Harga Satuan Sebelum Pajak",
             "Harga Satuan",
             "Saldo Jumlah Satuan",
             "Mutasi Barang Masuk Jumlah Satuan",
@@ -113,10 +114,10 @@ class InventoryMaster():
             "Aktif"
         ]
 
-        workbook.write_value_multiple("A1", "M1", headerValue)
-        workbook.font_multiple("A1", "M1", bold = True, size = 12)
-        workbook.alignment_multiple("A1", "M1", horizontal = "center", vertical = "center")
-        workbook.border_multiple("A1", "M1", "all", style="thin")
+        workbook.write_value_multiple("A1", "N1", headerValue)
+        workbook.font_multiple("A1", "N1", bold = True, size = 12)
+        workbook.alignment_multiple("A1", "N1", horizontal = "center", vertical = "center")
+        workbook.border_multiple("A1", "N1", "all", style="thin")
 
 
     def writeMainRaw(workbook, inventoryMasterDocument):
@@ -125,13 +126,13 @@ class InventoryMaster():
         categoryCount = 1
         for categoryObject in inventoryMasterDocument.get("kategori"):
             workbook.write_value_multiple(["A", rowCount], ["B", rowCount], [Utility.romanNumeral(categoryCount), categoryObject.get("kategori")])
-            workbook.write_value_multiple(["J", rowCount], ["K", rowCount], [categoryObject.get("created_at"), categoryObject.get("updated_at")])
-            workbook.write_value_singular(["M", rowCount], Utility.convertActive(categoryObject.get("active")))
+            workbook.write_value_multiple(["K", rowCount], ["L", rowCount], [categoryObject.get("created_at"), categoryObject.get("updated_at")])
+            workbook.write_value_singular(["N", rowCount], Utility.convertActive(categoryObject.get("active")))
 
 
-            workbook.font_multiple(["A", rowCount], ["M", rowCount], bold = True)
+            workbook.font_multiple(["A", rowCount], ["N", rowCount], bold = True)
             workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical = "center")
-            workbook.border_multiple(["A", rowCount], ["M", rowCount], "all", style="thin")
+            workbook.border_multiple(["A", rowCount], ["N", rowCount], "all", style="thin")
 
             rowCount += 1
 
@@ -141,6 +142,7 @@ class InventoryMaster():
                     itemCount,
                     itemObject.get("nama"),
                     itemObject.get("satuan"),
+                    itemObject.get("harga_satuan_sebelum_pajak"),
                     itemObject.get("harga_satuan"),
                     itemObject.get("saldo_jumlah_satuan"),
                     itemObject.get("mutasi_barang_masuk_jumlah_satuan"),
@@ -153,18 +155,18 @@ class InventoryMaster():
                     Utility.convertActive(itemObject.get("active"))
                 ]
 
-                workbook.write_value_multiple(["A", rowCount], ["M", rowCount], itemValue)
+                workbook.write_value_multiple(["A", rowCount], ["N", rowCount], itemValue)
 
-                workbook.font_multiple(["A", rowCount], ["M", rowCount], size = 10)
+                workbook.font_multiple(["A", rowCount], ["N", rowCount], size = 10)
                 workbook.alignment_singular(["A", rowCount], horizontal = "center", vertical="center")
-                workbook.alignment_multiple(["C", rowCount], ["I", rowCount], horizontal = "center", vertical="center")
-                workbook.border_multiple(["A", rowCount], ["M", rowCount], "all", style="thin")
+                workbook.alignment_multiple(["C", rowCount], ["J", rowCount], horizontal = "center", vertical="center")
+                workbook.border_multiple(["A", rowCount], ["N", rowCount], "all", style="thin")
 
                 rowCount += 1
                 itemCount += 1
 
 
-            workbook.border_multiple(["A", rowCount], ["M", rowCount], "all", style="thin")
+            workbook.border_multiple(["A", rowCount], ["N", rowCount], "all", style="thin")
             rowCount += 1
             categoryCount += 1
 
@@ -172,11 +174,11 @@ class InventoryMaster():
         workbook.adjust_width("A1", ["C", rowCount], extra_width = 1, width_limit = 40)
         workbook.alignment_singular("B1", horizontal = "center", vertical = "center")
 
-        workbook.adjust_width("D1", ["I", rowCount], extra_width = 1, width_limit = 15)
-        workbook.alignment_multiple("D1", ["I", rowCount], horizontal = "center", vertical = "center", wrap = True)
+        workbook.adjust_width("D1", ["J", rowCount], extra_width = 1, width_limit = 15)
+        workbook.alignment_multiple("D1", ["J", rowCount], horizontal = "center", vertical = "center", wrap = True)
 
-        workbook.adjust_width("J1", ["M", rowCount], extra_width = 1)
-        workbook.alignment_multiple("M1", ["M", rowCount], horizontal = "center", vertical = "center")
+        workbook.adjust_width("K1", ["N", rowCount], extra_width = 1)
+        workbook.alignment_multiple("K1", ["N", rowCount], horizontal = "center", vertical = "center")
 
 
     # ------------------------------------ INVENTORY ----------------------------------- #
