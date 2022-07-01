@@ -646,10 +646,10 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                     <LinkOverlay href="/inventory/recover">Pulihkan Data Terhapus</LinkOverlay>
                 </Button>
                 <Button>
-                    <LinkOverlay href="/inventory/download">Download Excel</LinkOverlay>
+                    <LinkOverlay href="/inventory/download">Download File</LinkOverlay>
                 </Button>
                 <Button>
-                    <LinkOverlay href="/inventory/update/dependency">Perbarui Teks Excel</LinkOverlay>
+                    <LinkOverlay href="/inventory/update/dependency">Perbarui Teks File</LinkOverlay>
                 </Button>
             </ButtonGroup>
         </Sidebar>
