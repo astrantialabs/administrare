@@ -455,6 +455,96 @@ export class DemandInventoryService {
         }
     }
 
+    public async demandCancelKategoriById(year: number, id: number): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
+        try {
+            const demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+
+            let demand_category_id_is_valud: boolean = false;
+            let demand_category_is_cancelable: boolean = false;
+            demand_data.kategori.forEach((demand_category_object: DemandKategori) => {
+                if (demand_category_object.id == id) {
+                    demand_category_id_is_valud = true;
+
+                    if (demand_category_object.status == 1) {
+                        demand_category_is_cancelable = true;
+                    }
+                }
+            });
+
+            if (demand_category_id_is_valud) {
+                if (demand_category_is_cancelable) {
+                    let responded_demand_kategori: DemandKategori;
+
+                    demand_data.kategori.forEach((demand_kategori_object: DemandKategori) => {
+                        if (demand_kategori_object.id == id) {
+                            demand_kategori_object.responded_at = null;
+                            demand_kategori_object.status = 0;
+
+                            responded_demand_kategori = demand_kategori_object;
+                        }
+                    });
+
+                    this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                    return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Pengajuan kategori dengan id ${id} berhasil dibatalkan.`, {
+                        demand_category: responded_demand_kategori,
+                    });
+                } else if (!demand_category_is_cancelable) {
+                    return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} tidak bisa dibatalkan.`, null);
+                }
+            } else if (!demand_category_id_is_valud) {
+                return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} gagal ditemukan.`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
+    }
+
+    public async demandCancelBarangById(year: number, id: number): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
+        try {
+            const demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+
+            let demand_item_id_is_valud: boolean = false;
+            let demand_item_is_cancelable: boolean = false;
+            demand_data.barang.forEach((demand_item_object: DemandBarang) => {
+                if (demand_item_object.id == id) {
+                    demand_item_id_is_valud = true;
+
+                    if (demand_item_object.status == 1) {
+                        demand_item_is_cancelable = true;
+                    }
+                }
+            });
+
+            if (demand_item_id_is_valud) {
+                if (demand_item_is_cancelable) {
+                    let responded_demand_barang: DemandBarang;
+
+                    demand_data.barang.forEach((demand_barang_object: DemandBarang) => {
+                        if (demand_barang_object.id == id) {
+                            demand_barang_object.responded_at = null;
+                            demand_barang_object.status = 0;
+
+                            responded_demand_barang = demand_barang_object;
+                        }
+                    });
+
+                    this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                    return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Pengajuan barang dengan id ${id} berhasil dibatalkan.`, {
+                        demand_item: responded_demand_barang,
+                    });
+                } else if (!demand_item_is_cancelable) {
+                    return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} tidak bisa dibatalkan.`, null);
+                }
+            } else if (!demand_item_id_is_valud) {
+                return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} gagal ditemukan.`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
+    }
+
     /* -------------------------------- DOWNLOAD -------------------------------- */
 
     public async demandDownloadOption() {

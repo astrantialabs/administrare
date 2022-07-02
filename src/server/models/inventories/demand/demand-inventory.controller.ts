@@ -164,6 +164,18 @@ export class DemandInventoryController {
         return await this.demandInventoryService.demandResponseBarangById(2022, id, status);
     }
 
+    @Put("cancel/kategori/:id")
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async demandCancelKategoriById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
+        return await this.demandInventoryService.demandCancelKategoriById(2022, id);
+    }
+
+    @Put("cancel/barang/:id")
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async demandCancelBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
+        return await this.demandInventoryService.demandCancelBarangById(2022, id);
+    }
+
     /* -------------------------------- DOWNLOAD -------------------------------- */
 
     @Get("download/option")
