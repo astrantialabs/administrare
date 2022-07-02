@@ -292,26 +292,27 @@ class InventoryRequest():
                 if(dateIsValid):
                     fileName = " ".join(fileNameArray[0:-1])
 
-                    fileNameIsValid = True
-                    for fileItem in fileOptionArray:
-                        if(fileItem[0] == fileName):
-                            fileNameIsValid = False
-
-                    
-                    if(fileNameIsValid):
-                        fileOptionArray.append([fileName, [[formattedFileDate, False]]])
-
-                    elif(not fileNameIsValid):
+                    if(fileName in ["Mentah"]):
+                        fileNameIsValid = True
                         for fileItem in fileOptionArray:
                             if(fileItem[0] == fileName):
+                                fileNameIsValid = False
 
-                                fileItemArrayIsValid = True
-                                for fileItemArray in fileItem[1]:
-                                    if(fileItemArray[0] == formattedFileDate):
-                                        fileItemArrayIsValid = False
-                                
-                                if(fileItemArrayIsValid):
-                                    fileItem[1].append([formattedFileDate, False])
+                        
+                        if(fileNameIsValid):
+                            fileOptionArray.append([fileName, [[formattedFileDate, False]]])
+
+                        elif(not fileNameIsValid):
+                            for fileItem in fileOptionArray:
+                                if(fileItem[0] == fileName):
+
+                                    fileItemArrayIsValid = True
+                                    for fileItemArray in fileItem[1]:
+                                        if(fileItemArray[0] == formattedFileDate):
+                                            fileItemArrayIsValid = False
+                                    
+                                    if(fileItemArrayIsValid):
+                                        fileItem[1].append([formattedFileDate, False])
 
 
         fileOptionData = []
