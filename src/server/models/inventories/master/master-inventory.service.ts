@@ -175,6 +175,7 @@ export class MasterInventoryService {
                 category_object.barang.forEach((item_object: MasterBarang) => {
                     if (item_object.id == item_id) {
                         item_object.jumlah_permintaan += total;
+                        item_object.updated_at = currentDate();
 
                         updated_item_object = item_object;
                     }
@@ -210,8 +211,8 @@ export class MasterInventoryService {
                     if (master_item_object.id == item_id) {
                         if (status == 1) {
                             master_item_object.mutasi_barang_keluar_jumlah_satuan += total;
-
                             master_item_object.jumlah_permintaan -= total;
+                            master_item_object.updated_at = currentDate();
 
                             master_item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
                                 master_item_object.saldo_jumlah_satuan,
@@ -237,8 +238,8 @@ export class MasterInventoryService {
                 master_category_object.barang.forEach((master_item_object: MasterBarang) => {
                     if (master_item_object.id == item_id) {
                         master_item_object.mutasi_barang_keluar_jumlah_satuan -= total;
-
                         master_item_object.jumlah_permintaan += total;
+                        master_item_object.updated_at = currentDate();
 
                         master_item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
                             master_item_object.saldo_jumlah_satuan,
@@ -840,6 +841,7 @@ export class MasterInventoryService {
                         master_inventory_data.kategori.forEach((category_object: MasterKategori) => {
                             if (category_object.id == category_id) {
                                 category_object.active = false;
+                                category_object.updated_at = currentDate();
                                 deleted_category_object = category_object;
 
                                 this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
@@ -921,6 +923,7 @@ export class MasterInventoryService {
                                         category_object.barang.forEach((item_object, index) => {
                                             if (item_object.id == item_id) {
                                                 item_object.active = false;
+                                                item_object.updated_at = currentDate();
                                                 deleted_item_object = item_object;
 
                                                 this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
@@ -986,6 +989,7 @@ export class MasterInventoryService {
                     master_inventory_data.kategori.forEach((category_object: MasterKategori, index: number) => {
                         if (category_object.id == category_id) {
                             category_object.active = true;
+                            category_object.updated_at = currentDate();
                             recovered_category_object = category_object;
 
                             this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
@@ -1042,6 +1046,7 @@ export class MasterInventoryService {
                                 category_object.barang.forEach((item_object) => {
                                     if (item_object.id == item_id) {
                                         item_object.active = true;
+                                        item_object.updated_at = currentDate();
                                         recovered_item_object = item_object;
 
                                         this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
