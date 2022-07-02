@@ -44,8 +44,8 @@ export const QueryDataFilter = <T extends unknown[]>(status: number, query: UseQ
     const current = currentDate();
     const currentDateObject = new Date(current);
     const data = query.data.sort((a: any, b: any) => {
-        const aDate = new Date(a.createdAt);
-        const bDate = new Date(b.createdAt);
+        const aDate = new Date(a.created_at);
+        const bDate = new Date(b.created_at);
         return bDate.getTime() - aDate.getTime();
     });
 
