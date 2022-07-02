@@ -257,24 +257,28 @@ export class DemandInventoryService {
      */
     public async demandCreateKategori(year: number, category: DemandCreateKategori): Promise<ResponseFormat<ResponseObject<DemandKategori>>> {
         try {
-            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(category.username)) {
+                let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
 
-            let new_category_demand: DemandKategori = {
-                id: demand_data.kategori.length + 1,
-                username: category.username,
-                kategori: category.kategori,
-                created_at: currentDate(),
-                responded_at: null,
-                status: 0,
-            };
+                let new_category_demand: DemandKategori = {
+                    id: demand_data.kategori.length + 1,
+                    username: category.username,
+                    kategori: category.kategori,
+                    created_at: currentDate(),
+                    responded_at: null,
+                    status: 0,
+                };
 
-            demand_data.kategori.push(new_category_demand);
+                demand_data.kategori.push(new_category_demand);
 
-            this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+                this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-            return responseFormat<ResponseObject<DemandKategori>>(true, 201, `Pengajuan kategori berhasil dibuat.`, {
-                demand_category: new_category_demand,
-            });
+                return responseFormat<ResponseObject<DemandKategori>>(true, 201, `Pengajuan kategori berhasil dibuat.`, {
+                    demand_category: new_category_demand,
+                });
+            } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(category.username)) {
+                return responseFormat<null>(false, 400, `Nama tidak boleh memiliki simbol.`, null);
+            }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
         }
@@ -290,43 +294,47 @@ export class DemandInventoryService {
      */
     public async demandCreateBarang(year: number, item: DemandCreateBarang): Promise<ResponseFormat<ResponseObject<DemandBarang>>> {
         try {
-            let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
-            let master_data: MasterInventoryDataDocument = await this.masterInventoryService.masterFindOne(year);
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(item.username)) {
+                let demand_data: DemandInventoryDataDocument = await this.demandFindOne(year);
+                let master_data: MasterInventoryDataDocument = await this.masterInventoryService.masterFindOne(year);
 
-            let category_id_is_valid: boolean = false;
-            let category_id_is_active: boolean;
-            master_data.kategori.forEach((category_object: MasterKategori) => {
-                if (category_object.id == item.kategori_id) {
-                    category_id_is_valid = true;
-                    category_id_is_active = category_object.active;
+                let category_id_is_valid: boolean = false;
+                let category_id_is_active: boolean;
+                master_data.kategori.forEach((category_object: MasterKategori) => {
+                    if (category_object.id == item.kategori_id) {
+                        category_id_is_valid = true;
+                        category_id_is_active = category_object.active;
+                    }
+                });
+
+                if (category_id_is_valid) {
+                    if (category_id_is_active) {
+                        let new_item_demand: DemandBarang = {
+                            id: demand_data.barang.length + 1,
+                            kategori_id: item.kategori_id,
+                            username: item.username,
+                            barang: item.barang,
+                            satuan: item.satuan,
+                            created_at: currentDate(),
+                            responded_at: null,
+                            status: 0,
+                        };
+
+                        demand_data.barang.push(new_item_demand);
+
+                        this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
+
+                        return responseFormat<ResponseObject<DemandBarang>>(true, 201, `Pengajuan barang berhasil dibuat.`, {
+                            demand_item: new_item_demand,
+                        });
+                    } else if (!category_id_is_active) {
+                        return responseFormat<null>(false, 400, `Kategori dengan id ${item.kategori_id} sudah dihapus`, null);
+                    }
+                } else if (!category_id_is_valid) {
+                    return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
                 }
-            });
-
-            if (category_id_is_valid) {
-                if (category_id_is_active) {
-                    let new_item_demand: DemandBarang = {
-                        id: demand_data.barang.length + 1,
-                        kategori_id: item.kategori_id,
-                        username: item.username,
-                        barang: item.barang,
-                        satuan: item.satuan,
-                        created_at: currentDate(),
-                        responded_at: null,
-                        status: 0,
-                    };
-
-                    demand_data.barang.push(new_item_demand);
-
-                    this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
-
-                    return responseFormat<ResponseObject<DemandBarang>>(true, 201, `Pengajuan barang berhasil dibuat.`, {
-                        demand_item: new_item_demand,
-                    });
-                } else if (!category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${item.kategori_id} sudah dihapus`, null);
-                }
-            } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
+            } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(item.username)) {
+                return responseFormat<null>(false, 400, `Nama tidak boleh memiliki simbol.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);

@@ -28,15 +28,17 @@ from inventories.demand.inventoryDemand import InventoryDemand
 
 class Test:
     def main():
+        print("Python Test")
         # print(InventoryMaster.getDependencyData())
         # print(InventoryMaster.getTranslatedDependencyData())
-        InventoryMaster.writeRaw(Utility.currentDate())
-        InventoryMaster.writeInventory(Utility.currentDate())
-        InventoryMaster.writeStock(Utility.currentDate())
+        # InventoryMaster.writeRaw(Utility.currentDate())
+        # InventoryMaster.writeInventory(Utility.currentDate())
+        # InventoryMaster.writeStock(Utility.currentDate())
 
         # InventoryRequest.updateUserData()
         # InventoryRequest.updateOptionData()
         # InventoryRequest.writeRaw(Utility.currentDate()) 
+        # InventoryRequest.writeUser(1, 1)
 
         # optionData = Utility.readJSON("./json/request_option_data.json")
         # for userObject in optionData:

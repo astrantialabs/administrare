@@ -178,93 +178,97 @@ export class RequestInventoryService {
      */
     public async requestCreateBarang(year: number, item: RequestCreateBarang): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
         try {
-            const master_data: MasterInventoryDataDocument = await this.masterInventoryService.masterFindOne(year);
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(item.username)) {
+                const master_data: MasterInventoryDataDocument = await this.masterInventoryService.masterFindOne(year);
 
-            let category_id_is_valid: boolean = false;
-            let item_id_is_valid: boolean = false;
-            let category_id_is_active: boolean;
-            let item_id_is_active: boolean;
-            master_data.kategori.forEach((category_object: MasterKategori) => {
-                if (category_object.id == item.kategori_id) {
-                    category_id_is_valid = true;
-                    category_id_is_active = category_object.active;
+                let category_id_is_valid: boolean = false;
+                let item_id_is_valid: boolean = false;
+                let category_id_is_active: boolean;
+                let item_id_is_active: boolean;
+                master_data.kategori.forEach((category_object: MasterKategori) => {
+                    if (category_object.id == item.kategori_id) {
+                        category_id_is_valid = true;
+                        category_id_is_active = category_object.active;
 
-                    category_object.barang.forEach((item_object: MasterBarang) => {
-                        if (item_object.id == item.barang_id) {
-                            item_id_is_valid = true;
-                            item_id_is_active = item_object.active;
-                        }
-                    });
-                }
-            });
+                        category_object.barang.forEach((item_object: MasterBarang) => {
+                            if (item_object.id == item.barang_id) {
+                                item_id_is_valid = true;
+                                item_id_is_active = item_object.active;
+                            }
+                        });
+                    }
+                });
 
-            if (category_id_is_valid) {
-                if (category_id_is_active) {
-                    if (item_id_is_valid) {
-                        if (item_id_is_active) {
-                            if (item.total > 0) {
-                                const jumlah_data: JumlahData = await this.masterInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
-                                    2022,
-                                    item.kategori_id,
-                                    item.barang_id
-                                );
-
-                                if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + item.total) {
-                                    const request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
-
-                                    const new_item: RequestBarang = {
-                                        id: (await this.requestGetBarangAll(2022)).result.request_item.length + 1,
-                                        kategori_id: item.kategori_id,
-                                        barang_id: item.barang_id,
-                                        username: item.username,
-                                        total: parseInt(item.total as unknown as string),
-                                        deskripsi: item.deskripsi,
-                                        created_at: currentDate(),
-                                        responded_at: null,
-                                        status: 0,
-                                    };
-
-                                    request_inventory_data.barang.push(new_item);
-
-                                    this.masterInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
+                if (category_id_is_valid) {
+                    if (category_id_is_active) {
+                        if (item_id_is_valid) {
+                            if (item_id_is_active) {
+                                if (item.total > 0) {
+                                    const jumlah_data: JumlahData = await this.masterInventoryService.masterGetSaldoAkhirAndPermintaanByKategoriIdAndBarangId(
                                         2022,
-                                        new_item.kategori_id,
-                                        new_item.barang_id,
-                                        new_item.total
+                                        item.kategori_id,
+                                        item.barang_id
                                     );
 
-                                    this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
+                                    if (jumlah_data.saldo_akhir >= jumlah_data.permintaan + item.total) {
+                                        const request_inventory_data: RequestInventoryDataDocument = await this.requestFindOne(year);
 
-                                    return responseFormat<ResponseObject<RequestBarang>>(true, 201, `Permintaan barang berhasil dibuat.`, {
-                                        request_item: new_item,
-                                    });
-                                } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + item.total) {
-                                    return responseFormat<null>(false, 400, `Saldo tidak cukup.`, null);
+                                        const new_item: RequestBarang = {
+                                            id: (await this.requestGetBarangAll(2022)).result.request_item.length + 1,
+                                            kategori_id: item.kategori_id,
+                                            barang_id: item.barang_id,
+                                            username: item.username,
+                                            total: parseInt(item.total as unknown as string),
+                                            deskripsi: item.deskripsi,
+                                            created_at: currentDate(),
+                                            responded_at: null,
+                                            status: 0,
+                                        };
+
+                                        request_inventory_data.barang.push(new_item);
+
+                                        this.masterInventoryService.masterIncreaseJumlahPermintaanByKategoriIdAndBarangId(
+                                            2022,
+                                            new_item.kategori_id,
+                                            new_item.barang_id,
+                                            new_item.total
+                                        );
+
+                                        this.requestInventoryDataModel.replaceOne({ tahun: year }, request_inventory_data, { upsert: true }).exec();
+
+                                        return responseFormat<ResponseObject<RequestBarang>>(true, 201, `Permintaan barang berhasil dibuat.`, {
+                                            request_item: new_item,
+                                        });
+                                    } else if (jumlah_data.saldo_akhir < jumlah_data.permintaan + item.total) {
+                                        return responseFormat<null>(false, 400, `Saldo tidak cukup.`, null);
+                                    }
+                                } else if (item.total <= 0) {
+                                    return responseFormat<null>(false, 400, `Total saldo barang yang diminta harus lebih dari 0.`, null);
                                 }
-                            } else if (item.total <= 0) {
-                                return responseFormat<null>(false, 400, `Total saldo barang yang diminta harus lebih dari 0.`, null);
+                            } else if (!item_id_is_active) {
+                                return responseFormat<null>(
+                                    false,
+                                    400,
+                                    `Barang dengan id ${item.barang_id} di dalam kategori dengan id ${item.kategori_id} sudah dihapus.`,
+                                    null
+                                );
                             }
-                        } else if (!item_id_is_active) {
+                        } else if (!item_id_is_valid) {
                             return responseFormat<null>(
                                 false,
                                 400,
-                                `Barang dengan id ${item.barang_id} di dalam kategori dengan id ${item.kategori_id} sudah dihapus.`,
+                                `Tidak ada barang dengan id ${item.barang_id} di dalam kategori dengan id ${item.kategori_id}.`,
                                 null
                             );
                         }
-                    } else if (!item_id_is_valid) {
-                        return responseFormat<null>(
-                            false,
-                            400,
-                            `Tidak ada barang dengan id ${item.barang_id} di dalam kategori dengan id ${item.kategori_id}.`,
-                            null
-                        );
+                    } else if (!category_id_is_active) {
+                        return responseFormat<null>(false, 400, `Kategori dengan id ${item.kategori_id} sudah dihapus.`, null);
                     }
-                } else if (!category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${item.kategori_id} sudah dihapus.`, null);
+                } else if (!category_id_is_valid) {
+                    return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
                 }
-            } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
+            } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(item.username)) {
+                return responseFormat<null>(false, 400, `Nama tidak boleh memiliki simbol.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -336,7 +340,7 @@ export class RequestInventoryService {
     }
 
     /* -------------------------------- DOWNLOAD -------------------------------- */
-    
+
     public async requestDownloadOption() {
         const response = await pythonAxiosInstance.post("/__api/inventory/request/update/option");
 

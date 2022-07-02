@@ -67,7 +67,7 @@ const InventoryMasterDownloadMain: NextPage = () => {
                                                             p={4}
                                                             onClick={() =>
                                                                 router
-                                                                    .push(`/__api/data/inventory/Master/download/user/${item.id}/date/${date.id}`)
+                                                                    .push(`/__api/data/inventory/master/download/user/${item.id}/date/${date.id}`)
                                                                     .then(() => {
                                                                         downloadMasterQuery.refetch();
                                                                     })
