@@ -167,6 +167,7 @@ const InventoryRequestManageCreateItem: NextPage = () => {
                             setCategoryId("");
                             setItem("");
                             resolve();
+                            window.location.reload();
                         }
                     })
                     .catch((error) => {

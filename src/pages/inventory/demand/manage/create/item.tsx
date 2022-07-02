@@ -80,6 +80,7 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                             actions.resetForm();
                             actions.setSubmitting(false);
                             resolve();
+                            window.location.reload();
                         }
                     })
                     .catch((error) => {
@@ -105,9 +106,10 @@ const InventoryDemandManageCreateItem: NextPage = () => {
                                 duration: 5000,
                                 isClosable: true,
                             });
-                            actions.setSubmitting(false);
-                            resolve();
                         }
+
+                        actions.setSubmitting(false);
+                        resolve();
                     });
             }, 1000);
         });

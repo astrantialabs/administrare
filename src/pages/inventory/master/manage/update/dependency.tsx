@@ -151,6 +151,7 @@ const InventoryMasterManageUpdateDependency: NextPage<PageProps> = ({ payload })
 
                             actions.setSubmitting(false);
                             resolve();
+                            window.location.reload();
                         } else if (!response.data.success) {
                             toast({
                                 title: "Excel text gagal diperbarui!",

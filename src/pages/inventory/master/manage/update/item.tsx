@@ -129,6 +129,7 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
 
                             actions.setSubmitting(false);
                             resolve();
+                            window.location.reload();
                         }
                     })
                     .catch((error) => {

@@ -105,6 +105,7 @@ const InventoryMasterManageCreateItem: NextPage = () => {
                             actions.resetForm();
                             actions.setSubmitting(false);
                             resolve();
+                            window.location.reload();
                         }
                     })
                     .catch((error) => {
