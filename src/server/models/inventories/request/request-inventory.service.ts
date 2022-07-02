@@ -339,6 +339,58 @@ export class RequestInventoryService {
         }
     }
 
+    public async requestCancelBarangById(year: number, id: number): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
+        try {
+            const request_data: RequestInventoryDataDocument = await this.requestFindOne(year);
+
+            let request_id_is_valid: boolean = false;
+            let request_is_cancelable: boolean = false;
+            request_data.barang.forEach((request_item_object: RequestBarang) => {
+                if (request_item_object.id == id) {
+                    request_id_is_valid = true;
+
+                    if (request_item_object.status == 1) {
+                        request_is_cancelable = true;
+                    }
+                }
+            });
+
+            if (request_id_is_valid) {
+                if (request_is_cancelable) {
+                    let responded_request_barang: RequestBarang;
+
+                    request_data.barang.forEach((request_item_object: RequestBarang) => {
+                        if (request_item_object.id == id) {
+                            request_item_object.responded_at = null;
+                            request_item_object.status = 0;
+
+                            this.masterInventoryService.masterCancelAcceptedRequest(
+                                2022,
+                                request_item_object.kategori_id,
+                                request_item_object.barang_id,
+                                request_item_object.total
+                            );
+
+                            responded_request_barang = request_item_object;
+                        }
+                    });
+
+                    this.requestInventoryDataModel.replaceOne({ tahun: year }, request_data, { upsert: true }).exec();
+
+                    return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Permintaan barang dengan id ${id} berhasil dibatalkan.`, {
+                        request_item: responded_request_barang,
+                    });
+                } else if (!request_is_cancelable) {
+                    return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} tidak bisa dibatalkan.`, null);
+                }
+            } else if (!request_id_is_valid) {
+                return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} gagal ditemukan.`, null);
+            }
+        } catch (error: any) {
+            return responseFormat<null>(false, 500, error.message, null);
+        }
+    }
+
     /* -------------------------------- DOWNLOAD -------------------------------- */
 
     public async requestDownloadOption() {

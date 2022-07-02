@@ -229,6 +229,30 @@ export class MasterInventoryService {
         this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
     }
 
+    public async masterCancelAcceptedRequest(year: number, category_id: number, item_id: number, total: number): Promise<void> {
+        const master_inventory_data: MasterInventoryDataDocument = await this.masterFindOne(year);
+
+        master_inventory_data.kategori.forEach((master_category_object: MasterKategori) => {
+            if (master_category_object.id == category_id) {
+                master_category_object.barang.forEach((master_item_object: MasterBarang) => {
+                    if (master_item_object.id == item_id) {
+                        master_item_object.mutasi_barang_keluar_jumlah_satuan -= total;
+
+                        master_item_object.jumlah_permintaan += total;
+
+                        master_item_object.saldo_akhir_jumlah_satuan = calculateSaldoAkhirJumlahSatuan(
+                            master_item_object.saldo_jumlah_satuan,
+                            master_item_object.mutasi_barang_masuk_jumlah_satuan,
+                            master_item_object.mutasi_barang_keluar_jumlah_satuan
+                        );
+                    }
+                });
+            }
+        });
+
+        this.masterInventoryDataModel.replaceOne({ tahun: year }, master_inventory_data, { upsert: true }).exec();
+    }
+
     /**
      * @description Search all items
      * @param {Number} year - The year

@@ -105,8 +105,13 @@ export class RequestInventoryController {
         return await this.requestInventoryService.requestResponseBarangById(2022, id, status);
     }
 
-    /* -------------------------------- DOWNLOAD -------------------------------- */
+    @Put("cancel/barang/:id")
+    @UseInterceptors(ResponseFormatInterceptor)
+    public async requestCancelBarangById(@Param("id", new ParseIntPipe()) id: number): Promise<ResponseFormat<ResponseObject<RequestBarang>>> {
+        return await this.requestInventoryService.requestCancelBarangById(2022, id);
+    }
 
+    /* -------------------------------- DOWNLOAD -------------------------------- */
     @Get("download/option")
     public async requestDownloadOption() {
         return await this.requestInventoryService.requestDownloadOption();
