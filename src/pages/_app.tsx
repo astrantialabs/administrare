@@ -27,6 +27,7 @@ import { AppDataContext } from "@/client/ssr/appData";
 import { AppData } from "@/shared/typings/types/app-data";
 import { initializeFetch } from "@/shared/utils/fetch";
 import { store } from "@/client/redux/store";
+import Footer from "@/components/Footer";
 
 const theme = extendTheme({
     fonts: {
@@ -63,6 +64,7 @@ class _app extends NextApp<AppProps> {
                         <QueryClientProvider client={queryClient}>
                             <ReduxProvider store={store}>
                                 <Component {...pageProps} />
+                                <Footer />
                             </ReduxProvider>
                         </QueryClientProvider>
                     </ChakraProvider>

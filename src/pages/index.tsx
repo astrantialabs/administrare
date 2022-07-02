@@ -98,7 +98,6 @@ const Home: NextPage = () => {
                     />
                 </Flex>
             </Stack>
-            <Footer />
         </>
     );
 };
