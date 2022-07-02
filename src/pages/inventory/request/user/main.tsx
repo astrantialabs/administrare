@@ -43,7 +43,11 @@ export const BoxStatusBackgroundSwitch = (str: string | number): string =>
 export const QueryDataFilter = <T extends unknown[]>(status: number, query: UseQueryResult<T, unknown>): any[] => {
     const current = currentDate();
     const currentDateObject = new Date(current);
-    let data = query.data.filter((item: any) => new Date(item.created_at) >= currentDateObject);
+    const data = query.data.sort((a: any, b: any) => {
+        const aDate = new Date(a.createdAt);
+        const bDate = new Date(b.createdAt);
+        return bDate.getTime() - aDate.getTime();
+    });
 
     switch (status) {
         case 0:
