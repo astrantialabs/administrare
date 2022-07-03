@@ -333,7 +333,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                                                 await axiosInstance
                                                                     .put(`__api/data/inventory/demand/cancel/barang/${item.id}`)
                                                                     .then(() => {
-                                                                        categories.refetch();
+                                                                        items.refetch();
                                                                         action.setSubmitting(false);
                                                                     })
                                                                     .catch((error) => {
