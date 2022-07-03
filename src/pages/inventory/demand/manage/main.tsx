@@ -200,7 +200,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                                             {(props) => (
                                                                 <Form>
                                                                     <Button
-                                                                        colorScheme="teal"
+                                                                        colorScheme="gray"
                                                                         size="sm"
                                                                         isLoading={props.isSubmitting}
                                                                         type="submit"
@@ -345,7 +345,7 @@ const InventoryDemandManageMain: NextPage = () => {
                                                             {(props) => (
                                                                 <Form>
                                                                     <Button
-                                                                        colorScheme="teal"
+                                                                        colorScheme="gray"
                                                                         size="sm"
                                                                         isLoading={props.isSubmitting}
                                                                         type="submit"
