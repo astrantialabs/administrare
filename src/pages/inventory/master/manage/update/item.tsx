@@ -178,9 +178,9 @@ const InventoryMasterManageUpdateItem: NextPage<PageProps> = ({ payload, categor
                                 {({ field, form }: { field: FieldInputProps<any>; form: FormikProps<InventoryDemandManageItemParameter> }) => (
                                     <FormControl mb={4}>
                                         <FormLabel htmlFor="nama" fontWeight={`medium`} color={`blackAlpha.700`}>
-                                            Nama
+                                            Barang
                                         </FormLabel>
-                                        <Input {...field} disabled={props.isSubmitting} id="nama" placeholder="Nama disini.." />
+                                        <Input {...field} disabled={props.isSubmitting} id="nama" placeholder="Barang disini.." />
                                         <FormErrorMessage>{form.errors.nama}</FormErrorMessage>
                                     </FormControl>
                                 )}
