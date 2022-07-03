@@ -592,6 +592,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                 return Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "IDR",
+                                    maximumFractionDigits: 0,
+                                    minimumFractionDigits: 0,
                                 })
                                     .format(value)
                                     .replace(/\IDR/g, "");
@@ -607,6 +609,8 @@ const InventoryManageIndex: NextPage<PageProps> = ({ tableData, categories, cate
                                     {Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "IDR",
+                                        maximumFractionDigits: 0,
+                                        minimumFractionDigits: 0,
                                     })
                                         .format(total.saldo_akhir)
                                         .replace(/\IDR/g, "")}
