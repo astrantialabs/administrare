@@ -188,6 +188,42 @@ const InventoryRequestManageMain: NextPage = () => {
                                                         </Formik>
                                                     </Stack>
                                                 </>
+                                            ) : item.status === 1 ? (
+                                                <>
+                                                    <Stack direction="row" marginTop={4}>
+                                                        <Formik
+                                                            initialValues={{}}
+                                                            onSubmit={async (values, action) => {
+                                                                action.setSubmitting(true);
+
+                                                                await axiosInstance
+                                                                    .put(`__api/data/inventory/request/cancel/barang/${item.id}`)
+                                                                    .then(() => {
+                                                                        items.refetch();
+                                                                        action.setSubmitting(false);
+                                                                    })
+                                                                    .catch((error) => {
+                                                                        action.setSubmitting(false);
+                                                                        console.log(error);
+                                                                    });
+                                                            }}
+                                                        >
+                                                            {(props) => (
+                                                                <Form>
+                                                                    <Button
+                                                                        colorScheme="teal"
+                                                                        size="sm"
+                                                                        isLoading={props.isSubmitting}
+                                                                        type="submit"
+                                                                        disabled={props.isSubmitting}
+                                                                    >
+                                                                        Batalkan
+                                                                    </Button>
+                                                                </Form>
+                                                            )}
+                                                        </Formik>
+                                                    </Stack>
+                                                </>
                                             ) : (
                                                 <></>
                                             )}
