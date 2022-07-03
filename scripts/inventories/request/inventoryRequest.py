@@ -158,7 +158,15 @@ class InventoryRequest():
             if(userObject.get("username") == usernameValue):
                 for dateObject in userObject.get("date"):
                     if(dateObject.get("date") == dateValue.split(" ")[0]):
-                        
+
+                        requestCount = 0
+                        for requestIndex, requestObject in enumerate(dateObject.get("request")):
+                            requestCount += 1
+
+
+                        while requestCount > len(document.tables[0].rows) - 1:
+                            document.tables[0].add_row()
+
                         rowCount = 1
                         for requestIndex, requestObject in enumerate(dateObject.get("request")):
                             for categoryObject in inventoryMasterDocument.get("kategori"):

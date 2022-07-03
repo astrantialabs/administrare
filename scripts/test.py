@@ -38,7 +38,7 @@ class Test:
         # InventoryRequest.updateUserData()
         # InventoryRequest.updateOptionData()
         # InventoryRequest.writeRaw(Utility.currentDate()) 
-        # InventoryRequest.writeUser(1, 1)
+        InventoryRequest.writeUser(2, 1)
 
         # optionData = Utility.readJSON("./json/request_option_data.json")
         # for userObject in optionData:
