@@ -128,9 +128,9 @@ export class RequestInventoryService {
             });
 
             if (request_barang == undefined) {
-                return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Permintaan barang gagal ditemukan.`, null);
             } else if (request_barang != undefined) {
-                return responseFormat<ResponseObject<RequestBarangExtended>>(true, 200, `Permintaan barang dengan id ${id} berhasil ditemukan.`, {
+                return responseFormat<ResponseObject<RequestBarangExtended>>(true, 200, `Permintaan barang berhasil ditemukan.`, {
                     request_item: request_barang,
                 });
             }
@@ -159,7 +159,7 @@ export class RequestInventoryService {
                     }
                 });
 
-                return responseFormat<ResponseObject<RequestBarangExtended[]>>(true, 200, `Permintaan barang dengan status ${status} berhasil ditemukan.`, {
+                return responseFormat<ResponseObject<RequestBarangExtended[]>>(true, 200, `Permintaan barang berhasil ditemukan.`, {
                     request_item: request_barang,
                 });
             } else if (!status_list.includes(status)) {
@@ -246,26 +246,16 @@ export class RequestInventoryService {
                                     return responseFormat<null>(false, 400, `Total saldo barang yang diminta harus lebih dari 0.`, null);
                                 }
                             } else if (!item_id_is_active) {
-                                return responseFormat<null>(
-                                    false,
-                                    400,
-                                    `Barang dengan id ${item.barang_id} di dalam kategori dengan id ${item.kategori_id} sudah dihapus.`,
-                                    null
-                                );
+                                return responseFormat<null>(false, 400, `Barang sudah dihapus.`, null);
                             }
                         } else if (!item_id_is_valid) {
-                            return responseFormat<null>(
-                                false,
-                                400,
-                                `Tidak ada barang dengan id ${item.barang_id} di dalam kategori dengan id ${item.kategori_id}.`,
-                                null
-                            );
+                            return responseFormat<null>(false, 400, `Barang gagal ditemukan.`, null);
                         }
                     } else if (!category_id_is_active) {
-                        return responseFormat<null>(false, 400, `Kategori dengan id ${item.kategori_id} sudah dihapus.`, null);
+                        return responseFormat<null>(false, 400, `Kategori sudah dihapus.`, null);
                     }
                 } else if (!category_id_is_valid) {
-                    return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
+                    return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
                 }
             } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(item.username)) {
                 return responseFormat<null>(false, 400, `Nama tidak boleh memiliki simbol.`, null);
@@ -322,17 +312,17 @@ export class RequestInventoryService {
                     if (status_is_valid) {
                         this.requestInventoryDataModel.replaceOne({ tahun: year }, request_data, { upsert: true }).exec();
 
-                        return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Permintaan barang dengan id ${id} berhasil direspon.`, {
+                        return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Permintaan barang berhasil direspon.`, {
                             request_item: responded_request_barang,
                         });
                     } else if (!status_is_valid) {
-                        return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} sudah pernah direspon.`, null);
+                        return responseFormat<null>(false, 400, `Permintaan barang sudah pernah direspon.`, null);
                     }
                 } else if (!status_list.includes(status)) {
                     return responseFormat<null>(false, 400, `Status tidak valid.`, null);
                 }
             } else if (!request_id_is_valid) {
-                return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Permintaan barang gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -377,14 +367,14 @@ export class RequestInventoryService {
 
                     this.requestInventoryDataModel.replaceOne({ tahun: year }, request_data, { upsert: true }).exec();
 
-                    return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Permintaan barang dengan id ${id} berhasil dibatalkan.`, {
+                    return responseFormat<ResponseObject<RequestBarang>>(true, 202, `Permintaan barang berhasil dibatalkan.`, {
                         request_item: responded_request_barang,
                     });
                 } else if (!request_is_cancelable) {
-                    return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} tidak bisa dibatalkan.`, null);
+                    return responseFormat<null>(false, 400, `Permintaan barang tidak bisa dibatalkan.`, null);
                 }
             } else if (!request_id_is_valid) {
-                return responseFormat<null>(false, 400, `Permintaan barang dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Permintaan barang gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);

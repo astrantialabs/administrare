@@ -135,9 +135,9 @@ export class DemandInventoryService {
             });
 
             if (demand_kategori == undefined) {
-                return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Pengajuan kategori gagal ditemukan.`, null);
             } else if (demand_kategori != undefined) {
-                return responseFormat<ResponseObject<DemandKategori>>(true, 200, `Pengajuan kategori dengan id ${id} berhasil ditemukan.`, {
+                return responseFormat<ResponseObject<DemandKategori>>(true, 200, `Pengajuan kategori berhasil ditemukan.`, {
                     demand_category: demand_kategori,
                 });
             }
@@ -164,7 +164,7 @@ export class DemandInventoryService {
             });
 
             if (demand_barang == undefined) {
-                return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Pengajuan barang gagal ditemukan.`, null);
             } else if (demand_barang != undefined) {
                 let demand_barang_with_category_name: DemandBarangWithCategoryName = {
                     ...demand_barang,
@@ -172,7 +172,7 @@ export class DemandInventoryService {
                         .master_category_name,
                 };
 
-                return responseFormat<ResponseObject<DemandBarangWithCategoryName>>(true, 200, `Pengajuan barang dengan id ${id} berhasil ditemukan.`, {
+                return responseFormat<ResponseObject<DemandBarangWithCategoryName>>(true, 200, `Pengajuan barang berhasil ditemukan.`, {
                     demand_item: demand_barang_with_category_name,
                 });
             }
@@ -200,7 +200,7 @@ export class DemandInventoryService {
                     }
                 });
 
-                return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, `Pengajuan kategori dengan status ${status} berhasil ditemukan.`, {
+                return responseFormat<ResponseObject<DemandKategori[]>>(true, 200, `Pengajuan kategori berhasil ditemukan.`, {
                     demand_category: filtered_category_demand_data,
                 });
             } else if (!status_list.includes(status)) {
@@ -232,14 +232,9 @@ export class DemandInventoryService {
 
                 let demand_barang_data_with_category_name: DemandBarangWithCategoryName[] = await this.demandBarangWithCategoryName(filtered_item_demand_data);
 
-                return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(
-                    true,
-                    200,
-                    `Pengajuan barang dengan status ${status} berhasil ditemukan.`,
-                    {
-                        demand_item: demand_barang_data_with_category_name,
-                    }
-                );
+                return responseFormat<ResponseObject<DemandBarangWithCategoryName[]>>(true, 200, `Pengajuan barang berhasil ditemukan.`, {
+                    demand_item: demand_barang_data_with_category_name,
+                });
             } else if (!status_list.includes(status)) {
                 return responseFormat<null>(false, 400, `Status tidak valid.`, null);
             }
@@ -328,10 +323,10 @@ export class DemandInventoryService {
                             demand_item: new_item_demand,
                         });
                     } else if (!category_id_is_active) {
-                        return responseFormat<null>(false, 400, `Kategori dengan id ${item.kategori_id} sudah dihapus`, null);
+                        return responseFormat<null>(false, 400, `Kategori sudah dihapus.`, null);
                     }
                 } else if (!category_id_is_valid) {
-                    return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${item.kategori_id}.`, null);
+                    return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
                 }
             } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(item.username)) {
                 return responseFormat<null>(false, 400, `Nama tidak boleh memiliki simbol.`, null);
@@ -381,17 +376,17 @@ export class DemandInventoryService {
                     if (status_is_valid) {
                         this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-                        return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Pengajuan kategori dengan id ${id} berhasil direspon.`, {
+                        return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Pengajuan kategori berhasil direspon.`, {
                             demand_category: responded_demand_kategori,
                         });
                     } else if (!status_is_valid) {
-                        return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} sudah pernah direspon.`, null);
+                        return responseFormat<null>(false, 400, `Pengajuan kategori sudah pernah direspon.`, null);
                     }
                 } else if (!status_list.includes(status)) {
                     return responseFormat<null>(false, 400, `Status tidak valid.`, null);
                 }
             } else if (!demand_category_id_is_valud) {
-                return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Pengajuan kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -438,17 +433,17 @@ export class DemandInventoryService {
                     if (status_is_valid) {
                         this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-                        return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Pengajuan barang dengan id ${id} berhasil direspon.`, {
+                        return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Pengajuan barang berhasil direspon.`, {
                             demand_item: responded_demand_barang,
                         });
                     } else if (!status_is_valid) {
-                        return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} sudah pernah direspon.`, null);
+                        return responseFormat<null>(false, 400, `Pengajuan barang sudah pernah direspon.`, null);
                     }
                 } else if (!status_list.includes(status)) {
                     return responseFormat<null>(false, 400, `Status tidak valid.`, null);
                 }
             } else if (!demand_item_id_is_valud) {
-                return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Pengajuan barang gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -486,14 +481,14 @@ export class DemandInventoryService {
 
                     this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-                    return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Pengajuan kategori dengan id ${id} berhasil dibatalkan.`, {
+                    return responseFormat<ResponseObject<DemandKategori>>(true, 202, `Pengajuan kategori berhasil dibatalkan.`, {
                         demand_category: responded_demand_kategori,
                     });
                 } else if (!demand_category_is_cancelable) {
-                    return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} tidak bisa dibatalkan.`, null);
+                    return responseFormat<null>(false, 400, `Pengajuan kategori tidak bisa dibatalkan.`, null);
                 }
             } else if (!demand_category_id_is_valud) {
-                return responseFormat<null>(false, 400, `Pengajuan kategori dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Pengajuan kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -531,14 +526,14 @@ export class DemandInventoryService {
 
                     this.demandInventoryDataModel.replaceOne({ tahun: year }, demand_data, { upsert: true }).exec();
 
-                    return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Pengajuan barang dengan id ${id} berhasil dibatalkan.`, {
+                    return responseFormat<ResponseObject<DemandBarang>>(true, 202, `Pengajuan barang berhasil dibatalkan.`, {
                         demand_item: responded_demand_barang,
                     });
                 } else if (!demand_item_is_cancelable) {
-                    return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} tidak bisa dibatalkan.`, null);
+                    return responseFormat<null>(false, 400, `Pengajuan barang tidak bisa dibatalkan.`, null);
                 }
             } else if (!demand_item_id_is_valud) {
-                return responseFormat<null>(false, 400, `Pengajuan barang dengan id ${id} gagal ditemukan.`, null);
+                return responseFormat<null>(false, 400, `Pengajuan barang gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);

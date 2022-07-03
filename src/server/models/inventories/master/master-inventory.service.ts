@@ -414,7 +414,7 @@ export class MasterInventoryService {
             const master_kategori: ResponseFormat<ResponseObject<MasterKategori>> = await this.masterGetKategoriByKategoriId(year, category_id);
 
             if (master_kategori.result) {
-                return responseFormat<ResponseObject<MasterBarang[]>>(true, 200, `Barang di dalam kategori dengan id ${category_id} berhasil ditemukan.`, {
+                return responseFormat<ResponseObject<MasterBarang[]>>(true, 200, `Barang berhasil ditemukan.`, {
                     master_item: master_kategori.result.master_category.barang,
                 });
             } else if (!master_kategori.result) {
@@ -444,9 +444,9 @@ export class MasterInventoryService {
                 });
 
                 if (master_kategori == undefined) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} gagal ditemukan.`, null);
+                    return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
                 } else if (master_kategori != undefined) {
-                    return responseFormat<ResponseObject<MasterKategori>>(true, 200, `Kategori dengan id ${category_id} berhasil ditemukan.`, {
+                    return responseFormat<ResponseObject<MasterKategori>>(true, 200, `Kategori berhasil ditemukan.`, {
                         master_category: master_kategori,
                     });
                 }
@@ -483,16 +483,11 @@ export class MasterInventoryService {
                 });
 
                 if (master_barang == undefined) {
-                    return responseFormat<null>(false, 400, `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} gagal ditemukan.`, null);
+                    return responseFormat<null>(false, 400, `Barang gagal ditemukan.`, null);
                 } else if (master_barang != undefined) {
-                    return responseFormat<ResponseObject<MasterBarang>>(
-                        true,
-                        200,
-                        `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil ditemukan.`,
-                        {
-                            master_item: master_barang,
-                        }
-                    );
+                    return responseFormat<ResponseObject<MasterBarang>>(true, 200, `Barang berhasil ditemukan.`, {
+                        master_item: master_barang,
+                    });
                 }
             } else if (!master_barang_data.result) {
                 return responseFormat<null>(master_barang_data.success, master_barang_data.statusCode, master_barang_data.message, null);
@@ -507,7 +502,7 @@ export class MasterInventoryService {
             const master_kategori: ResponseFormat<ResponseObject<MasterKategori>> = await this.masterGetKategoriByKategoriId(year, category_id);
 
             if (master_kategori.result) {
-                return responseFormat<ResponseObject<string>>(true, 200, `Nama kategori dengan id ${category_id} berhasil ditemukan.`, {
+                return responseFormat<ResponseObject<string>>(true, 200, `Nama kategori berhasil ditemukan.`, {
                     master_category_name: master_kategori.result.master_category.kategori,
                 });
             } else if (!master_kategori.result) {
@@ -527,14 +522,9 @@ export class MasterInventoryService {
             const master_barang: ResponseFormat<ResponseObject<MasterBarang>> = await this.masterGetBarangByKategoriIdAndBarangId(year, category_id, item_id);
 
             if (master_barang.result) {
-                return responseFormat<ResponseObject<string>>(
-                    true,
-                    200,
-                    `Nama barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil ditemukan.`,
-                    {
-                        master_item_name: master_barang.result.master_item.nama,
-                    }
-                );
+                return responseFormat<ResponseObject<string>>(true, 200, `Nama barang berhasil ditemukan.`, {
+                    master_item_name: master_barang.result.master_item.nama,
+                });
             } else if (!master_barang.result) {
                 return responseFormat<null>(master_barang.success, master_barang.statusCode, master_barang.message, null);
             }
@@ -629,14 +619,14 @@ export class MasterInventoryService {
                         }
                     });
 
-                    return responseFormat<ResponseObject<MasterBarang>>(true, 201, `Barang di dalam kategori dengan id ${category_id} berhasil dibuat.`, {
+                    return responseFormat<ResponseObject<MasterBarang>>(true, 201, `Barang berhasil dibuat.`, {
                         master_item: item,
                     });
                 } else if (!category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
+                    return responseFormat<null>(false, 400, `Kategori sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+                return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -681,14 +671,14 @@ export class MasterInventoryService {
                         }
                     });
 
-                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil diupdate.`, {
+                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori berhasil diupdate.`, {
                         master_category: updated_category_object,
                     });
                 } else if (!category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
+                    return responseFormat<null>(false, 400, `Kategori sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+                return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -774,30 +764,20 @@ export class MasterInventoryService {
                                 }
                             });
 
-                            return responseFormat<ResponseObject<MasterBarang>>(
-                                true,
-                                202,
-                                `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil diupdate.`,
-                                {
-                                    master_item: updated_item_object,
-                                }
-                            );
+                            return responseFormat<ResponseObject<MasterBarang>>(true, 202, `Barang berhasil diupdate.`, {
+                                master_item: updated_item_object,
+                            });
                         } else if (!item_id_is_active) {
-                            return responseFormat<null>(
-                                false,
-                                400,
-                                `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} sudah dihapus.`,
-                                null
-                            );
+                            return responseFormat<null>(false, 400, `Barang sudah dihapus.`, null);
                         }
                     } else if (!item_id_is_valid) {
-                        return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                        return responseFormat<null>(false, 400, `Barang gagal ditemukan.`, null);
                     }
                 } else if (!category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
+                    return responseFormat<null>(false, 400, `Kategori sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+                return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -848,17 +828,17 @@ export class MasterInventoryService {
                             }
                         });
 
-                        return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil dihapus.`, {
+                        return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori berhasil dihapus.`, {
                             master_category: deleted_category_object,
                         });
                     } else if (!deletion_is_valid) {
-                        return responseFormat<null>(false, 400, `Jumlah permintaan barang-barang di dalam kategori dengan id ${category_id} harus 0.`, null);
+                        return responseFormat<null>(false, 400, `Jumlah permintaan barang-barang di dalam kategori harus 0.`, null);
                     }
                 } else if (!category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
+                    return responseFormat<null>(false, 400, `Kategori sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+                return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -932,38 +912,23 @@ export class MasterInventoryService {
                                     }
                                 });
 
-                                return responseFormat<ResponseObject<MasterBarang>>(
-                                    true,
-                                    202,
-                                    `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil dihapus.`,
-                                    {
-                                        master_category: deleted_item_object,
-                                    }
-                                );
+                                return responseFormat<ResponseObject<MasterBarang>>(true, 202, `Barang berhasil dihapus.`, {
+                                    master_category: deleted_item_object,
+                                });
                             } else if (!deletion_is_valid) {
-                                return responseFormat<null>(
-                                    false,
-                                    400,
-                                    `Jumlah permintaan barang dengan id ${item_id} di dalam kategori dengan id ${category_id} harus 0.`,
-                                    null
-                                );
+                                return responseFormat<null>(false, 400, `Jumlah permintaan barang harus 0.`, null);
                             }
                         } else if (!item_id_is_active) {
-                            return responseFormat<null>(
-                                false,
-                                400,
-                                `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} sudah dihapus.`,
-                                null
-                            );
+                            return responseFormat<null>(false, 400, `Barang sudah dihapus.`, null);
                         }
                     } else if (!item_id_is_valid) {
-                        return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                        return responseFormat<null>(false, 400, `Barang gagal ditemukan.`, null);
                     }
                 } else if (!category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} sudah dihapus.`, null);
+                    return responseFormat<null>(false, 400, `Kategori sudah dihapus.`, null);
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+                return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -996,14 +961,14 @@ export class MasterInventoryService {
                         }
                     });
 
-                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori dengan id ${category_id} berhasil dipulihkan.`, {
+                    return responseFormat<ResponseObject<MasterKategori>>(true, 202, `Kategori berhasil dipulihkan.`, {
                         master_category: recovered_category_object,
                     });
                 } else if (category_id_is_active) {
-                    return responseFormat<null>(false, 400, `Kategori dengan id ${category_id} masih ada.`, null);
+                    return responseFormat<null>(false, 400, `Kategori masih ada.`, null);
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+                return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
@@ -1055,22 +1020,17 @@ export class MasterInventoryService {
                             }
                         });
 
-                        return responseFormat<ResponseObject<MasterBarang>>(
-                            true,
-                            202,
-                            `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} berhasil dipulihkan.`,
-                            {
-                                master_category: recovered_item_object,
-                            }
-                        );
+                        return responseFormat<ResponseObject<MasterBarang>>(true, 202, `Barang berhasil dipulihkan.`, {
+                            master_category: recovered_item_object,
+                        });
                     } else if (item_id_is_active) {
-                        return responseFormat<null>(false, 400, `Barang dengan id ${item_id} di dalam kategori dengan id ${category_id} masih ada.`, null);
+                        return responseFormat<null>(false, 400, `Barang masih ada.`, null);
                     }
                 } else if (!item_id_is_valid) {
-                    return responseFormat<null>(false, 400, `Tidak ada barang dengan id ${item_id} di dalam kategori dengan id ${category_id}.`, null);
+                    return responseFormat<null>(false, 400, `Barang gagal ditemukan.`, null);
                 }
             } else if (!category_id_is_valid) {
-                return responseFormat<null>(false, 400, `Tidak ada kategori dengan id ${category_id}.`, null);
+                return responseFormat<null>(false, 400, `Kategori gagal ditemukan.`, null);
             }
         } catch (error: any) {
             return responseFormat<null>(false, 500, error.message, null);
