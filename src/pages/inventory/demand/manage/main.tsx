@@ -177,6 +177,42 @@ const InventoryDemandManageMain: NextPage = () => {
                                                         </Formik>
                                                     </Stack>
                                                 </>
+                                            ) : category.status === 1 ? (
+                                                <>
+                                                    <Stack direction="row" marginTop={4}>
+                                                        <Formik
+                                                            initialValues={{}}
+                                                            onSubmit={async (values, action) => {
+                                                                action.setSubmitting(true);
+
+                                                                await axiosInstance
+                                                                    .put(`__api/data/inventory/demand/cancel/kategori/${category.id}`)
+                                                                    .then(() => {
+                                                                        categories.refetch();
+                                                                        action.setSubmitting(false);
+                                                                    })
+                                                                    .catch((error) => {
+                                                                        action.setSubmitting(false);
+                                                                        console.log(error);
+                                                                    });
+                                                            }}
+                                                        >
+                                                            {(props) => (
+                                                                <Form>
+                                                                    <Button
+                                                                        colorScheme="teal"
+                                                                        size="sm"
+                                                                        isLoading={props.isSubmitting}
+                                                                        type="submit"
+                                                                        disabled={props.isSubmitting}
+                                                                    >
+                                                                        Batalkan
+                                                                    </Button>
+                                                                </Form>
+                                                            )}
+                                                        </Formik>
+                                                    </Stack>
+                                                </>
                                             ) : (
                                                 <></>
                                             )}
@@ -280,6 +316,42 @@ const InventoryDemandManageMain: NextPage = () => {
                                                                         disabled={props.isSubmitting}
                                                                     >
                                                                         Tolak
+                                                                    </Button>
+                                                                </Form>
+                                                            )}
+                                                        </Formik>
+                                                    </Stack>
+                                                </>
+                                            ) : item.status === 1 ? (
+                                                <>
+                                                    <Stack direction="row" marginTop={4}>
+                                                        <Formik
+                                                            initialValues={{}}
+                                                            onSubmit={async (values, action) => {
+                                                                action.setSubmitting(true);
+
+                                                                await axiosInstance
+                                                                    .put(`__api/data/inventory/demand/cancel/barang/${item.id}`)
+                                                                    .then(() => {
+                                                                        categories.refetch();
+                                                                        action.setSubmitting(false);
+                                                                    })
+                                                                    .catch((error) => {
+                                                                        action.setSubmitting(false);
+                                                                        console.log(error);
+                                                                    });
+                                                            }}
+                                                        >
+                                                            {(props) => (
+                                                                <Form>
+                                                                    <Button
+                                                                        colorScheme="teal"
+                                                                        size="sm"
+                                                                        isLoading={props.isSubmitting}
+                                                                        type="submit"
+                                                                        disabled={props.isSubmitting}
+                                                                    >
+                                                                        Batalkan
                                                                     </Button>
                                                                 </Form>
                                                             )}
