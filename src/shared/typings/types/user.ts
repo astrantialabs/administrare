@@ -16,14 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { isDevelopmentEnvironment } from "../utils/isDevelopmentEnvironment";
-
-export const NODE_ENV = process.env.NODE_ENV;
-export const PORT = process.env.PORT || 3000;
-export const BASE_DOMAIN = isDevelopmentEnvironment ? "http://localhost:3000/" : "https://inventory.setdisnakerbppn.com/";
-export const PYTHON_BASE_DOMAIN = isDevelopmentEnvironment ? "http://0.0.0.0:3001/" : "http://156.67.217.92:3001/";
-
-export const isServer = typeof window === "undefined";
-export const isClient = !isServer;
-
-export const userKey = process.env.USER_KEY;
+export type UserCreateParameter = {
+    key: string;
+    username: string;
+    password: string;
+    permission: number;
+};

@@ -119,3 +119,16 @@ export function responseFormat<T>(success: boolean, statusCode: number, message:
         result: result,
     };
 }
+
+export function convertPermission(permission: number): string {
+    switch (permission) {
+        case 1:
+            return "USER";
+
+        case 2:
+            return "ADMINISTRATOR";
+
+        case 3:
+            return "SUPERADMINISTRATOR";
+    }
+}

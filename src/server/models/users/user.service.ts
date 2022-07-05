@@ -22,6 +22,11 @@ import { Model } from "mongoose";
 import { PermissionLevel } from "@/shared/typings/enumerations/permission-level.enum";
 
 import { User, UserDocument } from "./schema/user.schema";
+import { UserCreateParameter } from "@/shared/typings/types/user";
+import * as bcrypt from "bcrypt";
+import { userKey } from "@/shared/typings/constants";
+import { convertPermission } from "@/shared/utils/util";
+import { Logger } from "@nestjs/common";
 
 /**
  * @fileoverview User service.
@@ -87,5 +92,26 @@ export class UserService {
      */
     public async updatePermissionLevel(id: string, permissionLevel: PermissionLevel): Promise<UserDocument | null> {
         return this.userModel.findByIdAndUpdate(id, { permissionLevel }, { new: true }).exec();
+    }
+
+    public async userCreate(payload: UserCreateParameter): Promise<User> {
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(payload.key, userKey, async (err: Error, res: boolean) => {
+                if (res) {
+                    const user_object: User = {
+                        username: payload.username,
+                        password: await bcrypt.hash(payload.password, 10),
+                        name: payload.username,
+                        permissionLevel: convertPermission(payload.permission),
+                    };
+
+                    this.userModel.create(user_object);
+
+                    resolve(user_object);
+                } else if (err) {
+                    reject(err);
+                }
+            });
+        });
     }
 }

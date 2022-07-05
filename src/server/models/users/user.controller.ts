@@ -21,11 +21,13 @@
  * @author Yehezkiel Dio <contact@yehezkieldio.xyz>
  */
 
-import { Controller, Get, Logger, Param, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Logger, Param, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Request as ExpressRequest } from "express";
 
 import { UserService } from "./user.service";
+import { UserCreateParameter } from "@/shared/typings/types/user";
+import { User } from "./schema/user.schema";
 
 /**
  * @class UserController
@@ -64,5 +66,10 @@ export class UserController {
     @Get("username/:username")
     public async findOneByUsername(@Param("username") username: string) {
         return this.userService.findOne(username);
+    }
+
+    @Post("create")
+    public async userCreate(@Body() payload: UserCreateParameter): Promise<User> {
+        return await this.userService.userCreate(payload);
     }
 }

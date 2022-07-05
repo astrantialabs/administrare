@@ -33,6 +33,8 @@ export declare global {
             BASE_DOMAIN: string;
             PYTHON_BASE_DOMAIN: string;
 
+            USER_KEY: string;
+
             AUTHENTICATION_JWT_SECRET: string;
             AUTHENTICATION_JWT_EXPIRATION: string;
             AUTHENTICATION_COOKIE_SECRET: string;
