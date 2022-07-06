@@ -326,6 +326,7 @@ class InventoryRequest():
         fileOptionData = []
         for fileItemIndex, fileItem in enumerate(fileOptionArray):
             fileDateData = []
+            fileItem[1].sort(reverse=True, key=lambda item: item[0])
             for fileDateIndex, fileDate in enumerate(fileItem[1]):
                 newFileDateObject = {
                     "id": fileDateIndex + 1,
