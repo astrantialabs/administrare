@@ -60,13 +60,17 @@ export class AuthService {
         }
 
         if (user) {
-            const accessToken = this.jwtService.sign({ username: user.username, id: user._id });
+            if (await bcrypt.compare(payload.password, user.password)) {
+                const accessToken = this.jwtService.sign({ username: user.username, id: user._id });
 
-            request.session.access_token = accessToken;
-            response.cookie("_user_username", user.username);
-            response.cookie("_user_id", user._id);
+                request.session.access_token = accessToken;
+                response.cookie("_user_username", user.username);
+                response.cookie("_user_id", user._id);
 
-            return { accessToken };
+                return { accessToken };
+            } else {
+                return "Invalid username or password.";
+            }
         } else {
             return "Invalid username or password.";
         }
