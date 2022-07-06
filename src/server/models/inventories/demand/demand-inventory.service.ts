@@ -597,7 +597,7 @@ export class DemandInventoryService {
         }
     }
 
-    @Cron(CronExpression.EVERY_12_HOURS)
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
     public async demandScheduledDownload() {
         const current_date = slugifyDate(currentDate());
         const response = await pythonAxiosInstance.post(`/__api/inventory/demand/download/raw/${current_date}`);
